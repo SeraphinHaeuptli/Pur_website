@@ -108,7 +108,8 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
   diese Datei geändert wird — neu veröffentlichen geht aus einer Claude-Session mit Artifact-Werkzeug.
 - Eine Kopie liegt im claude.ai-Projekt «PU» als `claude/pu-llm-website.html`.
 - **Dieser Ordner ist ab jetzt die Arbeitskopie.**
-- **Eigenes Hosting:** GitHub-Repo `SeraphinHaeuptli/Pur_website` (öffentlich), mit Vercel verbunden.
+- **Eigenes Hosting:** https://wie-ki-funktioniert.vercel.app — GitHub-Repo `SeraphinHaeuptli/Pur_website` (öffentlich), mit Vercel verbunden.
+  Das Vercel-Projekt ist für den Vercel-Connector nicht sichtbar; live prüfen mit `curl`.
   Push auf `main` = live. Vercel führt `node build.mjs` aus (siehe `vercel.json`) und liefert nur `dist/` aus.
   - Nur `index.html` bearbeiten. `dist/index.html` wird erzeugt (doctype/head/body drumherum) und ist nicht in Git.
   - Lokal ansehen: `node build.mjs`, dann `python -m http.server 8080 -d dist` → http://127.0.0.1:8080/
