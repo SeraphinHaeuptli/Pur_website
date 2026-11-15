@@ -158,6 +158,7 @@ table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid hsl(var(--rule));vertical-align:top}
 th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));font-weight:400}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12.5px;padding-right:0}
+td.num:not(:last-child),th.num:not(:last-child){padding-right:12px}
 
 /* Labor / Demos */
 .labor{margin-top:28px;border:1px solid hsl(var(--rule-strong));background:hsl(var(--panel))}
@@ -1289,6 +1290,12 @@ var AKTIV = "start";
       if(a.getAttribute("href") === "#"+id) a.setAttribute("aria-current","page");
       else a.removeAttribute("aria-current");
     });
+    /* Handy: waagrechte Kapitelleiste auf das aktive Kapitel zentrieren (nur die Leiste, nicht die Seite) */
+    var ol = W("tocliste"), akt = ol.querySelector('[aria-current="page"]');
+    if(akt && ol.scrollWidth > ol.clientWidth){
+      var rO = ol.getBoundingClientRect(), rA = akt.getBoundingClientRect();
+      ol.scrollLeft += (rA.left + rA.width/2) - (rO.left + rO.width/2);
+    }
     if(scrollen) window.scrollTo({top:0, behavior:"instant"});
     window.dispatchEvent(new CustomEvent("kapitel", {detail:id}));
   }
