@@ -1,0 +1,1898 @@
+<title>Wie ein LLM funktioniert</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: feste Kapitelspalte links, eine Spalte Lesetext rechts; Swiss International Typographic:
+   Haarlinien, Mono-Eyebrows, rotes Signal, keine Radien, keine Schatten. */
+:root{
+  --paper:44 24% 95%; --paper-2:42 20% 91%; --panel:40 30% 98%;
+  --ink:240 8% 10%; --ink-2:240 5% 34%; --ink-3:240 4% 52%;
+  --rule:40 10% 82%; --rule-strong:240 6% 16%;
+  --signal:5 76% 46%; --signal-soft:5 76% 96%;
+  --azur:224 62% 34%; --azur-soft:224 62% 95%;
+  --moss:152 40% 30%; --amber:36 84% 42%;
+  --radius:0px;
+  --sans:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --gut:max(16px,env(safe-area-inset-left,0px));
+  --gutr:max(16px,env(safe-area-inset-right,0px));
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]):not(.m-hell):not(.m-mono){
+    --paper:240 9% 7%; --paper-2:240 8% 12%; --panel:240 8% 10%;
+    --ink:40 18% 92%; --ink-2:40 8% 72%; --ink-3:240 5% 58%;
+    --rule:240 6% 22%; --rule-strong:40 12% 88%;
+    --signal:6 90% 63%; --signal-soft:6 44% 13%;
+    --azur:220 90% 74%; --azur-soft:220 44% 15%;
+    --moss:152 45% 60%; --amber:38 90% 62%;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]:not(.m-hell):not(.m-mono), :root.m-dunkel{
+  --paper:240 9% 7%; --paper-2:240 8% 12%; --panel:240 8% 10%;
+  --ink:40 18% 92%; --ink-2:40 8% 72%; --ink-3:240 5% 58%;
+  --rule:240 6% 22%; --rule-strong:40 12% 88%;
+  --signal:6 90% 63%; --signal-soft:6 44% 13%;
+  --azur:220 90% 74%; --azur-soft:220 44% 15%;
+  --moss:152 45% 60%; --amber:38 90% 62%;
+  color-scheme:dark;
+}
+:root.m-mono{
+  --paper:0 0% 100%; --paper-2:0 0% 96%; --panel:0 0% 100%;
+  --ink:0 0% 0%; --ink-2:0 0% 24%; --ink-3:0 0% 44%;
+  --rule:0 0% 74%; --rule-strong:0 0% 0%;
+  --signal:0 0% 0%; --signal-soft:0 0% 92%;
+  --azur:0 0% 38%; --azur-soft:0 0% 92%;
+  --moss:0 0% 26%; --amber:0 0% 34%;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:hsl(var(--paper)); color:hsl(var(--ink));
+  font-family:var(--sans); font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:hsl(var(--paper))}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:700;letter-spacing:-.015em}
+p{margin:0}
+a{color:hsl(var(--azur));text-decoration:none;border-bottom:1px solid hsl(var(--azur)/.4)}
+a:hover{border-bottom-color:hsl(var(--azur))}
+:focus-visible{outline:2px solid hsl(var(--signal));outline-offset:2px}
+
+/* ---- ASCII-Hintergrund ---- */
+#ascii{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  font-family:var(--mono);font-size:12px;line-height:1.05;white-space:pre;
+  color:hsl(var(--ink)/.085);user-select:none;
+  margin:0;padding:0;
+}
+:root.m-mono #ascii{color:hsl(var(--ink)/.07)}
+
+/* ---- Kopfzeile ---- */
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:30;
+  background:hsl(var(--paper)/.94);backdrop-filter:blur(8px);
+  border-bottom:1px solid hsl(var(--rule-strong));
+}
+.topbar-in{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-left:var(--gut);padding-right:var(--gutr);padding-block:10px;
+  max-width:1280px;margin:0 auto;
+}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand .kicker{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--ink-3))}
+.brand strong{font-size:15px;letter-spacing:-.01em}
+.modes{display:flex;border:1px solid hsl(var(--rule-strong))}
+.modes button{
+  appearance:none;background:transparent;border:0;border-left:1px solid hsl(var(--rule));
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:hsl(var(--ink-2));padding:7px 9px;cursor:pointer;
+}
+.modes button:first-child{border-left:0}
+.modes button[aria-pressed="true"]{background:hsl(var(--ink));color:hsl(var(--paper))}
+
+/* ---- Grundraster ---- */
+.shell{
+  position:relative;z-index:1;max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:980px){ .shell{grid-template-columns:232px minmax(0,1fr)} }
+
+/* ---- Kapitelnavigation ---- */
+.toc{border-bottom:1px solid hsl(var(--rule))}
+.toc-in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:12px}
+.toc h2{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--ink-3));font-weight:400;margin-bottom:8px}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+.toc li{flex:0 0 auto}
+.toc a{
+  display:flex;gap:7px;align-items:baseline;border:1px solid hsl(var(--rule));
+  padding:5px 8px;font-size:12px;color:hsl(var(--ink-2));white-space:nowrap;
+}
+.toc a .num{font-family:var(--mono);font-size:10px;color:hsl(var(--ink-3))}
+.toc a[aria-current="page"]{border-color:hsl(var(--rule-strong));background:hsl(var(--panel));color:hsl(var(--ink));font-weight:700}
+.toc a[aria-current="page"] .num{color:hsl(var(--signal))}
+@media (min-width:980px){
+  .toc{border-bottom:0;border-right:1px solid hsl(var(--rule))}
+  .toc-in{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);padding-block:28px;padding-right:20px}
+  .toc ol{flex-direction:column;overflow:visible;gap:0}
+  .toc a{border:0;border-left:2px solid transparent;padding:6px 10px;white-space:normal}
+  .toc a[aria-current="page"]{border-left-color:hsl(var(--signal));background:transparent}
+}
+
+/* ---- Kapitel ---- */
+main{min-width:0}
+.kap{padding-left:var(--gut);padding-right:var(--gutr);padding-block:32px 56px;max-width:none}
+.kap>*{max-width:68ch}
+.kap .wide{max-width:none}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:hsl(var(--signal));display:flex;gap:10px;align-items:center}
+.eyebrow::after{content:"";height:1px;background:hsl(var(--rule));flex:1;min-width:24px}
+h1{font-size:clamp(28px,5.2vw,44px);line-height:1.07;margin-block:14px 0}
+.lead{font-size:clamp(17px,2.2vw,20px);line-height:1.5;color:hsl(var(--ink-2));margin-top:16px}
+h2.sec{font-size:clamp(19px,2.6vw,23px);margin-top:40px;padding-top:12px;border-top:1px solid hsl(var(--rule-strong))}
+h3{font-size:16px;margin-top:24px}
+.kap p+p{margin-top:14px}
+h2.sec+p,h3+p{margin-top:10px}
+ul.liste{margin:12px 0 0;padding-left:18px}
+ul.liste li{margin-top:7px}
+ul.liste li::marker{color:hsl(var(--signal))}
+.quote{border-left:2px solid hsl(var(--signal));padding:2px 0 2px 14px;margin-top:18px;font-size:17px;line-height:1.45;color:hsl(var(--ink))}
+.quote cite{display:block;margin-top:7px;font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3))}
+
+/* Merkkasten */
+.merk{border:1px solid hsl(var(--rule-strong));background:hsl(var(--panel));padding:14px 16px;margin-top:22px}
+.merk .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--signal));margin-bottom:6px}
+.merk p{font-size:15.5px}
+
+/* Datenblock */
+.daten{margin-top:24px;border-top:1px solid hsl(var(--rule-strong))}
+.daten dl{display:grid;grid-template-columns:minmax(0,1fr);margin:0}
+@media (min-width:620px){.daten dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.daten div{border-bottom:1px solid hsl(var(--rule));padding:9px 0;display:flex;gap:12px;align-items:baseline;min-width:0}
+@media (min-width:620px){.daten div:nth-child(odd){padding-right:16px;border-right:1px solid hsl(var(--rule))}}
+.daten dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--ink-3));flex:0 0 74px}
+.daten dd{margin:0;font-size:14.5px;min-width:0}
+.daten dd b{font-variant-numeric:tabular-nums}
+
+/* Tabelle */
+.tabwrap{overflow-x:auto;margin-top:20px;border-top:1px solid hsl(var(--rule-strong))}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid hsl(var(--rule));vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));font-weight:400}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12.5px;padding-right:0}
+
+/* Labor / Demos */
+.labor{margin-top:28px;border:1px solid hsl(var(--rule-strong));background:hsl(var(--panel))}
+.labor>.kopf{display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-bottom:1px solid hsl(var(--rule));padding:9px 14px;flex-wrap:wrap}
+.labor>.kopf .t{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--signal))}
+.labor>.kopf .h{font-weight:700;font-size:14.5px}
+.labor>.korpus{padding:14px}
+.hinweis{font-size:12.5px;color:hsl(var(--ink-3));margin-top:10px;line-height:1.45}
+.steuer{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:12px}
+.steuer label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--ink-2));display:flex;gap:8px;align-items:center}
+input[type=range]{accent-color:hsl(var(--signal));width:132px}
+input[type=text],input[type=number],textarea,select{
+  font-family:var(--mono);font-size:13px;background:hsl(var(--paper));color:hsl(var(--ink));
+  border:1px solid hsl(var(--rule-strong));padding:6px 8px;border-radius:0;min-width:0;max-width:100%;
+}
+textarea{width:100%;line-height:1.5;resize:vertical}
+button.knopf{
+  appearance:none;background:hsl(var(--ink));color:hsl(var(--paper));border:1px solid hsl(var(--ink));
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 12px;cursor:pointer;border-radius:0;
+}
+button.knopf.sek{background:transparent;color:hsl(var(--ink));border-color:hsl(var(--rule-strong))}
+button.knopf:disabled{opacity:.42;cursor:default}
+.mono{font-family:var(--mono);font-size:13px}
+.aus{font-family:var(--mono);font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;
+  background:hsl(var(--paper));border:1px solid hsl(var(--rule));padding:10px;margin-top:12px;min-height:2.6em}
+.bars{display:grid;gap:4px;margin-top:12px}
+.bar{display:grid;grid-template-columns:106px minmax(0,1fr) 64px;gap:8px;align-items:center;font-family:var(--mono);font-size:11.5px}
+@media (max-width:480px){.bar{grid-template-columns:84px minmax(0,1fr) 56px;font-size:11px}}
+.bar .tk{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .tr{height:11px;background:hsl(var(--rule)/.55);position:relative}
+.bar .tr i{position:absolute;inset:0 auto 0 0;background:hsl(var(--signal));display:block}
+.bar.aus-p .tr i{background:hsl(var(--rule-strong))}
+.bar .vl{text-align:right;font-variant-numeric:tabular-nums;color:hsl(var(--ink-2))}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.chip{font-family:var(--mono);font-size:11.5px;border:1px solid hsl(var(--rule-strong));padding:3px 7px;background:hsl(var(--paper))}
+.chip.t0{background:hsl(var(--signal-soft));border-color:hsl(var(--signal))}
+.chip.t1{background:hsl(var(--azur-soft));border-color:hsl(var(--azur))}
+canvas{max-width:100%;height:auto;display:block;border:1px solid hsl(var(--rule));background:hsl(var(--paper))}
+.zweispalt{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:700px){.zweispalt{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Pipeline-Diagramm */
+.pipe{margin-top:26px;display:grid;gap:0;border-top:1px solid hsl(var(--rule-strong))}
+.pipe a{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;border-bottom:1px solid hsl(var(--rule));
+  padding:11px 0;color:inherit;border-left:0;border-right:0;text-decoration:none;align-items:baseline}
+.pipe a:hover{background:hsl(var(--panel))}
+.pipe .n{font-family:var(--mono);font-size:11px;color:hsl(var(--signal))}
+.pipe .t{font-weight:700;font-size:14.5px}
+.pipe .d{font-size:13px;color:hsl(var(--ink-2));margin-top:2px;grid-column:2}
+
+/* Fussnavigation */
+.fussnav{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:12px;border-top:1px solid hsl(var(--rule-strong));flex-wrap:wrap}
+.fussnav a{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:0;color:hsl(var(--ink-2))}
+.fussnav a:hover{color:hsl(var(--signal))}
+.fussnav a .pf{color:hsl(var(--signal))}
+footer.seite{position:relative;z-index:1;border-top:1px solid hsl(var(--rule-strong));margin-top:0;background:hsl(var(--paper-2))}
+footer.seite .in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:22px;max-width:1280px;margin:0 auto;
+  font-size:12.5px;color:hsl(var(--ink-3));display:flex;flex-wrap:wrap;gap:6px 22px}
+/* ---- Zweite Ebene: Vertiefungen ---- */
+.schalter{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+@media (max-width:600px){.topbar{position:relative;top:auto}}
+h2.sec.vert{border-top-color:hsl(var(--azur)/.5);color:hsl(var(--azur))}
+details.tief{margin-top:14px;border:1px solid hsl(var(--azur)/.4);border-left:2px solid hsl(var(--azur));background:hsl(var(--azur-soft))}
+details.tief>summary{cursor:pointer;list-style:none;padding:9px 13px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--azur));display:flex;gap:10px;align-items:baseline}
+details.tief>summary::-webkit-details-marker{display:none}
+details.tief>summary::before{content:"+";font-size:13px;width:.9em;text-align:center;flex:0 0 auto}
+details.tief[open]>summary::before{content:"\2212"}
+details.tief[open]>summary{border-bottom:1px solid hsl(var(--azur)/.3)}
+details.tief>summary:hover{color:hsl(var(--ink))}
+details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-offset:-2px}
+.tiefinhalt{padding:13px}
+.tiefinhalt>*+*{margin-top:12px}
+.tiefinhalt p{font-size:15px;line-height:1.6}
+.tiefinhalt h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));font-weight:400}
+.tiefinhalt ul.liste{margin-top:0}
+.tiefinhalt ul.liste li{font-size:15px}
+.formel{font-family:var(--mono);font-size:14px;line-height:1.55;background:hsl(var(--panel));border:1px solid hsl(var(--rule));padding:10px 12px;overflow-x:auto;white-space:pre}
+.formel b{color:hsl(var(--signal));font-weight:400}
+.formel .wo{display:block;font-size:11.5px;color:hsl(var(--ink-3));white-space:pre-wrap;margin-top:7px;line-height:1.5}
+@media (prefers-reduced-motion:reduce){#ascii{display:none}}
+</style>
+
+<pre id="ascii" aria-hidden="true"></pre>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="kicker">PU-Projekt · Neue Kantonsschule Aarau</span>
+      <strong>Wie ein LLM funktioniert</strong>
+    </div>
+    <div class="schalter">
+    <div class="modes stufen" role="group" aria-label="Detailtiefe">
+      <button type="button" data-stufe="einfach" aria-pressed="true">Einfach</button>
+      <button type="button" data-stufe="tief" aria-pressed="false">Mit Details</button>
+    </div>
+    <div class="modes" role="group" aria-label="Darstellung">
+      <button type="button" data-mode="auto" aria-pressed="true">System</button>
+      <button type="button" data-mode="hell" aria-pressed="false">Hell</button>
+      <button type="button" data-mode="dunkel" aria-pressed="false">Dunkel</button>
+      <button type="button" data-mode="mono" aria-pressed="false">S/W</button>
+    </div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="toc" aria-label="Kapitel">
+    <div class="toc-in">
+      <h2>Kapitel</h2>
+      <ol id="tocliste">
+        <li><a href="#start"><span class="num">00</span><span>Überblick</span></a></li>
+        <li><a href="#kap01"><span class="num">01</span><span>Shannons Spiel</span></a></li>
+        <li><a href="#kap02"><span class="num">02</span><span>Vor den LLMs</span></a></li>
+        <li><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
+        <li><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
+        <li><a href="#kap05"><span class="num">05</span><span>Tokenisierung</span></a></li>
+        <li><a href="#kap06"><span class="num">06</span><span>Embeddings</span></a></li>
+        <li><a href="#kap07"><span class="num">07</span><span>Der Transformer</span></a></li>
+        <li><a href="#kap08"><span class="num">08</span><span>Die Ausgabe</span></a></li>
+        <li><a href="#kap09"><span class="num">09</span><span>Token für Token</span></a></li>
+        <li><a href="#kap10"><span class="num">10</span><span>Der echte Request</span></a></li>
+        <li><a href="#kap11"><span class="num">11</span><span>Wie trainiert wird</span></a></li>
+        <li><a href="#kap12"><span class="num">12</span><span>Werkzeuge</span></a></li>
+        <li><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main">
+
+  <section class="kap" id="start">
+    <p class="eyebrow">Projektunterricht · 14 Kapitel</p>
+    <h1>Von Shannons Ratespiel zum fertigen Satz</h1>
+    <p class="lead">Ein grosses Sprachmodell macht genau eine Sache: Es schätzt, welches Zeichenstück als nächstes kommt. Alles, was danach wie ein Gespräch aussieht, entsteht daraus. Diese Seite geht die Verarbeitungskette Schritt für Schritt durch — ein Kapitel pro Schritt, jeweils mit einem Versuch, den man selbst bedienen kann.</p>
+
+    <div class="merk">
+      <div class="lbl">Worum es geht</div>
+      <p>Die Kapitel 01 bis 03 klären die Frage, die das Ganze überhaupt lösbar macht. Die Kapitel 04 bis 09 sind die Maschine selbst, in der Reihenfolge, in der Text durch sie läuft. Die Kapitel 10 bis 12 zeigen, was um das Modell herum gebaut ist — und erklären das meiste von dem, was man für Magie hält. Kapitel 13 zieht die Linie zurück bis 1956.</p>
+    </div>
+
+    <h2 class="sec">Zwei Ebenen</h2>
+    <p>Jedes Kapitel lässt sich auf zwei Arten lesen. Der normale Text braucht kein Vorwissen: keine Formeln, keine Programmierkenntnisse. Wer genauer wissen will, was passiert, klappt am Kapitelende die blauen Kästen mit der Aufschrift <span class="mono">Vertiefung</span> auf. Dort stehen die Mathematik, die genauen Verfahren und die Stellen, an denen die einfache Erklärung etwas weglässt.</p>
+    <p>Oben rechts schaltet <span class="mono">Mit Details</span> alle Vertiefungen auf einmal auf, <span class="mono">Einfach</span> klappt sie wieder zu. Einzelne Kästen lassen sich auch für sich öffnen.</p>
+    <details class="tief">
+      <summary>Vertiefung · So sieht eine aus</summary>
+      <div class="tiefinhalt">
+        <p>Hier steht, was im Haupttext vereinfacht wurde. Formeln stehen in eigenen Kästen, darunter jeweils, wofür jedes Zeichen steht:</p>
+        <div class="formel">p(nächstes Token | bisheriger Text)<span class="wo">Lies: «die Wahrscheinlichkeit des nächsten Tokens, gegeben den bisherigen Text». Der senkrechte Strich heisst «unter der Bedingung». Das ist die eine Grösse, um die sich die ganze Seite dreht.</span></div>
+        <p>Vorausgesetzt wird höchstens Mathematik aus dem Gymnasium: Summen, Potenzen, Logarithmus, Vektoren. Ableitungen kommen in Kapitel 04 vor und sind dort erklärt.</p>
+      </div>
+    </details>
+
+    <h2 class="sec">Die Kette</h2>
+    <p>Jeder Pfeil in dieser Liste ist ein eigenes Kapitel. Wer nur den Durchlauf sehen will, liest 05 bis 09 — das ist der Weg eines einzigen Tokens durch das Modell.</p>
+
+    <div class="pipe wide">
+      <a href="#kap01"><span class="n">01</span><span class="t">Shannons Spiel, 1950</span><span class="d">Sprache ist statistisch vorhersagbar. Damit ist die Aufgabe definiert.</span></a>
+      <a href="#kap02"><span class="n">02</span><span class="t">Vor den LLMs</span><span class="d">Turing, ELIZA, PARRY, A.L.I.C.E., SmarterChild — alle nach Regeln, keiner mit Modell.</span></a>
+      <a href="#kap03"><span class="n">03</span><span class="t">Die Blackbox</span><span class="d">Eingabe, Verarbeitung, Ausgabe. Nur der Kasten in der Mitte wird ersetzt.</span></a>
+      <a href="#kap04"><span class="n">04</span><span class="t">Das Modell</span><span class="d">Ein Netz aus Gewichten. Buchstäblich eine Datei voller Zahlen.</span></a>
+      <a href="#kap05"><span class="n">05</span><span class="t">Tokenisierung</span><span class="d">Text wird in Stücke zerlegt und zu Zahlen. Byte Pair Encoding.</span></a>
+      <a href="#kap06"><span class="n">06</span><span class="t">Embeddings</span><span class="d">Jedes Token wird ein Vektor. Nähe im Raum heisst Nähe in der Bedeutung.</span></a>
+      <a href="#kap07"><span class="n">07</span><span class="t">Transformer</span><span class="d">Attention lässt jedes Token auf alle anderen schauen. Der Kern von 2017.</span></a>
+      <a href="#kap08"><span class="n">08</span><span class="t">Die Ausgabe</span><span class="d">Logits, Softmax, Temperature, Top-p. Eine Wahrscheinlichkeitsverteilung, kein Wort.</span></a>
+      <a href="#kap09"><span class="n">09</span><span class="t">Token für Token</span><span class="d">Anhängen und von vorn. Das Modell hat keinen Plan.</span></a>
+      <a href="#kap10"><span class="n">10</span><span class="t">Der echte Request</span><span class="d">System-Prompt plus kompletter Verlauf, bei jeder einzelnen Nachricht neu.</span></a>
+      <a href="#kap11"><span class="n">11</span><span class="t">Training</span><span class="d">Pretraining, Finetuning, RLHF. Drei Phasen, drei verschiedene Ziele.</span></a>
+      <a href="#kap12"><span class="n">12</span><span class="t">Werkzeuge</span><span class="d">Das Modell führt nichts aus. Es schreibt nur einen Funktionsaufruf hin.</span></a>
+      <a href="#kap13"><span class="n">13</span><span class="t">Alien Intelligence</span><span class="d">Dartmouth 1956 — und warum der Name vielleicht falsch gewählt war.</span></a>
+    </div>
+
+    <h2 class="sec">Grundlage</h2>
+    <p>Die Kapitelstruktur folgt dem Video <em>I Built an LLM From Scratch</em> von CJ (Syntax), 51 Minuten, in dem ein Sprachmodell von null auf in Python gebaut wird. Alle Jahreszahlen, Namen und Kennzahlen auf dieser Seite stammen aus diesem Video; ergänzende Angaben sind als <span class="mono">Hintergrund</span> gekennzeichnet.</p>
+    <p class="hinweis">Quelle: <a href="https://www.youtube.com/watch?v=YmLp8qe87A0" target="_blank" rel="noopener">youtube.com/watch?v=YmLp8qe87A0</a></p>
+
+    <div class="fussnav"><span></span><a href="#kap01"><span class="pf">→</span> 01 Shannons Spiel</a></div>
+  </section>
+
+  <section class="kap" id="kap01" hidden>
+    <p class="eyebrow">Kapitel 01 · Die Aufgabe</p>
+    <h1>Shannons Spiel, 1950</h1>
+    <p class="lead">Claude Shannon, der Begründer der Informationstheorie, setzte sich 1950 mit seiner Frau Betty hin und spielte ein Spiel. Er zeigte ihr einen Text, in dem der nächste Buchstabe verdeckt war, und sie musste raten — Buchstabe für Buchstabe. Er zählte mit, wie oft sie richtig lag.</p>
+
+    <p>Gemessen hat er damit nicht das Sprachgefühl seiner Frau. Er hat gemessen, <em>wie vorhersagbar geschriebene Sprache überhaupt ist</em>. Und die Antwort war: sehr. Nach «Der Hund bellt im Gar…» ist der nächste Buchstabe kein Zufall. Nach «Es war einmal ein kl…» auch nicht. Sprache hat Struktur, und diese Struktur ist statistisch — man kann sie zählen, ohne zu verstehen, wovon die Rede ist.</p>
+
+    <p>Damit war die Aufgabe definiert, an der die nächsten 75 Jahre gearbeitet wurde. Nicht «verstehe Sprache». Sondern: <strong>schätze, was als nächstes kommt.</strong> Genau diese eine Aufgabe löst ein grosses Sprachmodell. Es ist kein Gesprächspartner, kein Nachschlagewerk und keine Denkmaschine. Es ist ein Next-Token-Prädiktor — und dieselbe Sache, die Betty Shannon 1950 von Hand gemacht hat.</p>
+
+    <div class="merk">
+      <div class="lbl">Kernidee</div>
+      <p>Wenn Sprache vorhersagbar ist, lässt sie sich mit Statistik bearbeiten. Alles, was in den folgenden zwölf Kapiteln vorkommt, ist Technik, um diese Vorhersage besser zu machen — nie, um die Aufgabe zu wechseln.</p>
+    </div>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 01</span><span class="h">Rate den nächsten Buchstaben</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Du siehst den Anfang eines Satzes. Tippe den Buchstaben, der deiner Meinung nach folgt. Richtig oder falsch — der Buchstabe wird danach aufgedeckt und du ratest weiter. Leerzeichen zählt als Zeichen (Taste: Leertaste).</p>
+        <div class="aus" id="sh-text" style="font-size:14px;letter-spacing:.02em"></div>
+        <div class="steuer" style="margin-top:12px;margin-bottom:0">
+          <input type="text" id="sh-in" maxlength="1" size="2" autocomplete="off" aria-label="Nächster Buchstabe" style="width:46px;text-align:center;font-size:16px">
+          <button class="knopf" type="button" id="sh-skip">Aufdecken</button>
+          <button class="knopf sek" type="button" id="sh-neu">Neuer Satz</button>
+        </div>
+        <div class="daten" style="margin-top:14px">
+          <dl>
+            <div><dt>Versuche</dt><dd><b id="sh-n">0</b></dd></div>
+            <div><dt>Treffer</dt><dd><b id="sh-t">0</b></dd></div>
+            <div><dt>Quote</dt><dd><b id="sh-q">—</b></dd></div>
+            <div><dt>Zufall</dt><dd><b>3.7 %</b> bei 27 Zeichen</dd></div>
+          </dl>
+        </div>
+        <p class="hinweis">Wer über etwa 40 Prozent kommt, hat genau das gezeigt, worum es Shannon ging: Die Trefferquote liegt weit über dem Zufall, weil im Text Information steckt, die den nächsten Buchstaben einschränkt.</p>
+      </div>
+    </div>
+
+    <div class="daten">
+      <dl>
+        <div><dt>Jahr</dt><dd>1950</dd></div>
+        <div><dt>Personen</dt><dd>Claude Shannon mit Betty Shannon</dd></div>
+        <div><dt>Methode</dt><dd>Nächstes Zeichen verdecken, raten lassen, Trefferquote zählen</dd></div>
+        <div><dt>Ergebnis</dt><dd>Geschriebene Sprache ist stark vorhersagbar</dd></div>
+      </dl>
+    </div>
+    <p class="hinweis"><span class="mono">Hintergrund:</span> Shannon veröffentlichte die Auswertung 1951 als <em>Prediction and Entropy of Printed English</em>. Sein Schätzwert lag bei etwa 1 Bit Information pro Buchstabe — von den 4.7 Bit, die 27 gleich wahrscheinliche Zeichen theoretisch bräuchten.</p>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Entropie: Wie misst man Vorhersagbarkeit?</summary>
+      <div class="tiefinhalt">
+        <p>Shannon hat Information in <strong>Bit</strong> gemessen. Ein Ereignis, das mit Wahrscheinlichkeit p eintritt, liefert so viel Information:</p>
+        <div class="formel">I(x) = −log₂ p(x)<span class="wo">Ein Münzwurf (p = ½) liefert 1 Bit. Ein sicheres Ereignis (p = 1) liefert 0 Bit, weil man nichts Neues erfährt. Je unwahrscheinlicher, desto mehr Information.</span></div>
+        <p>Der Durchschnitt über alle möglichen Zeichen heisst <strong>Entropie</strong>:</p>
+        <div class="formel">H = −Σ p(x) · log₂ p(x)<span class="wo">Summe über alle Zeichen x des Alphabets. H ist die mittlere Information pro Zeichen.</span></div>
+        <h4>Rechenbeispiel</h4>
+        <p>Wären alle 27 Zeichen (26 Buchstaben und Leerzeichen) gleich wahrscheinlich, also p = 1/27, dann gilt H = log₂ 27 ≈ 4.75 Bit. Shannon kam für englischen Text auf etwa 1 Bit pro Zeichen. Rund drei Viertel jedes Zeichens sind also aus dem Zusammenhang vorhersagbar — das nennt man Redundanz.</p>
+        <h4>Die Brücke zu heutigen Modellen</h4>
+        <div class="formel">Perplexität = 2<sup>H</sup><span class="wo">Die «effektive Zahl der Möglichkeiten». Bei H = 1 Bit verhält sich jedes Zeichen so, als gäbe es nur 2 gleich wahrscheinliche Kandidaten statt 27.</span></div>
+        <p>Genau diese Zahl wird heute verwendet, um Sprachmodelle zu vergleichen: Je niedriger die Perplexität auf unbekanntem Text, desto besser sagt das Modell voraus. Shannons Spiel ist also nicht nur Vorgeschichte, sondern bis heute die Messlatte.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#start">← 00 Überblick</a><a href="#kap02"><span class="pf">→</span> 02 Vor den LLMs</a></div>
+  </section>
+
+  <section class="kap" id="kap02" hidden>
+    <p class="eyebrow">Kapitel 02 · Vorgeschichte</p>
+    <h1>Vor den LLMs: 50 Jahre Regeln</h1>
+    <p class="lead">Zwischen Shannons Spiel und dem ersten brauchbaren Sprachmodell liegen fünf Jahrzehnte Chatbots. Sie haben alle funktioniert, manche erstaunlich gut — und keiner von ihnen hatte ein Modell. Sie hatten Regeln, die Menschen von Hand hingeschrieben hatten.</p>
+
+    <h2 class="sec">Die Reihe</h2>
+    <div class="tabwrap wide">
+      <table>
+        <thead><tr><th class="num">Jahr</th><th>Was</th><th>Wer</th><th>Prinzip</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1950</td><td><strong>Imitation Game</strong></td><td>Alan Turing</td><td>Kein Programm, sondern die Frage: Kann ein Mensch im Gespräch Maschine und Mensch unterscheiden?</td></tr>
+          <tr><td class="num">1966</td><td><strong>ELIZA</strong></td><td>Joseph Weizenbaum, MIT</td><td>Mustererkennung. Spiegelt die Aussage als Frage zurück.</td></tr>
+          <tr><td class="num">1972</td><td><strong>PARRY</strong></td><td>Kenneth Colby</td><td>Simuliert einen paranoiden Patienten — mit Zustand und Stimmungswerten.</td></tr>
+          <tr><td class="num">1995</td><td><strong>A.L.I.C.E.</strong></td><td>Richard Wallace</td><td>Rund 41 000 von Hand geschriebene Muster.</td></tr>
+          <tr><td class="num">2001</td><td><strong>SmarterChild</strong></td><td>ActiveBuddy</td><td>Regeln plus Datenbankabfragen für Wetter, Kino, Börsenkurse.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="sec">Der Fall Weizenbaum</h2>
+    <p>ELIZA lief mit einem Skript namens DOCTOR, das einen Gesprächstherapeuten nachahmte. Das Programm war wenige hundert Zeilen lang und verstand kein einziges Wort. Es suchte Schlüsselwörter und drehte den Satz um: aus «Ich bin traurig» wurde «Warum bist du traurig?».</p>
+    <p>Weizenbaum erzählte später, dass seine eigene Sekretärin, die wusste, wie das Programm aufgebaut war, ihn aus dem Raum bat — damit sie sich ungestört mit ELIZA unterhalten könne. Das hat ihn nicht stolz gemacht, sondern erschreckt. Er wurde zu einem der scharfsten Kritiker der Branche.</p>
+
+    <div class="merk">
+      <div class="lbl">Warum das hierhin gehört</div>
+      <p>Alle diese Systeme lassen sich von aussen nicht von einem Modell unterscheiden. Sie zeigen damit: Ein Gespräch, das sich echt anfühlt, beweist über das Innenleben eines Programms gar nichts. Und sie zeigen, wo die Grenze liegt — Regeln muss jemand schreiben, und es gibt mehr Sätze als Regeln.</p>
+    </div>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 02</span><span class="h">ELIZA, nachgebaut</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Zwölf Regeln, kein Modell, kein Training. Schreib etwas über dich — und beobachte, wie weit das Umdrehen von Sätzen trägt, bis es kippt.</p>
+        <div class="aus" id="el-log" style="min-height:8em;max-height:17em;overflow-y:auto"></div>
+        <form class="steuer" id="el-form" style="margin-top:12px;margin-bottom:0">
+          <input type="text" id="el-in" placeholder="Ich bin heute müde …" autocomplete="off" aria-label="Nachricht an ELIZA" style="flex:1 1 220px;min-width:140px">
+          <button class="knopf" type="submit">Senden</button>
+          <button class="knopf sek" type="button" id="el-reset">Zurücksetzen</button>
+        </form>
+        <p class="hinweis" id="el-regel">Angewandte Regel: —</p>
+      </div>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Wie eine ELIZA-Regel aufgebaut ist</summary>
+      <div class="tiefinhalt">
+        <p>Jede Regel hat zwei Teile: ein <strong>Zerlegungsmuster</strong>, das den Satz in Stücke schneidet, und eine <strong>Vorlage</strong>, in die die Stücke wieder eingesetzt werden.</p>
+        <div class="formel">Muster:   * ich bin <b>(X)</b>
+Vorlage:  Seit wann bist du <b>(X)</b>?
+
+Eingabe:  Heute ich bin <b>müde von der Schule</b>
+Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Stern steht für «beliebiger Text». Im Versuch oben ist das als regulärer Ausdruck umgesetzt: /ich bin (.+)/ fängt alles nach «ich bin» in der Klammer.</span></div>
+        <p>Vor dem Einsetzen tauscht eine feste Tabelle die Pronomen: ich → du, mein → dein, mir → dir. Darum klingt die Antwort, als hätte das Programm die Perspektive gewechselt. Hat es nicht — es hat Wörter nach Tabelle ersetzt.</p>
+        <h4>Rangfolge</h4>
+        <p>Passen mehrere Regeln, gewinnt die mit dem höchsten Rang. Im Original hatte jedes Schlüsselwort eine Zahl; im Versuch entscheidet die Reihenfolge der Liste. Passt keine Regel, kommt eine Standardantwort wie «Erzähl weiter».</p>
+        <h4>Die eigentliche Grenze</h4>
+        <ul class="liste">
+          <li>Kein Gedächtnis: Was vor zwei Zügen gesagt wurde, spielt keine Rolle.</li>
+          <li>Keine Verallgemeinerung: «Ich bin müde» und «Ich fühle mich erschöpft» brauchen zwei getrennte Regeln, obwohl sie dasselbe meinen.</li>
+          <li>Unbegrenzt viele Sätze, endlich viele Regeln: Jede neue Situation muss jemand von Hand vorhersehen.</li>
+        </ul>
+        <p>Ein trainiertes Modell löst den zweiten Punkt, weil ähnliche Sätze ähnliche Vektoren bekommen (Kapitel 06). Den ersten Punkt löst es übrigens nicht — siehe Kapitel 10.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap01">← 01 Shannons Spiel</a><a href="#kap03"><span class="pf">→</span> 03 Die Blackbox</a></div>
+  </section>
+
+  <section class="kap" id="kap03" hidden>
+    <p class="eyebrow">Kapitel 03 · Das Grundmuster</p>
+    <h1>Die Blackbox</h1>
+    <p class="lead">Jedes System aus Kapitel 02 hat die gleiche Form: Text geht hinein, etwas passiert, Text kommt heraus. Diese Form ändert sich nie mehr. Was sich ändert, ist ausschliesslich der Inhalt des Kastens in der Mitte.</p>
+
+    <div class="aus wide" id="box-diagramm" style="overflow-x:auto;white-space:pre;font-size:12px"></div>
+
+    <p>Das ist keine Vereinfachung für den Unterricht, sondern tatsächlich die Architektur. Ein Programm, das mit einem Sprachmodell arbeitet, schickt eine Zeichenkette los und bekommt eine Zeichenkette zurück. Was dazwischen liegt — ELIZAs Regeltabelle oder ein Modell mit 120 Milliarden Gewichten — ist für den aufrufenden Code nicht zu unterscheiden.</p>
+
+    <p>Nützlich ist das aus zwei Gründen. Erstens erklärt es, warum man Modelle austauschen kann, ohne die Anwendung neu zu bauen. Zweitens zeigt es, wo in dieser Seite die eigentliche Arbeit steckt: Die Kapitel 04 bis 09 öffnen genau diesen Kasten, in der Reihenfolge, in der Text durch ihn hindurchläuft.</p>
+
+    <div class="merk">
+      <div class="lbl">Merksatz</div>
+      <p>Die Schnittstelle ist seit 1966 dieselbe. Nur die Maschinerie dahinter ist ausgetauscht worden — von handgeschriebenen Regeln zu trainierten Zahlen.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Das Modell als Funktion</summary>
+      <div class="tiefinhalt">
+        <p>Mathematisch ist ein Sprachmodell eine Funktion. Sie nimmt eine Folge von Token und gibt für jedes Token des Vokabulars eine Wahrscheinlichkeit zurück:</p>
+        <div class="formel">f : (x₁, x₂, …, xₙ)  ↦  ( p(v₁), p(v₂), …, p(v<sub>|V|</sub>) )<span class="wo">x₁ … xₙ sind die Token der Eingabe, v₁ … v|V| alle Token des Vokabulars V. Die Ausgabe ist eine Liste mit |V| Zahlen, die zusammen 1 ergeben.</span></div>
+        <p>Diese Funktion hat zwei Eigenschaften, die viel erklären:</p>
+        <ul class="liste">
+          <li><strong>Sie ist deterministisch.</strong> Gleiche Eingabe, gleiche Verteilung — jedes Mal. Der Zufall kommt erst danach, beim Ziehen (Kapitel 08).</li>
+          <li><strong>Sie hat keinen Zustand.</strong> Nach dem Aufruf bleibt nichts zurück. Es gibt keine Variable, in der sich das Modell etwas merkt.</li>
+        </ul>
+        <p>Alles, was nach Gedächtnis oder Handeln aussieht — der Chatverlauf, Werkzeuge, Dateien — ist Code, der diese Funktion wiederholt aufruft und ihre Eingabe zusammenstellt. Die Kapitel 10 und 12 zeigen genau diesen Code.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap02">← 02 Vor den LLMs</a><a href="#kap04"><span class="pf">→</span> 04 Was ein Modell ist</a></div>
+  </section>
+
+  <section class="kap" id="kap04" hidden>
+    <p class="eyebrow">Kapitel 04 · Das Modell</p>
+    <h1>Was ein Modell wirklich ist</h1>
+    <p class="lead">Ein Modell ist eine Datei. Darin stehen Zahlen — sehr viele Zahlen, sonst nichts. Diese Zahlen heissen Gewichte. Training heisst: diese Zahlen so lange nachjustieren, bis das Netz die Vorhersage aus Kapitel 01 gut hinbekommt. Es gibt in einem Modell keine Regeln, keine Sätze und keine Wissensdatenbank, die man aufschlagen könnte.</p>
+
+    <h2 class="sec">Vier Daten, die den Weg erklären</h2>
+    <div class="tabwrap wide">
+      <table>
+        <thead><tr><th class="num">Jahr</th><th>Wer</th><th>Was</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1943</td><td>Warren McCulloch, Walter Pitts</td><td>Erstes mathematisches Modell eines Neurons: Eingänge gewichten, summieren, ab einer Schwelle feuern.</td></tr>
+          <tr><td class="num">1958</td><td>Frank Rosenblatt</td><td>Das Perzeptron — ein Neuron, das aus Beispielen lernt, indem es seine Gewichte verändert.</td></tr>
+          <tr><td class="num">1969</td><td>Marvin Minsky, Seymour Papert</td><td>Beweis: Ein einschichtiges Perzeptron kann XOR nicht lernen. Die Forschungsgelder brechen weg.</td></tr>
+          <tr><td class="num">1986</td><td>Rumelhart, Hinton, Williams</td><td>Backpropagation wird breit nutzbar: Der Fehler wird durch mehrere Schichten zurückgerechnet. Damit ist XOR lösbar — und alles Folgende auch.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="sec">Warum XOR der Prüfstein ist</h2>
+    <p>XOR («entweder oder, aber nicht beides») ist die einfachste Aufgabe, die sich nicht mit einer geraden Linie lösen lässt. Ein einschichtiges Netz kann nur eine Linie durch die Daten legen — und für XOR gibt es keine solche Linie. Zwei Schichten können die Ebene krümmen, und damit geht es.</p>
+    <p>Genau das steckt in jedem grossen Modell, nur viel öfter gestapelt. Mehr Schichten heissen: komplexere Grenzen zwischen «so geht es weiter» und «so nicht».</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 04</span><span class="h">XOR: eine Schicht gegen zwei</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Beide Netze werden hier im Browser wirklich trainiert, mit Backpropagation und 5000 Epochen. Links das einschichtige Perzeptron, rechts ein Netz mit einer verborgenen Schicht aus vier Neuronen. Die Fläche zeigt, was das Netz für jeden Punkt der Ebene ausgibt.</p>
+        <div class="steuer" style="margin-top:12px">
+          <button class="knopf" type="button" id="xo-train">5000 Epochen trainieren</button>
+          <button class="knopf sek" type="button" id="xo-reset">Gewichte neu auslosen</button>
+        </div>
+        <div class="zweispalt">
+          <div>
+            <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-bottom:6px">Eine Schicht · 3 Gewichte</p>
+            <canvas id="xo-c1" width="260" height="260"></canvas>
+            <div class="aus" id="xo-o1" style="min-height:5.2em"></div>
+          </div>
+          <div>
+            <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-bottom:6px">Zwei Schichten · 17 Gewichte</p>
+            <canvas id="xo-c2" width="260" height="260"></canvas>
+            <div class="aus" id="xo-o2" style="min-height:5.2em"></div>
+          </div>
+        </div>
+        <p class="hinweis">Das einschichtige Netz landet bei allen vier Eingaben um 0.5 — es ist bestmöglich ratlos. Das zweischichtige trennt sauber. Die 17 Zahlen rechts sind das komplette «Modell»: Mehr steckt nicht drin.</p>
+      </div>
+    </div>
+
+    <div class="merk">
+      <div class="lbl">Grössenordnung</div>
+      <p>Das Netz rechts hat 17 Gewichte. Das kleine Transformer-Modell aus Kapitel 07 hat 52 000. GPT-OSS-120B hat 120 Milliarden — die Zahl steht im Namen. Es ist dieselbe Art von Datei, nur länger.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Ein Neuron und wie es lernt</summary>
+      <div class="tiefinhalt">
+        <h4>Was ein Neuron rechnet</h4>
+        <div class="formel">z = w₁·x₁ + w₂·x₂ + b
+a = σ(z) = 1 / (1 + e<sup>−z</sup>)<span class="wo">x₁, x₂: Eingaben · w₁, w₂: Gewichte · b: Bias (Verschiebung) · σ: Sigmoid-Funktion, presst jede Zahl in den Bereich 0 bis 1.</span></div>
+        <h4>Wie falsch es liegt</h4>
+        <div class="formel">L = (1/n) · Σ (a − y)²<span class="wo">Mittlerer quadratischer Fehler (MSE). a ist die Ausgabe des Netzes, y der richtige Wert, n die Zahl der Beispiele. Im Versuch ist n = 4. Diese Zahl steht unter den Ergebnissen als «Fehler (MSE)».</span></div>
+        <h4>Wie es besser wird: Gradientenabstieg</h4>
+        <p>Die Ableitung ∂L/∂w sagt, in welche Richtung der Fehler steigt, wenn man w ein wenig vergrössert. Man schiebt jedes Gewicht ein kleines Stück in die Gegenrichtung:</p>
+        <div class="formel">w  ←  w − η · ∂L/∂w<span class="wo">η (eta) ist die Lernrate. Im Versuch η = 0.5. Zu gross: das Netz springt über das Minimum hinweg. Zu klein: es lernt sehr langsam. Eine Epoche heisst: jedes Beispiel einmal durchgerechnet.</span></div>
+        <h4>Backpropagation ist die Kettenregel</h4>
+        <p>Bei zwei Schichten hängt der Fehler nur indirekt von den Gewichten der ersten Schicht ab. Die Kettenregel aus dem Mathematikunterricht rechnet das zurück:</p>
+        <div class="formel">∂L/∂w₁ = ∂L/∂a · ∂a/∂z₂ · ∂z₂/∂h · ∂h/∂z₁ · ∂z₁/∂w₁<span class="wo">Von hinten nach vorn: wie der Fehler von der Ausgabe abhängt, die Ausgabe von der zweiten Schicht, die zweite Schicht von der verborgenen h, h von der ersten Schicht. Für die Sigmoid gilt bequem σ′(z) = σ(z)·(1 − σ(z)).</span></div>
+      </div>
+    </details>
+    <details class="tief">
+      <summary>Beweis: Warum eine Schicht XOR nicht kann</summary>
+      <div class="tiefinhalt">
+        <p>Ein einzelnes Neuron gibt «1» aus, wenn w₁x₁ + w₂x₂ + b &gt; 0, sonst «0». Das ist eine Gerade, die die Ebene teilt. Angenommen, es gäbe Gewichte, die XOR richtig machen:</p>
+        <div class="formel">(0,0) → 0 :   b ≤ 0
+(0,1) → 1 :   w₂ + b &gt; 0     also  w₂ &gt; −b
+(1,0) → 1 :   w₁ + b &gt; 0     also  w₁ &gt; −b
+(1,1) → 0 :   w₁ + w₂ + b ≤ 0</div>
+        <p>Aus den mittleren zwei Zeilen folgt w₁ + w₂ + b &gt; −b − b + b = −b. Und weil b ≤ 0 ist, ist −b ≥ 0. Also ist w₁ + w₂ + b &gt; 0 — das widerspricht der letzten Zeile. Es gibt keine solchen Gewichte. ∎</p>
+        <p>Genau dieses Ergebnis veröffentlichten Minsky und Papert 1969. Mit einer verborgenen Schicht fällt der Beweis weg, weil das Netz dann nicht mehr eine Gerade, sondern mehrere kombinieren kann — im Bild rechts sieht man die beiden Grenzen des roten Bands.</p>
+        <h4>Gewichte zählen</h4>
+        <div class="formel">Eine Schicht:   2 Gewichte + 1 Bias                        =  3
+Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap03">← 03 Die Blackbox</a><a href="#kap05"><span class="pf">→</span> 05 Tokenisierung</a></div>
+  </section>
+
+  <section class="kap" id="kap05" hidden>
+    <p class="eyebrow">Kapitel 05 · Schritt 1 der Verarbeitung</p>
+    <h1>Tokenisierung</h1>
+    <p class="lead">Ein Netz rechnet mit Zahlen, nicht mit Buchstaben. Der erste Schritt ist deshalb immer: Text in Stücke zerlegen und jedem Stück eine Nummer geben. Diese Stücke heissen Token. Sie sind nicht Wörter und nicht Buchstaben, sondern etwas dazwischen — und zwar genau so, wie es die Statistik des Trainingstextes vorgibt.</p>
+
+    <h2 class="sec">Byte Pair Encoding</h2>
+    <p>Das Verfahren heisst Byte Pair Encoding, kurz BPE. Philip Gage beschrieb es 1994 als Kompressionsalgorithmus — es hatte mit Sprache zunächst gar nichts zu tun. Sennrich, Haddow und Birch holten es 2015 in die maschinelle Übersetzung, und seither tokenisieren praktisch alle Sprachmodelle so.</p>
+    <p>Der Algorithmus ist kurz:</p>
+    <ul class="liste">
+      <li>Text in Wörter zerlegen und zählen, wie oft jedes vorkommt.</li>
+      <li>Jedes Wort als Folge einzelner Zeichen schreiben.</li>
+      <li>Das häufigste benachbarte Zeichenpaar im ganzen Text suchen — gewichtet mit der Worthäufigkeit — und zu einem neuen Token verschmelzen.</li>
+      <li>Wiederholen, bis die vorher festgelegte Zahl von Verschmelzungen erreicht ist.</li>
+    </ul>
+    <p>Diese Zahl bestimmt die Grösse des Vokabulars. Bei «the cat sat on the mat» und drei Verschmelzungen entsteht zuerst <span class="mono">at</span> — es kommt in <em>cat</em>, <em>sat</em> und <em>mat</em> vor —, dann <span class="mono">th</span> und daraus <span class="mono">the</span>, weil das Wort zweimal auftaucht. Alles andere bleibt in Einzelzeichen liegen. Wie viele Token am Ende im Vokabular stehen, hängt davon ab, wie die Umsetzung Wortgrenzen behandelt; im Video sind es für dieses Beispiel sechs, im Versuch unten sieben. Wer viele Verschmelzungen zulässt, bekommt ein Vokabular, in dem die häufigen Wörter ganz und die seltenen in Teilen gespeichert sind.</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 05</span><span class="h">BPE auf eigenem Text</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Hier läuft das echte Verfahren: Worthäufigkeiten zählen, Paare gewichtet zählen, häufigstes Paar verschmelzen, wiederholen. Der Regler setzt die maximale Zahl der Verschmelzungen.</p>
+        <textarea id="bp-in" rows="3" spellcheck="false">die katze sass auf der matte, die matte lag auf der treppe</textarea>
+        <div class="steuer" style="margin-top:10px">
+          <label for="bp-merges">Verschmelzungen <input type="range" id="bp-merges" min="0" max="40" value="8" step="1"></label>
+          <span class="mono" id="bp-mval" style="min-width:2.5em">8</span>
+          <button class="knopf sek" type="button" id="bp-bsp">Beispiel aus dem Video</button>
+        </div>
+        <div class="daten" style="margin-top:4px">
+          <dl>
+            <div><dt>Vokabular</dt><dd><b id="bp-vok">—</b> Token</dd></div>
+            <div><dt>Text ergibt</dt><dd><b id="bp-anz">—</b> Token</dd></div>
+          </dl>
+        </div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Tokenisierter Text</p>
+        <div class="chips" id="bp-chips"></div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Verschmelzungen in der Reihenfolge</p>
+        <div class="aus" id="bp-merge" style="min-height:4em"></div>
+      </div>
+    </div>
+
+    <div class="merk">
+      <div class="lbl">Warum das praktisch wichtig ist</div>
+      <p>Token sind die Einheit, in der alles gemessen wird: Preis pro Anfrage, Länge des Kontextfensters, Geschwindigkeit. Deutsche Komposita und Fachbegriffe zerfallen in mehr Token als englische Alltagswörter — dieselbe Aussage kostet auf Deutsch oft mehr. Und weil das Modell Token sieht und keine Buchstaben, sind Aufgaben wie «zähle die R in Erdbeere» für es überraschend schwer.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>BPE genau: Paare zählen und gierig verschmelzen</summary>
+      <div class="tiefinhalt">
+        <p>In jedem Schritt wird für jedes benachbarte Paar (a, b) gezählt, wie oft es vorkommt — gewichtet mit der Häufigkeit des Wortes:</p>
+        <div class="formel">anzahl(a, b) = Σ<sub>w</sub> häufigkeit(w) · (Vorkommen von «ab» in w)<span class="wo">Summe über alle verschiedenen Wörter w des Trainingstextes. Bei «the cat sat on the mat» zählt das Paar (a, t) dreimal: je einmal in cat, sat und mat.</span></div>
+        <p>Das Paar mit der grössten Anzahl wird zu einem neuen Token. Das Verfahren ist <strong>gierig</strong>: Es nimmt immer das gerade beste Paar und schaut nie voraus. Das ergibt nicht unbedingt das kleinstmögliche Vokabular, ist aber schnell und funktioniert gut genug.</p>
+        <h4>Wie gross das Vokabular wird</h4>
+        <div class="formel">|V|  ≤  Zahl der Startzeichen + Zahl der Verschmelzungen<span class="wo">Jede Verschmelzung fügt höchstens ein Token hinzu. Kleiner kann es werden, wenn ein Startzeichen nach dem Verschmelzen nirgends mehr allein vorkommt.</span></div>
+        <p>Grosse Modelle haben ein Vokabular von etwa 50 000 bis 200 000 Token. Das ist ein Kompromiss: Ein grösseres Vokabular macht Texte kürzer (weniger Token), aber die Embedding-Tabelle und die Ausgabeschicht werden grösser, weil beide eine Zeile pro Token haben.</p>
+        <h4>Byte-Level-BPE</h4>
+        <p>Heutige Tokenizer starten nicht mit Buchstaben, sondern mit den 256 möglichen Bytes. Dadurch gibt es kein Zeichen, das der Tokenizer nicht kennt — jedes Emoji und jede Schrift lässt sich darstellen. Der Preis: Seltene Zeichen wie Umlaute bestehen in UTF-8 aus zwei Bytes und kosten manchmal zwei Token.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap04">← 04 Was ein Modell ist</a><a href="#kap06"><span class="pf">→</span> 06 Embeddings</a></div>
+  </section>
+
+  <section class="kap" id="kap06" hidden>
+    <p class="eyebrow">Kapitel 06 · Schritt 2 der Verarbeitung</p>
+    <h1>Embeddings</h1>
+    <p class="lead">Nach der Tokenisierung ist Text eine Liste von Nummern. Nummern allein tragen keine Bedeutung — Token 4711 ist nicht ähnlicher zu 4712 als zu 90 000. Deshalb wird jedes Token durch einen Vektor ersetzt: eine Liste von Zahlen, deren Lage im Raum die Bedeutung codiert. Wörter, die in ähnlichen Zusammenhängen vorkommen, landen nah beieinander.</p>
+
+    <h2 class="sec">Die Idee ist älter als die Technik</h2>
+    <p>Gottlob Frege formulierte 1884 den Gedanken, dass ein Ausdruck seine Bedeutung nicht isoliert hat, sondern im Satzzusammenhang. John Rupert Firth brachte es 1957 auf den Satz, der heute in jeder Einführung steht:</p>
+    <blockquote class="quote">You shall know a word by the company it keeps.<cite>J. R. Firth, 1957</cite></blockquote>
+    <p>Das ist gleichzeitig eine Trainingsvorschrift. Wenn Bedeutung im Umfeld steckt, kann man sie aus dem Umfeld lernen — ohne Wörterbuch, nur aus Text. Genau das macht word2vec, 2013 bei Google entstanden: Das Verfahren schiebt die Vektoren von Wörtern, die zusammen in einem Fenster auftreten, aufeinander zu und die von Wörtern, die nicht zusammen auftreten, auseinander. Nach genügend Durchläufen ist Bedeutung Geometrie.</p>
+
+    <h2 class="sec">Rechnen mit Bedeutung</h2>
+    <p>Das berühmte Ergebnis von word2vec ist eine Rechnung: <span class="mono">könig − mann + frau ≈ königin</span>. Man zieht die Richtung «männlich» ab, addiert «weiblich» und landet beim passenden Wort. Verglichen wird dabei nicht der Abstand, sondern der Winkel — die Kosinus-Ähnlichkeit. Zwei Vektoren, die in dieselbe Richtung zeigen, bedeuten Ähnliches, auch wenn einer länger ist.</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 06</span><span class="h">Vektorrechnung und Kosinus</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Die Tabelle unten hat zehn Dimensionen, die hier von Hand mit Bedeutung belegt sind (königlich, Person, männlich, weiblich, Tier, Ort, Land, jung, CH, FR) — nur damit man sehen kann, was passiert. Gerechnet wird echt: Vektoren addieren, subtrahieren, Kosinus zu allen anderen Wörtern bilden, sortieren.</p>
+        <div class="steuer" style="margin-top:12px">
+          <select id="em-a" aria-label="Wort A"></select>
+          <span class="mono">−</span>
+          <select id="em-b" aria-label="Wort B"></select>
+          <span class="mono">+</span>
+          <select id="em-c" aria-label="Wort C"></select>
+        </div>
+        <div class="steuer" style="margin-bottom:0">
+          <button class="knopf sek" type="button" data-em="koenig,mann,frau">könig − mann + frau</button>
+          <button class="knopf sek" type="button" data-em="paris,frankreich,schweiz">paris − frankreich + schweiz</button>
+          <button class="knopf sek" type="button" data-em="hund,katze,welpe">hund − katze + welpe</button>
+        </div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Nächste Wörter nach Kosinus-Ähnlichkeit</p>
+        <div class="bars" id="em-bars"></div>
+        <p class="hinweis">Die drei Eingabewörter sind aus der Rangliste ausgeschlossen — sonst gewinnt immer das Wort, von dem man ausgegangen ist.</p>
+      </div>
+    </div>
+
+    <div class="daten">
+      <dl>
+        <div><dt>1884</dt><dd>Frege: Bedeutung entsteht im Zusammenhang</dd></div>
+        <div><dt>1957</dt><dd>Firth: «by the company it keeps»</dd></div>
+        <div><dt>2013</dt><dd>word2vec, 300 Dimensionen</dd></div>
+        <div><dt>Heute</dt><dd>GPT-3-Grössenordnung: <b>12 288</b> Dimensionen</dd></div>
+      </dl>
+    </div>
+    <p class="hinweis">In einem echten Modell sind diese Dimensionen nicht benannt und nicht einzeln deutbar. Sie sind das Ergebnis von Training, nicht von Entwurf. Dass hier «männlich» in Spalte 3 steht, ist eine Lernhilfe — im Original wüsste niemand, was Spalte 3 bedeutet.</p>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Kosinus-Ähnlichkeit und wie word2vec lernt</summary>
+      <div class="tiefinhalt">
+        <h4>Die Formel aus dem Versuch</h4>
+        <div class="formel">cos θ = (a · b) / (‖a‖ · ‖b‖)
+
+      = Σ aᵢ·bᵢ / ( √(Σ aᵢ²) · √(Σ bᵢ²) )<span class="wo">a · b ist das Skalarprodukt, ‖a‖ die Länge des Vektors. Das Ergebnis liegt zwischen −1 und 1: 1 heisst gleiche Richtung, 0 heisst senkrecht (nichts gemeinsam), −1 entgegengesetzt.</span></div>
+        <p>Warum der Winkel und nicht der Abstand? Häufige Wörter bekommen im Training oft längere Vektoren. Die Länge sagt also eher etwas über die Häufigkeit als über die Bedeutung. Der Winkel ist von der Länge unabhängig.</p>
+        <h4>Das Trainingsziel von word2vec (Skip-Gram)</h4>
+        <p>Für jedes Wort im Text sollen die Wörter in seinem Fenster möglichst wahrscheinlich werden:</p>
+        <div class="formel">p(o | c) = exp(u<sub>o</sub> · v<sub>c</sub>) / Σ<sub>w</sub> exp(u<sub>w</sub> · v<sub>c</sub>)<span class="wo">c: das Wort in der Mitte · o: ein Wort im Fenster daneben · v und u: die beiden Vektoren, die jedes Wort bekommt. Die Summe unten läuft über das ganze Vokabular. Das ist dieselbe Softmax wie in Kapitel 08.</span></div>
+        <p>Das Training verschiebt die Vektoren so, dass diese Wahrscheinlichkeit für echte Nachbarn steigt. Weil die Summe über das ganze Vokabular sehr teuer ist, nimmt man in der Praxis nur ein paar zufällige «Nicht-Nachbarn» und schiebt deren Vektoren weg — das heisst <em>negative sampling</em> und ist das «push/pull» aus dem Video.</p>
+        <h4>Warum die Rechnung mit «könig» funktioniert</h4>
+        <p>Wenn das Paar mann/frau im Text in denselben Mustern vorkommt wie könig/königin, dann zeigt der Unterschied der beiden Vektoren in dieselbe Richtung. Diese Richtung kann man abziehen und addieren. In echten Modellen gilt das nur ungefähr: «≈» ist ernst gemeint.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap05">← 05 Tokenisierung</a><a href="#kap07"><span class="pf">→</span> 07 Der Transformer</a></div>
+  </section>
+
+  <section class="kap" id="kap07" hidden>
+    <p class="eyebrow">Kapitel 07 · Schritt 3 der Verarbeitung</p>
+    <h1>Der Transformer</h1>
+    <p class="lead">Embeddings geben jedem Token eine feste Bedeutung. Das reicht nicht: «Bank» am Fluss und «Bank» mit Geldautomat sind dasselbe Token mit demselben Startvektor. Erst der Zusammenhang entscheidet. Der Transformer ist der Mechanismus, der diesen Zusammenhang einrechnet — und 2017 alles Vorherige ersetzt hat.</p>
+
+    <h2 class="sec">Das Problem davor</h2>
+    <p>Die Netze vor 2017 — RNNs und LSTMs — lasen Text Wort für Wort und trugen einen einzigen verborgenen Zustand mit sich. Dieser eine Zustand musste alles behalten, was vorher im Satz stand. Bei langen Sätzen war das der Flaschenhals: Was am Anfang stand, war am Ende verwaschen. 2014 schlugen Bahdanau, Cho und Bengio vor, das Netz statt auf einen Zustand direkt auf alle vorherigen Positionen schauen zu lassen — Attention. 2017 zog das Paper <em>Attention Is All You Need</em> den Rest weg und behielt nur noch diesen Mechanismus.</p>
+
+    <div class="daten">
+      <dl>
+        <div><dt>Titel</dt><dd>Attention Is All You Need, 2017</dd></div>
+        <div><dt>Umfang</dt><dd>15 Seiten</dd></div>
+        <div><dt>Autoren</dt><dd>8, ausdrücklich als gleichwertig gekennzeichnet</dd></div>
+        <div><dt>Zitate</dt><dd>über <b>100 000</b></dd></div>
+      </dl>
+    </div>
+
+    <h2 class="sec">Query, Key, Value</h2>
+    <p>Jedes Token bekommt drei Vektoren, jeder entsteht durch Multiplikation mit einer eigenen gelernten Gewichtsmatrix:</p>
+    <ul class="liste">
+      <li><strong>Query</strong> — wonach dieses Token sucht.</li>
+      <li><strong>Key</strong> — was dieses Token anzubieten hat.</li>
+      <li><strong>Value</strong> — welche Information es weitergibt, wenn es ausgewählt wird.</li>
+    </ul>
+    <p>Jede Query wird mit allen Keys verrechnet. Hohe Übereinstimmung heisst hohe Aufmerksamkeit. Aus diesen Werten macht Softmax Gewichte, die zusammen 1 ergeben, und damit wird eine gewichtete Mischung der Values gebildet. Ergebnis: Der Vektor von «Bank» ist nach diesem Schritt nicht mehr derselbe wie am Anfang — er ist in Richtung «Fluss» oder in Richtung «Geld» gezogen worden, je nach Satz.</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 07</span><span class="h">Attention entscheidet, welche «Bank»</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Vereinfachter Einzelkopf: Die Query von <span class="mono">bank</span> wird mit allen Keys des Satzes multipliziert, durch die Wurzel der Dimension geteilt und per Softmax zu Gewichten gemacht. Daraus entsteht der gemischte Vektor — und der wird mit drei möglichen Lesarten verglichen.</p>
+        <div class="steuer" style="margin-top:12px;margin-bottom:0">
+          <button class="knopf" type="button" data-att="0">wir sassen an der bank am fluss</button>
+          <button class="knopf sek" type="button" data-att="1">sie ging zur bank und holte geld</button>
+        </div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Aufmerksamkeit von «bank» auf die übrigen Token</p>
+        <div class="bars" id="at-bars"></div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Gemischter Vektor, verglichen mit drei Lesarten</p>
+        <div class="bars" id="at-les"></div>
+        <div class="aus" id="at-erg" style="min-height:2.4em"></div>
+      </div>
+    </div>
+
+    <h2 class="sec">Mehrere Köpfe, mehrere Schichten</h2>
+    <p>Dieser Vorgang läuft nicht einmal, sondern parallel in mehreren Köpfen — Multi-Head Attention. Jeder Kopf hat eigene Gewichtsmatrizen und achtet dadurch auf etwas anderes: einer auf grammatische Bezüge, einer auf Satzzeichen, einer auf weit entfernte Wiederaufnahmen. Diese Aufteilung schreibt niemand vor. Sie entsteht im Training von selbst.</p>
+    <p>Nach der Attention folgt in jedem Block ein kleines vorwärtsgerichtetes Netz, das das Ergebnis weiterverarbeitet. Dann beginnt der nächste Block von vorn, mit eigenen Gewichten. Gestapelt ergibt sich eine Arbeitsteilung: Die unteren Schichten behandeln eher Form und Grammatik, die mittleren Bedeutung, die oberen längere Zusammenhänge.</p>
+
+    <div class="merk">
+      <div class="lbl">Das Modell aus dem Video, in Zahlen</div>
+      <p>6 Schichten, Embedding-Grösse 32, Kontextlänge 32 Token, trainiert auf 30 Kindergeschichten, rund 1,5 Stunden auf einer normalen CPU. Ergebnis: <strong>52 000 Parameter</strong> — 52 000 Zahlen, die im Training verstellt wurden. Zum Vergleich steht die Grösse bei GPT-OSS-120B direkt im Namen: 120 Milliarden.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Die Attention-Formel</summary>
+      <div class="tiefinhalt">
+        <p>Alle Token eines Satzes werden als Zeilen einer Matrix X geschrieben. Drei gelernte Matrizen machen daraus Queries, Keys und Values:</p>
+        <div class="formel">Q = X·W<sub>Q</sub>     K = X·W<sub>K</sub>     V = X·W<sub>V</sub>
+
+Attention(Q, K, V) = softmax( Q·Kᵀ / √d<sub>k</sub> ) · V<span class="wo">Q·Kᵀ ergibt eine Tabelle: Zeile i, Spalte j = wie gut Query i zu Key j passt. Softmax macht jede Zeile zu Gewichten, die 1 ergeben. Die Multiplikation mit V mischt dann die Values mit diesen Gewichten. d_k ist die Länge eines Key-Vektors.</span></div>
+        <h4>Warum teilt man durch die Wurzel?</h4>
+        <p>Ein Skalarprodukt aus d<sub>k</sub> Summanden wird im Mittel grösser, je länger die Vektoren sind — seine Streuung wächst proportional zu d<sub>k</sub>. Ohne Teilen würde die Softmax extrem spitz: ein Token bekäme fast alles, die anderen fast nichts, und das Training käme kaum voran. Die Division mit √d<sub>k</sub> hält die Werte in einem brauchbaren Bereich. Im Versuch ist d = 6.</p>
+        <h4>Nicht in die Zukunft schauen</h4>
+        <p>Beim Training kennt das Modell den ganzen Satz. Damit es nicht schummelt, werden vor der Softmax alle Felder rechts der Diagonale auf −∞ gesetzt. Position i sieht dadurch nur die Positionen 1 bis i. Das heisst <em>kausale Maske</em>.</p>
+        <h4>Was der Versuch vereinfacht</h4>
+        <ul class="liste">
+          <li>Er hat nur eine Query (die von «bank») statt einer pro Token.</li>
+          <li>Die Vektoren sind von Hand gesetzt, nicht gelernt, und Keys und Values sind einfach die Embeddings.</li>
+          <li>Die Werte werden zusätzlich mit 6 multipliziert, damit der Unterschied sichtbar wird — wie eine kleinere Temperature.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="tief">
+      <summary>Ein ganzer Block, Kosten und Parameter</summary>
+      <div class="tiefinhalt">
+        <h4>Aufbau eines Transformer-Blocks</h4>
+        <div class="formel">h  =  x + MultiHead(LayerNorm(x))
+y  =  h + FFN(LayerNorm(h))<span class="wo">Das «x +» heisst Restverbindung: Das Ergebnis wird zum Eingang addiert statt ihn zu ersetzen. So können Informationen auch an Schichten vorbei fliessen, und tiefe Netze bleiben trainierbar. LayerNorm bringt die Zahlen auf eine einheitliche Grössenordnung.</span></div>
+        <p><strong>Multi-Head:</strong> Statt einer Attention mit Vektoren der Länge d laufen h kleinere mit Länge d/h nebeneinander. Ihre Ergebnisse werden aneinandergehängt und mit einer weiteren Matrix W<sub>O</sub> verrechnet.</p>
+        <p><strong>Position:</strong> Attention selbst kennt keine Reihenfolge — «Hund beisst Mann» und «Mann beisst Hund» sähen gleich aus. Deshalb wird zu jedem Embedding ein Positionsvektor addiert.</p>
+        <h4>Warum lange Texte teuer sind</h4>
+        <p>Die Tabelle Q·Kᵀ hat für n Token n × n Felder. Doppelt so viel Text heisst viermal so viel Rechenarbeit in diesem Schritt. Das ist der Grund, warum Kontextfenster begrenzt sind (Kapitel 10).</p>
+        <h4>Parameter zählen</h4>
+        <div class="formel">pro Block:  4 · d²          (W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, W<sub>O</sub>)
+          + 2 · d · d<sub>ff</sub>      (vorwärtsgerichtetes Netz)
+
+d = 32, d<sub>ff</sub> = 4·d = 128:   4096 + 8192 = 12 288 pro Block</div>
+        <p>Sechs solche Blöcke wären schon 73 728 Parameter — mehr als die 52 000 aus dem Video. Das Modell dort muss also Teile schlanker bauen, zum Beispiel ein schmaleres vorwärtsgerichtetes Netz. Gerade daran sieht man: «6 Schichten, Embedding 32» legt ein Modell noch nicht fest. Die Parameterzahl hängt an solchen Entscheidungen.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap06">← 06 Embeddings</a><a href="#kap08"><span class="pf">→</span> 08 Die Ausgabe</a></div>
+  </section>
+
+  <section class="kap" id="kap08" hidden>
+    <p class="eyebrow">Kapitel 08 · Schritt 4 der Verarbeitung</p>
+    <h1>Die Ausgabe ist kein Wort</h1>
+    <p class="lead">Am Ende aller Schichten gibt das Modell keinen Text aus, sondern für <em>jedes</em> Token des Vokabulars eine Zahl. Diese rohen Werte heissen Logits. Erst zwei weitere Rechenschritte machen daraus ein einzelnes Token — und erst dort entscheidet sich, ob die Antwort nüchtern oder ausgefallen klingt.</p>
+
+    <h2 class="sec">Softmax</h2>
+    <p>Logits sind unskalierte Punktzahlen; sie können negativ sein und summieren sich zu nichts Bestimmtem. Softmax rechnet sie in Wahrscheinlichkeiten um: Jeder Wert wird exponenziert und durch die Summe aller exponenzierten Werte geteilt. Danach liegt jeder Wert zwischen 0 und 1 und alle zusammen ergeben genau 1. Die Reihenfolge bleibt dabei erhalten — der höchste Logit bleibt der wahrscheinlichste Kandidat.</p>
+
+    <h2 class="sec">Temperature und Top-p</h2>
+    <p>Das Modell nimmt nicht einfach den wahrscheinlichsten Kandidaten. Es zieht eine Stichprobe, und zwei Parameter steuern, wie.</p>
+    <ul class="liste">
+      <li><strong>Temperature</strong> teilt die Logits vor dem Softmax. Ein kleiner Wert spreizt die Verteilung auseinander — die Ausgabe wird vorhersehbar, bei 0 immer dasselbe. Ein Wert um 1 lässt sie, wie sie ist. Ein hoher Wert wie 1.5 drückt sie flach, die Ausgabe wird kreativer und manchmal unzusammenhängend.</li>
+      <li><strong>Top-p</strong> ist eine Abschneidegrenze. Die Kandidaten werden nach Wahrscheinlichkeit sortiert und von oben aufsummiert, bis der eingestellte Anteil erreicht ist. Nur aus diesem Teil wird gezogen, der lange Schwanz unwahrscheinlicher Token fällt weg.</li>
+    </ul>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 08</span><span class="h">Logits, Softmax, Stichprobe</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Die Logits links sind für diesen Satzanfang festgelegt. Beide Regler rechnen live: Die Balken zeigen die Wahrscheinlichkeit nach Softmax, graue Balken sind durch Top-p ausgeschlossen.</p>
+        <p class="mono" style="margin-top:14px">Es war einmal ein <span style="color:hsl(var(--signal))">▮</span></p>
+        <div class="steuer" style="margin-top:12px;margin-bottom:0">
+          <label for="sm-temp">Temperature <input type="range" id="sm-temp" min="0.1" max="2" step="0.05" value="1"></label>
+          <span class="mono" id="sm-tval" style="min-width:3em">1.00</span>
+          <label for="sm-topp">Top-p <input type="range" id="sm-topp" min="0.1" max="1" step="0.01" value="1"></label>
+          <span class="mono" id="sm-pval" style="min-width:3em">1.00</span>
+        </div>
+        <div class="bars" id="sm-bars"></div>
+        <div class="steuer" style="margin-top:14px;margin-bottom:0">
+          <button class="knopf" type="button" id="sm-zieh">10-mal ziehen</button>
+          <span class="mono" id="sm-zug" style="font-size:12px"></span>
+        </div>
+        <p class="hinweis">Bei Temperature 0.1 fällt die Ziehung praktisch immer gleich aus. Bei 2.0 kommen auch die hinteren Kandidaten durch — das ist kein Fehler, sondern genau der eingestellte Zufall.</p>
+      </div>
+    </div>
+
+    <div class="merk">
+      <div class="lbl">Folge daraus</div>
+      <p>Dieselbe Frage zweimal gestellt ergibt zwei verschiedene Antworten, obwohl das Modell unverändert ist. Der Unterschied liegt nicht im Wissen, sondern in der Ziehung. Wer reproduzierbare Antworten braucht, setzt die Temperature auf 0.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Softmax mit Temperature, Top-p als Formel</summary>
+      <div class="tiefinhalt">
+        <h4>Softmax mit Temperature T</h4>
+        <div class="formel">pᵢ = exp(zᵢ / T) / Σⱼ exp(zⱼ / T)<span class="wo">zᵢ: Logit des Tokens i · T: Temperature · Summe unten über alle Token j des Vokabulars. Die Exponentialfunktion macht jede Zahl positiv, das Teilen durch die Summe sorgt dafür, dass alles zusammen 1 ergibt.</span></div>
+        <h4>Rechenbeispiel mit zwei Kandidaten</h4>
+        <p>Logits 4.2 («kleines») und 3.6 («kleiner»), Differenz 0.6. Bei zwei Kandidaten hängt das Verhältnis nur von der Differenz ab:</p>
+        <div class="formel">p(kleines) / p(kleiner) = exp(0.6 / T)
+
+T = 1.0  →  exp(0.6) ≈ 1.82
+T = 0.5  →  exp(1.2) ≈ 3.32
+T = 2.0  →  exp(0.3) ≈ 1.35</div>
+        <p>Kleine Temperature vergrössert also den Abstand, grosse verkleinert ihn. Im Grenzfall T → 0 bekommt das beste Token alles (immer dieselbe Antwort), bei T → ∞ werden alle Token gleich wahrscheinlich.</p>
+        <h4>Ein Rechentrick</h4>
+        <p>exp(50) hat schon 22 Stellen; bei echten Logits würde der Computer überlaufen. Weil Softmax sich nicht ändert, wenn man von allen Logits dieselbe Zahl abzieht, rechnet man mit zᵢ − max(z). Der Code dieser Seite macht genau das.</p>
+        <h4>Top-p (Nucleus Sampling)</h4>
+        <div class="formel">S = kleinste Menge der wahrscheinlichsten Token mit  Σ<sub>i∈S</sub> pᵢ ≥ p<span class="wo">Token nach Wahrscheinlichkeit absteigend sortieren, von oben aufsummieren, bei Erreichen von p aufhören. Gezogen wird nur aus S, die Wahrscheinlichkeiten darin werden wieder auf 1 hochgerechnet.</span></div>
+        <p>Der Vorteil gegenüber einer festen Anzahl (Top-k): Ist das Modell sehr sicher, besteht S aus ein, zwei Token. Ist es unsicher, nimmt S automatisch mehr Kandidaten auf.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap07">← 07 Der Transformer</a><a href="#kap09"><span class="pf">→</span> 09 Token für Token</a></div>
+  </section>
+
+  <section class="kap" id="kap09" hidden>
+    <p class="eyebrow">Kapitel 09 · Der Durchlauf</p>
+    <h1>Token für Token, ohne Plan</h1>
+    <p class="lead">Alles bisher — Tokenisierung, Embeddings, Transformer-Schichten, Softmax, Stichprobe — ergibt <strong>ein</strong> Token. Für das zweite wird dieses Token an die Eingabe angehängt und der komplette Vorgang läuft von vorn. Das ist die ganze Textgenerierung: eine Schleife.</p>
+
+    <p>Daraus folgt etwas, das die meisten Fehlvorstellungen über Sprachmodelle aufräumt: Das Modell hat keinen Plan. Es entwirft nicht erst eine Antwort und schreibt sie dann aus. Bei jedem einzelnen Token sieht es nur den bisherigen Text und schätzt das nächste Stück. Dass am Ende ein zusammenhängender Absatz dasteht, ist nicht Absicht, sondern Folge davon, dass jeder Schritt gut genug geraten war.</p>
+
+    <p>Das erklärt auch das Tippgefühl beim Chatten: Man sieht nicht eine Antwort erscheinen, die schon fertig war, sondern die Schleife bei der Arbeit.</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 09</span><span class="h">Die Schleife von Hand</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Hier läuft ein echtes, wenn auch winziges Sprachmodell: ein Trigramm-Modell, in deinem Browser auf 30 kurzen Kindergeschichten trainiert, mit Rückfall auf Bigramm und Einzelwortverteilung. Kein Transformer — aber dieselbe Schleife, dieselbe Softmax-Ziehung, dieselben Regler wie in Kapitel 08.</p>
+        <div class="steuer" style="margin-top:12px">
+          <label for="ng-temp">Temperature <input type="range" id="ng-temp" min="0.1" max="2" step="0.05" value="0.9"></label>
+          <span class="mono" id="ng-tval" style="min-width:3em">0.90</span>
+          <label for="ng-topp">Top-p <input type="range" id="ng-topp" min="0.2" max="1" step="0.01" value="0.95"></label>
+          <span class="mono" id="ng-pval" style="min-width:3em">0.95</span>
+        </div>
+        <div class="steuer" style="margin-bottom:0">
+          <button class="knopf" type="button" id="ng-schritt">Ein Token</button>
+          <button class="knopf sek" type="button" id="ng-zehn">Zehn Token</button>
+          <button class="knopf sek" type="button" id="ng-neu">Von vorn</button>
+        </div>
+        <div class="aus" id="ng-text" style="min-height:4.6em;font-size:14px"></div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Verteilung für das nächste Token</p>
+        <div class="bars" id="ng-bars"></div>
+        <p class="hinweis">Beachte, wie sich die Verteilung nach jedem Token komplett ändert — und wie der Text bei hoher Temperature auseinanderfällt, obwohl das Modell dasselbe geblieben ist.</p>
+      </div>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Die Kettenregel der Wahrscheinlichkeit</summary>
+      <div class="tiefinhalt">
+        <p>Die Wahrscheinlichkeit eines ganzen Textes lässt sich exakt in Einzelschritte zerlegen:</p>
+        <div class="formel">p(x₁, x₂, …, xₙ) = p(x₁) · p(x₂ | x₁) · p(x₃ | x₁, x₂) · … · p(xₙ | x₁ … xₙ₋₁)
+                 = ∏ p(xₜ | x&lt;ₜ)<span class="wo">∏ ist das Produktzeichen (wie Σ, aber Malnehmen). x&lt;ₜ heisst «alle Token vor Position t». Das ist keine Näherung, sondern eine mathematische Identität — jedes Sprachmodell beruht darauf.</span></div>
+        <p>Ein Sprachmodell lernt nur den einen Faktor p(xₜ | x&lt;ₜ) und wendet ihn immer wieder an. Das ist die Schleife aus diesem Kapitel.</p>
+        <h4>Was der Versuch anders macht</h4>
+        <div class="formel">Trigramm:  p(xₜ | x&lt;ₜ)  ≈  p(xₜ | xₜ₋₂, xₜ₋₁)  =  anzahl(xₜ₋₂, xₜ₋₁, xₜ) / anzahl(xₜ₋₂, xₜ₋₁)<span class="wo">Das Trigramm-Modell schaut nur auf die letzten zwei Wörter und zählt, was in den Geschichten danach kam. Ein Transformer schaut auf das ganze Kontextfenster und zählt nicht, sondern rechnet mit gelernten Gewichten.</span></div>
+        <p>Darum verliert der Versuch nach ein paar Wörtern den Faden: Er weiss buchstäblich nicht, wie der Satz angefangen hat.</p>
+        <h4>Gierig ist nicht optimal</h4>
+        <p>Nimmt man bei jedem Schritt das wahrscheinlichste Token, erhält man nicht automatisch die wahrscheinlichste Gesamtfolge. Ein schwächerer erster Schritt kann zu einer viel besseren Fortsetzung führen. Verfahren wie <em>Beam Search</em> verfolgen deshalb mehrere Varianten gleichzeitig. Für Chatmodelle nimmt man trotzdem meist Sampling, weil es natürlicher klingt.</p>
+        <h4>Warum das Modell nicht zurückrudert</h4>
+        <p>Ist ein Token einmal gezogen, gehört es zur Eingabe aller folgenden Schritte. Es gibt keinen Mechanismus, um es zu löschen. Deshalb kann ein Modell sich in eine falsche Aussage «hineinschreiben» und sie danach folgerichtig begründen.</p>
+        <h4>KV-Cache</h4>
+        <p>Naiv würde man für jedes neue Token alles von vorn rechnen. In der Praxis speichert man die Keys und Values der schon bearbeiteten Token und rechnet pro Schritt nur die neue Position. Darum erscheint die erste Silbe einer Antwort langsamer als die folgenden.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap08">← 08 Die Ausgabe</a><a href="#kap10"><span class="pf">→</span> 10 Der echte Request</a></div>
+  </section>
+
+  <section class="kap" id="kap10" hidden>
+    <p class="eyebrow">Kapitel 10 · Drumherum</p>
+    <h1>Was bei einer Anfrage wirklich verschickt wird</h1>
+    <p class="lead">Ein Chat sieht aus wie ein Gespräch, in dem sich das Gegenüber an vorher Gesagtes erinnert. Technisch ist es das Gegenteil. Das Modell hat zwischen zwei Anfragen null Gedächtnis. Was wie Erinnerung wirkt, ist der komplette Verlauf, der bei jeder Nachricht erneut mitgeschickt wird.</p>
+
+    <p>Eine einzelne Anfrage besteht immer aus drei Teilen: dem System-Prompt, in dem die Rolle und die Regeln stehen; dem ganzen bisherigen Gesprächsverlauf, Zug für Zug; und zuletzt der neuen Nachricht. Diese drei Teile werden aneinandergehängt, tokenisiert und als ein einziger Text durch das Modell geschickt. Danach ist alles vergessen.</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 10</span><span class="h">Der Verlauf wächst mit</span></div>
+      <div class="korpus">
+        <p class="hinweis" style="margin-top:0">Schreib ein paar Nachrichten. Rechts steht nicht der Chat, sondern das, was pro Anfrage tatsächlich über die Leitung geht.</p>
+        <form class="steuer" id="rq-form" style="margin-top:12px">
+          <input type="text" id="rq-in" placeholder="Nächste Nachricht …" autocomplete="off" aria-label="Nachricht" style="flex:1 1 220px;min-width:140px">
+          <button class="knopf" type="submit">Senden</button>
+          <button class="knopf sek" type="button" id="rq-reset">Neuer Chat</button>
+        </form>
+        <div class="daten" style="margin-top:4px">
+          <dl>
+            <div><dt>Züge</dt><dd><b id="rq-zuege">0</b></dd></div>
+            <div><dt>Payload</dt><dd>ca. <b id="rq-tok">0</b> Token</dd></div>
+          </dl>
+        </div>
+        <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Inhalt der nächsten Anfrage</p>
+        <div class="aus" id="rq-aus" style="min-height:7em;max-height:20em;overflow-y:auto"></div>
+      </div>
+    </div>
+
+    <h2 class="sec">Das Kontextfenster</h2>
+    <p>Dieses ganze Paket muss in das Kontextfenster passen — die maximale Zahl von Token, die das Modell in einem Durchgang verarbeiten kann. Bei dem kleinen Modell aus Kapitel 07 sind es 32 Token, bei heutigen Modellen Hunderttausende. Ist das Fenster voll, muss die Anwendung etwas wegwerfen oder zusammenfassen: Dann «vergisst» der Chat den Anfang — und zwar nicht, weil das Modell müde wird, sondern weil der Anfang nicht mehr mitgeschickt wird.</p>
+    <p>Und selbst innerhalb des Fensters wird es nicht beliebig besser. Je länger der mitgeschickte Text, desto eher verliert das Modell Angaben, die mittendrin stehen. Ein kurzer, präziser Kontext ist in der Praxis besser als ein langer vollständiger.</p>
+
+    <div class="merk">
+      <div class="lbl">Für den Schulalltag</div>
+      <p>Weil der Verlauf bei jeder Nachricht neu mitgeht, wächst der Preis einer Unterhaltung nicht linear, sondern wird pro Zug teurer. Und alles, was einmal im Verlauf steht, geht bei jeder weiteren Nachricht wieder mit — auch die Angaben, die man nachträglich lieber nicht geschickt hätte.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Warum lange Chats überproportional teuer werden</summary>
+      <div class="tiefinhalt">
+        <p>Angenommen, jeder Zug (eine Frage und eine Antwort) hat m Token. Beim k-ten Zug wird der ganze bisherige Verlauf mitgeschickt, also etwa k · m Token. Über ein Gespräch mit K Zügen summiert sich das:</p>
+        <div class="formel">m + 2m + 3m + … + K·m  =  m · K·(K+1)/2  ≈  m · K² / 2<span class="wo">Die Summenformel von Gauss. Ein doppelt so langes Gespräch verarbeitet etwa viermal so viele Token.</span></div>
+        <h4>Rechenbeispiel</h4>
+        <p>Mit m = 200 Token pro Zug: 10 Züge ergeben 200 · 55 = 11 000 verarbeitete Token. 20 Züge ergeben 200 · 210 = 42 000 — fast das Vierfache. Dazu kommt bei jedem Aufruf noch der System-Prompt.</p>
+        <h4>Was Anwendungen dagegen tun</h4>
+        <ul class="liste">
+          <li><strong>Zusammenfassen:</strong> Ältere Züge werden durch eine kurze Zusammenfassung ersetzt. Dabei geht Detail verloren.</li>
+          <li><strong>Abschneiden:</strong> Die ältesten Nachrichten fallen weg, sobald das Fenster voll ist.</li>
+          <li><strong>Prefix-Caching:</strong> Weil der Anfang jeder Anfrage gleich bleibt (System-Prompt, alte Züge), kann der Anbieter die Rechnung für diesen Teil zwischenspeichern.</li>
+        </ul>
+        <h4>Verloren in der Mitte</h4>
+        <p>Untersuchungen haben gezeigt, dass Modelle Angaben am Anfang und am Ende eines langen Kontexts gut finden, in der Mitte aber deutlich schlechter. Wer etwas Wichtiges mitgeben will, stellt es deshalb an den Anfang oder ans Ende.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap09">← 09 Token für Token</a><a href="#kap11"><span class="pf">→</span> 11 Wie trainiert wird</a></div>
+  </section>
+
+  <section class="kap" id="kap11" hidden>
+    <p class="eyebrow">Kapitel 11 · Drumherum</p>
+    <h1>Wie die Gewichte ihre Werte bekommen</h1>
+    <p class="lead">Kapitel 04 hat gesagt, dass ein Modell eine Datei voller Zahlen ist. Diese Zahlen entstehen in drei Phasen, die nacheinander laufen und völlig verschiedene Ziele haben. Fast alles, was man an einem Chatmodell für Charakter hält, kommt aus den letzten beiden.</p>
+
+    <div class="tabwrap wide">
+      <table>
+        <thead><tr><th>Phase</th><th>Material</th><th>Ziel</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Pretraining</strong></td>
+            <td>Common Crawl, Wikipedia, Reddit, GitHub, Bücher — darunter urheberrechtlich geschütztes Material</td>
+            <td>Das nächste Token vorhersagen. Nichts weiter. Hier entsteht die Sprachfähigkeit und der grösste Teil des Weltwissens.</td>
+          </tr>
+          <tr>
+            <td><strong>Finetuning</strong></td>
+            <td>Zusammengestellte Frage-Antwort-Paare</td>
+            <td>Die Form einer Antwort lernen. Aus einem Textfortsetzer wird etwas, das auf Fragen antwortet statt sie weiterzuschreiben.</td>
+          </tr>
+          <tr>
+            <td><strong>RLHF</strong></td>
+            <td>Menschliche Bewertungen: mehrere Antworten, in eine Rangfolge gebracht</td>
+            <td>Aus den Rangfolgen wird ein Bewertungsmodell trainiert, und das Modell wird in Richtung der bevorzugten Antworten gezogen. Hier entstehen Tonfall, Hilfsbereitschaft und Zurückweisungen.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="sec">Was daran strittig ist</h2>
+    <p>Das Pretraining-Material ist der Punkt, an dem die laufenden Rechtsstreitigkeiten ansetzen: Ob das Trainieren auf urheberrechtlich geschützten Texten erlaubt ist, ist in mehreren Ländern noch nicht abschliessend geklärt. Für das Verständnis der Technik ist relevant: Das Modell speichert diese Texte nicht als Texte. Es speichert Gewichte, die aus ihnen entstanden sind — weshalb es Inhalte meistens paraphrasiert und manchmal, bei sehr häufig vorkommenden Passagen, fast wörtlich reproduziert.</p>
+
+    <h2 class="sec">Warum Modelle sich sicher anhören, wenn sie falsch liegen</h2>
+    <p>Das Trainingsziel belohnt plausible Fortsetzungen, nicht wahre Aussagen. Eine erfundene Quellenangabe sieht statistisch genau so aus wie eine echte — gleiche Form, gleiche Satzstellung, gleicher Tonfall. Das Modell hat keinen Mechanismus, der zwischen beidem unterscheidet. RLHF verschiebt das etwas, hebt es aber nicht auf. Deshalb gilt die Regel, die auch in den NKSA-Richtlinien zum Umgang mit KI steht: Jede Faktenangabe und jede Quelle gegenprüfen, bevor sie in eine Arbeit kommt.</p>
+
+    <div class="merk">
+      <div class="lbl">Drei Phasen, drei Verwechslungen</div>
+      <p>«Das Modell lügt» unterstellt Absicht — gemeint ist Phase 1. «Das Modell ist höflich» ist Phase 3, nicht Charakter. «Das Modell kennt meine Schule» ist meist Kapitel 10: Es stand im Verlauf.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Was beim Training eigentlich minimiert wird</summary>
+      <div class="tiefinhalt">
+        <h4>Pretraining: Kreuzentropie</h4>
+        <div class="formel">L = − (1/N) · Σ log p(xₜ | x&lt;ₜ)<span class="wo">Für jede Stelle t im Trainingstext: Welche Wahrscheinlichkeit hat das Modell dem Token gegeben, das wirklich kam? Davon der Logarithmus, mit Minus davor, gemittelt über alle N Stellen. Hat das Modell dem richtigen Token 100 % gegeben, ist der Beitrag 0. Bei 1 % ist er log(100) ≈ 4.6.</span></div>
+        <p>Die Gewichte werden mit Gradientenabstieg aus Kapitel 04 so verstellt, dass L sinkt. Dieselbe Formel, nur mit Milliarden Gewichten und Billionen Token.</p>
+        <p>Und hier schliesst sich der Kreis zu Kapitel 01: exp(L) ist die Perplexität. Ein Modell trainieren heisst, Shannons Ratespiel immer besser zu spielen.</p>
+        <h4>Finetuning</h4>
+        <p>Derselbe Verlust, aber auf Frage-Antwort-Paaren und meist nur auf den Token der Antwort gemessen. Das Modell lernt dadurch nicht viel neues Wissen, sondern vor allem die Form: auf eine Frage folgt eine Antwort, nicht eine weitere Frage.</p>
+        <h4>RLHF: aus Ranglisten lernen</h4>
+        <p>Menschen vergleichen zwei Antworten y₁ und y₂. Daraus wird ein Bewertungsmodell r trainiert, so dass gilt:</p>
+        <div class="formel">p(y₁ besser als y₂) = σ( r(y₁) − r(y₂) )<span class="wo">σ ist die Sigmoid aus Kapitel 04. Je grösser der Abstand der Bewertungen, desto sicherer die Vorhersage, welche Antwort bevorzugt wird.</span></div>
+        <p>Dann wird das Sprachmodell so verstellt, dass seine Antworten hohe Bewertungen r bekommen. Damit es dabei nicht in eine Richtung abdriftet, die das Bewertungsmodell nur zufällig mag, gibt es eine Strafe, wenn es sich zu weit vom Modell nach dem Finetuning entfernt.</p>
+        <h4>Eine Folge daraus</h4>
+        <p>Das Bewertungsmodell belohnt, was Menschen gut finden. Menschen finden selbstsicher und ausführlich formulierte Antworten oft besser, auch wenn sie falsch sind. Dieses Muster kann RLHF unbeabsichtigt verstärken.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap10">← 10 Der echte Request</a><a href="#kap12"><span class="pf">→</span> 12 Werkzeuge</a></div>
+  </section>
+
+  <section class="kap" id="kap12" hidden>
+    <p class="eyebrow">Kapitel 12 · Drumherum</p>
+    <h1>Werkzeuge: Das Modell führt nichts aus</h1>
+    <p class="lead">Moderne Assistenten suchen im Netz, rechnen, lesen Dateien. Das klingt nach einer Fähigkeit des Modells. Es ist keine. Das Modell kann genau eine Sache, nämlich Token vorhersagen — und es nutzt sie, um einen Funktionsaufruf <em>hinzuschreiben</em>. Ausführen muss ihn das Programm darum herum.</p>
+
+    <p>Der Ablauf hat vier Schritte und ist immer derselbe. Entscheidend ist Schritt 3: Das Ergebnis des Werkzeugs wird als weiterer Eintrag an den Verlauf angehängt — genau den Verlauf aus Kapitel 10 — und das Modell wird erneut aufgerufen. Es «erfährt» das Ergebnis also auf demselben Weg wie jede andere Nachricht: als Text in seiner Eingabe.</p>
+
+    <div class="labor">
+      <div class="kopf"><span class="t">Versuch 12</span><span class="h">Der Werkzeug-Umlauf</span></div>
+      <div class="korpus">
+        <div class="steuer" style="margin-top:0">
+          <button class="knopf" type="button" id="tl-next">Nächster Schritt</button>
+          <button class="knopf sek" type="button" id="tl-reset">Von vorn</button>
+          <span class="mono" id="tl-pos" style="font-size:12px">Schritt 0 von 4</span>
+        </div>
+        <div class="aus" id="tl-aus" style="min-height:9em"></div>
+        <p class="hinweis" id="tl-note">Vier Schritte, in denen das Modell zweimal aufgerufen wird und nie etwas selbst tut.</p>
+      </div>
+    </div>
+
+    <div class="merk">
+      <div class="lbl">Konsequenz</div>
+      <p>«Die KI hat im Internet gesucht» ist falsch formuliert. Dein Programm hat gesucht, weil das Modell einen Suchauftrag hingeschrieben hat. Und: Was ein Werkzeug zurückgibt, landet ungeprüft im Verlauf. Wer den Inhalt der abgerufenen Seite kontrolliert, schreibt damit in die Eingabe des Modells — das ist der Grund, warum Werkzeugergebnisse als Daten und nie als Anweisungen behandelt werden müssen.</p>
+    </div>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Die Werkzeug-Schleife als Programm</summary>
+      <div class="tiefinhalt">
+        <p>Das Programm um das Modell herum (oft <em>Harness</em> genannt) ist im Kern eine Schleife:</p>
+        <div class="formel">verlauf = [system, nutzer_nachricht]
+wiederhole höchstens 10-mal:
+    antwort = modell(verlauf)
+    verlauf.anhängen(antwort)
+    wenn antwort keinen werkzeugaufruf enthält:
+        zeige antwort an, fertig
+    ergebnis = führe_aus(antwort.werkzeug, antwort.argumente)
+    verlauf.anhängen(ergebnis)</div>
+        <p>Drei Stellen darin sind wichtig:</p>
+        <ul class="liste">
+          <li><strong>Höchstens 10-mal:</strong> Ohne Obergrenze könnte das Modell endlos Werkzeuge aufrufen.</li>
+          <li><strong>führe_aus prüft zuerst:</strong> Das Modell kann Argumente erfinden oder ein Werkzeug verlangen, das es gar nicht gibt. Der Code muss das abfangen, bevor er irgendetwas tut.</li>
+          <li><strong>ergebnis landet im Verlauf:</strong> Was eine Webseite oder Datei zurückgibt, liest das Modell im nächsten Durchgang mit. Steht dort «Ignoriere alle bisherigen Anweisungen», ist das für das Modell zunächst einfach Text wie jeder andere. Diesen Angriff nennt man <em>Prompt Injection</em>.</li>
+        </ul>
+        <h4>Woher das Modell die Werkzeuge kennt</h4>
+        <p>Jedes Werkzeug wird mit einem JSON-Schema beschrieben — Name, Zweck, erlaubte Parameter mit Typ. Dieses Schema wird als Text in den Prompt geschrieben. Im Finetuning hat das Modell gelernt, bei passender Gelegenheit Token zu erzeugen, die genau diesem Schema entsprechen. Mehr steckt nicht dahinter.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap11">← 11 Wie trainiert wird</a><a href="#kap13"><span class="pf">→</span> 13 Alien Intelligence</a></div>
+  </section>
+
+  <section class="kap" id="kap13" hidden>
+    <p class="eyebrow">Kapitel 13 · Schluss</p>
+    <h1>Dartmouth 1956 und ein falscher Name</h1>
+    <p class="lead">Im Sommer 1956 versammelten vier Forscher — John McCarthy, Marvin Minsky, Nathaniel Rochester und Claude Shannon — rund zehn Leute im obersten Stock des Mathematikgebäudes des Dartmouth College in Hanover, New Hampshire. Sie hatten einen Zuschuss der Rockefeller Foundation über 7 500 Dollar und einen Plan für acht Wochen Arbeit.</p>
+
+    <div class="daten">
+      <dl>
+        <div><dt>Titel</dt><dd>Dartmouth Summer Research Project on Artificial Intelligence</dd></div>
+        <div><dt>Budget</dt><dd><b>7 500</b> Dollar</dd></div>
+        <div><dt>Dauer</dt><dd>geplante <b>8</b> Wochen</dd></div>
+        <div><dt>Bedeutung</dt><dd>Erste Verwendung des Begriffs «artificial intelligence»</dd></div>
+      </dl>
+    </div>
+
+    <p>Derselbe Claude Shannon, der sechs Jahre vorher mit seiner Frau Buchstaben geraten hatte, sass mit am Tisch, als das Feld seinen Namen bekam. Die Linie von Kapitel 01 bis hierher ist also kürzer, als sie aussieht.</p>
+
+    <h2 class="sec">Warum der Name vielleicht schlecht gewählt ist</h2>
+    <p>Diese Seite hat dreizehn Schritte beschrieben, in denen an keiner Stelle etwas vorkommt, das dem menschlichen Denken nachgebaut wäre. Token, Vektoren, Aufmerksamkeitsgewichte, eine Ziehung aus einer Verteilung — das ist kein vereinfachtes Gehirn, das ist etwas anderes. Der Autor des Videos zieht daraus den Schluss, dass <em>alien intelligence</em> treffender wäre als <em>artificial intelligence</em>: intelligent im Ergebnis, aber keine künstliche Nachbildung unserer Intelligenz, sondern eine eigene Art.</p>
+
+    <blockquote class="quote">Es ist intelligent, aber nicht unbedingt eine künstliche Version menschlicher Intelligenz. Es ist etwas völlig Anderes.<cite>CJ, «I Built an LLM From Scratch»</cite></blockquote>
+
+    <p>Man muss dieser Einschätzung nicht folgen — das ist eine offene Frage, und andere halten den Vergleich mit dem Gehirn für fruchtbar. Für die Arbeit mit diesen Systemen ist der nützliche Teil ohnehin der kleinere: Wer weiss, dass vorne Token hineingehen, in der Mitte Zahlen multipliziert werden und hinten gezogen wird, stellt andere Fragen und glaubt andere Antworten.</p>
+
+    <h2 class="sec">Die dreizehn Schritte in einem Satz</h2>
+    <p class="mono" style="font-size:13.5px;line-height:1.75;margin-top:12px">Sprache ist vorhersagbar <span style="color:hsl(var(--signal))">→</span> Chatbots taten das mit Regeln <span style="color:hsl(var(--signal))">→</span> die Form bleibt Eingabe/Ausgabe <span style="color:hsl(var(--signal))">→</span> im Kasten liegen Gewichte <span style="color:hsl(var(--signal))">→</span> Text wird zu Token <span style="color:hsl(var(--signal))">→</span> Token werden zu Vektoren <span style="color:hsl(var(--signal))">→</span> Attention mischt den Zusammenhang hinein <span style="color:hsl(var(--signal))">→</span> heraus kommt eine Verteilung <span style="color:hsl(var(--signal))">→</span> daraus wird gezogen und angehängt <span style="color:hsl(var(--signal))">→</span> der ganze Verlauf geht jedes Mal mit <span style="color:hsl(var(--signal))">→</span> die Gewichte kommen aus drei Trainingsphasen <span style="color:hsl(var(--signal))">→</span> Werkzeuge führt das Programm aus <span style="color:hsl(var(--signal))">→</span> und der Name stammt von 1956.</p>
+
+    <h2 class="sec">Quellen</h2>
+    <ul class="liste">
+      <li><strong>Hauptquelle:</strong> CJ (Syntax), <em>I Built an LLM From Scratch</em>, 51 Min. — <a href="https://www.youtube.com/watch?v=YmLp8qe87A0" target="_blank" rel="noopener">youtube.com/watch?v=YmLp8qe87A0</a>. Kapitelstruktur, Jahreszahlen, Namen und Kennzahlen dieser Seite folgen diesem Video.</li>
+      <li>C. E. Shannon, <em>Prediction and Entropy of Printed English</em>, 1951.</li>
+      <li>A. M. Turing, <em>Computing Machinery and Intelligence</em>, 1950.</li>
+      <li>J. Weizenbaum, <em>ELIZA — A Computer Program For the Study of Natural Language Communication</em>, 1966.</li>
+      <li>P. Gage, <em>A New Algorithm for Data Compression</em>, 1994; R. Sennrich, B. Haddow, A. Birch, <em>Neural Machine Translation of Rare Words with Subword Units</em>, 2015.</li>
+      <li>T. Mikolov u. a., word2vec, 2013.</li>
+      <li>D. Bahdanau, K. Cho, Y. Bengio, <em>Neural Machine Translation by Jointly Learning to Align and Translate</em>, 2014.</li>
+      <li>A. Vaswani u. a., <em>Attention Is All You Need</em>, 2017.</li>
+      <li>Neue Kantonsschule Aarau, <em>Richtlinien zum Umgang mit KI</em> (NKSA), für die Hinweise zur Quellenprüfung in Kapitel 11.</li>
+    </ul>
+
+
+    <h2 class="sec vert">Vertiefung</h2>
+    <details class="tief">
+      <summary>Versteht ein Sprachmodell, was es schreibt?</summary>
+      <div class="tiefinhalt">
+        <p>Diese Frage ist offen, und beide Seiten haben ernstzunehmende Argumente. Für eine Diskussion im Unterricht sind die zwei bekanntesten Positionen:</p>
+        <ul class="liste">
+          <li><strong>Nein, es rechnet nur Statistik.</strong> John Searle beschrieb 1980 das Gedankenexperiment des «chinesischen Zimmers»: Jemand ohne Chinesischkenntnisse beantwortet chinesische Fragen, indem er Regeln aus einem Buch befolgt. Von aussen sieht das wie Verstehen aus, innen gibt es keines. Kritikerinnen von Sprachmodellen nennen sie in diesem Sinn «stochastische Papageien».</li>
+          <li><strong>Vielleicht doch, auf eine andere Art.</strong> Um Text über Physik, Recht und Programmierung gut vorherzusagen, muss ein Modell intern Strukturen aufbauen, die diese Gebiete abbilden. Forschende haben in Modellen messbare innere Darstellungen gefunden, etwa für Positionen auf einem Spielbrett, das nie direkt beschrieben wurde. Ob man das «Verstehen» nennt, ist dann eine Frage der Definition.</li>
+        </ul>
+        <p>CJs Vorschlag «alien intelligence» umgeht diese Frage: Er misst das Modell nicht am Menschen. Eine Konsequenz davon ist praktisch. Wer ein Modell für ein verkleinertes Gehirn hält, erwartet menschliche Fehler. Es macht aber andere — es verrechnet sich bei einfachen Zahlen und löst zugleich schwierige Aufgaben, es erfindet Quellen mit derselben Sicherheit, mit der es echte nennt.</p>
+      </div>
+    </details>
+    <div class="fussnav"><a href="#kap12">← 12 Werkzeuge</a><a href="#start"><span class="pf">→</span> 00 Überblick</a></div>
+  </section>
+
+  </main>
+</div>
+
+<footer class="seite">
+  <div class="in">
+    <span>PU-Projekt «Wie KI funktioniert» · Neue Kantonsschule Aarau</span>
+    <span>14 Kapitel, 9 Versuche</span>
+    <span>Alle Versuche rechnen im Browser, ohne Server</span>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ============================ 0 · Werkzeuge ============================ */
+var W = document.getElementById.bind(document);
+function tok(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function hsl(n,a){ return "hsl(" + tok(n) + (a==null?"":" / "+a) + ")"; }
+function sichern(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function holen(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function softmax(xs,temp){
+  var t = Math.max(0.01, temp==null?1:temp), i, m=-Infinity, s=0, e=[];
+  for(i=0;i<xs.length;i++){ var v=xs[i]/t; if(v>m) m=v; }
+  for(i=0;i<xs.length;i++){ var q=Math.exp(xs[i]/t-m); e.push(q); s+=q; }
+  for(i=0;i<e.length;i++) e[i]/=s;
+  return e;
+}
+function kosinus(a,b){
+  var p=0,na=0,nb=0;
+  for(var i=0;i<a.length;i++){ p+=a[i]*b[i]; na+=a[i]*a[i]; nb+=b[i]*b[i]; }
+  if(na===0||nb===0) return 0;
+  return p/(Math.sqrt(na)*Math.sqrt(nb));
+}
+/* Balkenliste: [{name, wert, aus}] -> in Container */
+function balken(cont, zeilen, fmt){
+  cont.textContent="";
+  var max=0; zeilen.forEach(function(z){ if(z.wert>max) max=z.wert; });
+  if(max<=0) max=1;
+  zeilen.forEach(function(z){
+    var d=document.createElement("div"); d.className="bar"+(z.aus?" aus-p":"");
+    var a=document.createElement("span"); a.className="tk"; a.textContent=z.name;
+    var b=document.createElement("span"); b.className="tr";
+    var i=document.createElement("i"); i.style.width=Math.max(1.5,(z.wert/max)*100)+"%";
+    b.appendChild(i);
+    var c=document.createElement("span"); c.className="vl"; c.textContent=(fmt?fmt(z.wert):z.wert.toFixed(3));
+    d.appendChild(a); d.appendChild(b); d.appendChild(c); cont.appendChild(d);
+  });
+}
+function pct(v){ return (v*100).toFixed(1)+" %"; }
+
+/* ============================ 1 · Darstellungsmodus ============================ */
+(function(){
+  var btns = Array.prototype.slice.call(document.querySelectorAll(".modes button"));
+  var R = document.documentElement;
+  function setz(m, speichern){
+    R.classList.remove("m-hell","m-dunkel","m-mono");
+    if(m==="hell") R.classList.add("m-hell");
+    if(m==="dunkel") R.classList.add("m-dunkel");
+    if(m==="mono") R.classList.add("m-mono");
+    btns.forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.mode===m ? "true":"false"); });
+    if(speichern) sichern("pu-llm-modus", m);
+    window.dispatchEvent(new CustomEvent("modus"));
+  }
+  btns.forEach(function(b){ b.addEventListener("click", function(){ setz(b.dataset.mode, true); }); });
+  setz(holen("pu-llm-modus") || "auto", false);
+})();
+
+/* ============================ 1b · Zwei Ebenen ============================ */
+(function(){
+  var btns = Array.prototype.slice.call(document.querySelectorAll(".stufen button"));
+  var kaesten = Array.prototype.slice.call(document.querySelectorAll("details.tief"));
+  function setz(st, speichern){
+    kaesten.forEach(function(d){ d.open = (st === "tief"); });
+    btns.forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.stufe === st ? "true" : "false"); });
+    if(speichern) sichern("pu-llm-stufe", st);
+  }
+  btns.forEach(function(b){ b.addEventListener("click", function(){ setz(b.dataset.stufe, true); }); });
+  setz(holen("pu-llm-stufe") === "tief" ? "tief" : "einfach", false);
+})();
+
+/* ============================ 2 · ASCII-Hintergrund ============================ */
+(function(){
+  var el = W("ascii");
+  if(!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var ZEICHEN = [" "," ",".",".",":","-","=","+","*","#"];
+  var cw = 7.2, ch = 12.6, cols = 0, rows = 0, mx = -999, my = -999, t = 0, letzt = 0;
+  var probe = document.createElement("span");
+  probe.style.cssText = "position:absolute;visibility:hidden;font-family:"+getComputedStyle(el).fontFamily+";font-size:12px;white-space:pre";
+  probe.textContent = "0000000000";
+  document.body.appendChild(probe);
+  function mass(){
+    var r = probe.getBoundingClientRect();
+    if(r.width>0) cw = r.width/10;
+    cols = Math.min(170, Math.ceil(window.innerWidth/cw)+1);
+    rows = Math.min(90, Math.ceil(window.innerHeight/ch)+1);
+  }
+  mass(); window.addEventListener("resize", mass);
+  window.addEventListener("pointermove", function(e){ mx = e.clientX/cw; my = e.clientY/ch; });
+  window.addEventListener("pointerleave", function(){ mx = -999; my = -999; });
+  function rahmen(ts){
+    requestAnimationFrame(rahmen);
+    if(document.hidden || ts - letzt < 72) return;
+    letzt = ts; t += 0.055;
+    var out = "", y, x;
+    for(y=0;y<rows;y++){
+      for(x=0;x<cols;x++){
+        var v = Math.sin(x*0.085 + t) + Math.sin(y*0.16 + t*0.63) + Math.sin((x+y)*0.045 - t*0.4);
+        var dx = x-mx, dy = (y-my)*1.6, d = Math.sqrt(dx*dx+dy*dy);
+        if(d < 34) v += 2.4*Math.exp(-d/13)*Math.sin(d*0.55 - t*2.6);
+        var i = Math.round((v+3)/6*(ZEICHEN.length-1));
+        out += ZEICHEN[i<0?0:(i>=ZEICHEN.length?ZEICHEN.length-1:i)];
+      }
+      out += "\n";
+    }
+    el.textContent = out;
+  }
+  requestAnimationFrame(rahmen);
+})();
+
+/* ============================ 3 · Kapitelrouting ============================ */
+var AKTIV = "start";
+(function(){
+  var kap = Array.prototype.slice.call(document.querySelectorAll(".kap"));
+  var links = Array.prototype.slice.call(document.querySelectorAll("#tocliste a"));
+  var ids = kap.map(function(s){ return s.id; });
+  function zeig(id, scrollen){
+    if(ids.indexOf(id) < 0) id = "start";
+    AKTIV = id;
+    kap.forEach(function(s){ s.hidden = (s.id !== id); });
+    links.forEach(function(a){
+      if(a.getAttribute("href") === "#"+id) a.setAttribute("aria-current","page");
+      else a.removeAttribute("aria-current");
+    });
+    if(scrollen) window.scrollTo({top:0, behavior:"instant"});
+    window.dispatchEvent(new CustomEvent("kapitel", {detail:id}));
+  }
+  document.addEventListener("click", function(e){
+    var a = (e.target && e.target.closest) ? e.target.closest('a[href^="#"]') : null;
+    if(!a) return;
+    var ziel = (a.getAttribute("href") || "").slice(1);
+    if(ids.indexOf(ziel) < 0) return;
+    e.preventDefault();
+    zeig(ziel, true);
+    try{ if(location.hash !== "#"+ziel) history.replaceState(null, "", "#"+ziel); }catch(err){}
+  });
+  window.addEventListener("hashchange", function(){ zeig((location.hash||"#start").slice(1), true); });
+  zeig((location.hash||"#start").slice(1), false);
+})();
+
+/* ============================ 4 · Versuch 01 · Shannon ============================ */
+(function(){
+  var SAETZE = [
+    "der hund bellt im garten und wartet auf sein futter",
+    "am morgen fuhr der zug langsam aus dem bahnhof hinaus",
+    "die katze sass auf der matte und schlief ganz tief",
+    "niemand konnte sagen wer das licht im keller angelassen hatte",
+    "das wetter war so kalt dass der ganze see zugefroren war",
+    "sie nahm den brief aus der schublade und las ihn noch einmal"
+  ];
+  var txt = W("sh-text"), inp = W("sh-in"), nE = W("sh-n"), tE = W("sh-t"), qE = W("sh-q");
+  if(!txt) return;
+  var satz="", pos=0, n=0, treffer=0, marken=[];
+  function start(){
+    satz = SAETZE[Math.floor(Math.random()*SAETZE.length)];
+    pos = 12; marken = []; zeichne();
+  }
+  function zeichne(){
+    txt.textContent = "";
+    for(var i=0;i<pos;i++){
+      var s = document.createElement("span");
+      s.textContent = satz[i];
+      if(marken[i] === 1){ s.style.color = hsl("--moss"); s.style.fontWeight = "700"; }
+      if(marken[i] === 0){ s.style.color = hsl("--signal"); s.style.textDecoration = "underline"; }
+      txt.appendChild(s);
+    }
+    var cur = document.createElement("span");
+    cur.textContent = pos < satz.length ? " ▮" : "   • Satz fertig";
+    cur.style.color = hsl("--signal");
+    txt.appendChild(cur);
+    nE.textContent = n; tE.textContent = treffer;
+    qE.textContent = n ? ((treffer/n*100).toFixed(1)+" %") : "—";
+  }
+  function raten(c){
+    if(pos >= satz.length) return;
+    var soll = satz[pos];
+    n++; if(c === soll){ treffer++; marken[pos] = 1; } else { marken[pos] = 0; }
+    pos++; zeichne();
+  }
+  inp.addEventListener("input", function(){
+    var v = inp.value.toLowerCase();
+    inp.value = "";
+    if(!v) return;
+    if(/[a-z ]/.test(v[0])) raten(v[0]);
+  });
+  inp.addEventListener("keydown", function(e){ if(e.key === " "){ e.preventDefault(); raten(" "); } });
+  W("sh-skip").addEventListener("click", function(){ if(pos < satz.length){ marken[pos] = 2; pos++; zeichne(); } inp.focus(); });
+  W("sh-neu").addEventListener("click", function(){ start(); inp.focus(); });
+  window.addEventListener("modus", zeichne);
+  start();
+})();
+
+/* ============================ 5 · Versuch 02 · ELIZA ============================ */
+(function(){
+  var log = W("el-log"), form = W("el-form"), inp = W("el-in"), rg = W("el-regel");
+  if(!log) return;
+  function dreh(s){
+    return (" "+s+" ")
+      .replace(/ ich /gi," du ").replace(/ mich /gi," dich ").replace(/ mir /gi," dir ")
+      .replace(/ mein(e|er|em|en|es)? /gi," dein$1 ").replace(/ bin /gi," bist ")
+      .replace(/ habe /gi," hast ").replace(/ kann /gi," kannst ").replace(/ will /gi," willst ")
+      .trim().replace(/[.!?]+$/,"");
+  }
+  var REGELN = [
+    { n:"ich bin X",        re:/ich bin (.+)/i,              a:["Seit wann bist du $?","Wie ist es für dich, $ zu sein?","Und warum bist du $?"] },
+    { n:"ich habe X",       re:/ich habe (.+)/i,             a:["Was bedeutet es für dich, $ zu haben?","Seit wann hast du $?"] },
+    { n:"ich fühle X",      re:/ich f(ü|ue)hle (?:mich )?(.+)/i, a:["Erzähl mehr darüber, wie du dich fühlst.","Wann hast du dich zuletzt anders gefühlt?"], g:2 },
+    { n:"ich möchte X",     re:/ich (?:m(ö|oe)chte|will) (.+)/i, a:["Was würde sich ändern, wenn du $ könntest?","Warum gerade jetzt?"], g:2 },
+    { n:"ich kann nicht X", re:/ich kann (?:nicht|kein) (.+)/i, a:["Was hält dich davon ab?","Was wäre nötig, damit es doch geht?"] },
+    { n:"Familie",          re:/\b(mutter|vater|eltern|familie|bruder|schwester)\b/i, a:["Erzähl mir mehr über deine Familie.","Welche Rolle spielt das für dich?"] },
+    { n:"Schule",           re:/\b(schule|lehrer|lehrerin|pr(ü|ue)fung|note|noten|hausaufgab)/i, a:["Was ist für dich das Schwierigste daran?","Wie gehst du damit gewöhnlich um?"] },
+    { n:"Absolutwort",      re:/\b(immer|nie|jeder|niemand|alle)\b/i, a:["Immer? Fällt dir ein Gegenbeispiel ein?","Wirklich ausnahmslos?"] },
+    { n:"weil X",           re:/weil (.+)/i,                 a:["Ist das der wirkliche Grund?","Was spricht dagegen?"] },
+    { n:"Frage",            re:/\?\s*$/,                     a:["Warum ist dir diese Frage wichtig?","Was glaubst du selbst?"] },
+    { n:"über mich",        re:/\b(du|dich|dir|deine)\b/i,   a:["Lass uns bei dir bleiben, nicht bei mir.","Warum fragst du nach mir?"] },
+    { n:"ja/nein",          re:/^\s*(ja|nein|vielleicht)\s*[.!]?\s*$/i, a:["Kannst du das ausführen?","Und weiter?"] }
+  ];
+  var FALLBACK = ["Erzähl weiter.","Was fällt dir dazu noch ein?","Das klingt wichtig. Warum?","Wie meinst du das genau?"];
+  var zaehler = 0;
+  function antwort(text){
+    for(var i=0;i<REGELN.length;i++){
+      var r = REGELN[i], m = text.match(r.re);
+      if(m){
+        var v = r.a[(zaehler++) % r.a.length];
+        var rest = m[r.g || 1] ? dreh(m[r.g || 1]) : "";
+        return { t: v.replace("$", function(){ return rest; }), n: r.n };
+      }
+    }
+    return { t: FALLBACK[(zaehler++) % FALLBACK.length], n: "keine Regel passt — Standardantwort" };
+  }
+  function sag(wer, was){
+    log.textContent += (log.textContent ? "\n" : "") + wer + ": " + was;
+    log.scrollTop = log.scrollHeight;
+  }
+  function reset(){
+    log.textContent = ""; rg.textContent = "Angewandte Regel: —";
+    sag("ELIZA", "Guten Tag. Erzähl mir, was dich beschäftigt.");
+  }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = inp.value.trim(); if(!v) return;
+    inp.value = "";
+    sag("DU", v);
+    var a = antwort(v);
+    sag("ELIZA", a.t);
+    rg.textContent = "Angewandte Regel: " + a.n;
+  });
+  W("el-reset").addEventListener("click", reset);
+  reset();
+})();
+
+/* ============================ 6 · Kapitel 03 · Blackbox ============================ */
+(function(){
+  var el = W("box-diagramm"); if(!el) return;
+  el.textContent = [
+    "        EINGABE                   VERARBEITUNG                   AUSGABE",
+    "",
+    "   +----------------+         +----------------+         +----------------+",
+    "   |  Zeichenkette  |  ---->  |      ? ? ?     |  ---->  |  Zeichenkette  |",
+    "   |  \"Wie geht es  |         |                |         |  \"Mir geht es  |",
+    "   |   dir?\"        |         |                |         |   gut.\"        |",
+    "   +----------------+         +-------+--------+         +----------------+",
+    "                                      |",
+    "                 +--------------------+--------------------+",
+    "                 |                    |                    |",
+    "            1966 ELIZA         1995 A.L.I.C.E.          heute LLM",
+    "            ~200 Regeln         41 000 Muster        10^11 Gewichte"
+  ].join("\n");
+})();
+
+/* ============================ 7 · Versuch 04 · XOR ============================ */
+(function(){
+  var c1 = W("xo-c1"), c2 = W("xo-c2"), o1 = W("xo-o1"), o2 = W("xo-o2");
+  if(!c1) return;
+  var X = [[0,0],[0,1],[1,0],[1,1]], Y = [0,1,1,0];
+  var A = null, B = null;
+  function sig(z){ return 1/(1+Math.exp(-z)); }
+  function initA(){ return { w:[Math.random()*2-1, Math.random()*2-1], b:Math.random()*2-1 }; }
+  function initB(){
+    var H = 4, w1 = [], b1 = [], w2 = [], i, j;
+    for(i=0;i<H;i++){ w1.push([Math.random()*2-1, Math.random()*2-1]); b1.push(Math.random()*0.2-0.1); w2.push(Math.random()*2-1); }
+    return { H:H, w1:w1, b1:b1, w2:w2, b2:Math.random()*0.2-0.1 };
+  }
+  function fA(m,x){ return sig(m.w[0]*x[0] + m.w[1]*x[1] + m.b); }
+  function fB(m,x){
+    var h = [], i;
+    for(i=0;i<m.H;i++) h.push(Math.tanh(m.w1[i][0]*x[0] + m.w1[i][1]*x[1] + m.b1[i]));
+    var z = m.b2; for(i=0;i<m.H;i++) z += m.w2[i]*h[i];
+    return { y: sig(z), h: h };
+  }
+  function verlust(f){ var s=0,i; for(i=0;i<4;i++){ var d=f(X[i])-Y[i]; s+=d*d; } return s/4; }
+  function trainA(m, epochen, lr){
+    for(var e=0;e<epochen;e++) for(var i=0;i<4;i++){
+      var y = fA(m,X[i]), d = (y-Y[i])*y*(1-y);
+      m.w[0] -= lr*d*X[i][0]; m.w[1] -= lr*d*X[i][1]; m.b -= lr*d;
+    }
+  }
+  function trainB(m, epochen, lr){
+    for(var e=0;e<epochen;e++) for(var i=0;i<4;i++){
+      var r = fB(m,X[i]), y = r.y, h = r.h, d = (y-Y[i])*y*(1-y), k;
+      var dh = [];
+      for(k=0;k<m.H;k++) dh.push(d*m.w2[k]*(1-h[k]*h[k]));
+      for(k=0;k<m.H;k++) m.w2[k] -= lr*d*h[k];
+      m.b2 -= lr*d;
+      for(k=0;k<m.H;k++){
+        m.w1[k][0] -= lr*dh[k]*X[i][0];
+        m.w1[k][1] -= lr*dh[k]*X[i][1];
+        m.b1[k]    -= lr*dh[k];
+      }
+    }
+  }
+  var LO = -0.2, SPAN = 1.4;
+  function flaeche(cv, f){
+    var ctx = cv.getContext("2d"), S = cv.width, z = 5, i, j;
+    ctx.fillStyle = hsl("--paper"); ctx.fillRect(0,0,S,S);
+    for(i=0;i<S;i+=z) for(j=0;j<S;j+=z){
+      var x = [ LO + (i+z/2)/S*SPAN, LO + (1-(j+z/2)/S)*SPAN ], v = f(x), a = Math.abs(v-0.5)*1.5 + 0.06;
+      ctx.fillStyle = (v>0.5 ? hsl("--signal", a.toFixed(3)) : hsl("--azur", a.toFixed(3)));
+      ctx.fillRect(i, j, z, z);
+    }
+    ctx.strokeStyle = hsl("--rule-strong"); ctx.lineWidth = 1; ctx.strokeRect(0.5,0.5,S-1,S-1);
+    for(i=0;i<4;i++){
+      var px = (X[i][0]-LO)/SPAN*S, py = (1-(X[i][1]-LO)/SPAN)*S;
+      ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2);
+      ctx.fillStyle = Y[i] ? hsl("--rule-strong") : hsl("--paper");
+      ctx.fill(); ctx.strokeStyle = hsl("--rule-strong"); ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.fillStyle = Y[i] ? hsl("--paper") : hsl("--rule-strong");
+      ctx.font = "700 11px ui-monospace, monospace"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(String(Y[i]), px, py+0.5);
+    }
+  }
+  function text(el, f, v){
+    var z = [], i;
+    for(i=0;i<4;i++) z.push("[" + X[i][0] + "," + X[i][1] + "] → " + f(X[i]).toFixed(3) + "   soll " + Y[i]);
+    z.push("Fehler (MSE): " + v.toFixed(5));
+    el.textContent = z.join("\n");
+  }
+  function mal(){
+    if(!A) return;
+    flaeche(c1, function(x){ return fA(A,x); });
+    flaeche(c2, function(x){ return fB(B,x).y; });
+    text(o1, function(x){ return fA(A,x); }, verlust(function(x){ return fA(A,x); }));
+    text(o2, function(x){ return fB(B,x).y; }, verlust(function(x){ return fB(B,x).y; }));
+  }
+  function neu(){ A = initA(); B = initB(); mal(); }
+  W("xo-train").addEventListener("click", function(){
+    trainA(A, 5000, 0.5);
+    var versuch = 0;
+    trainB(B, 5000, 0.5);
+    while(verlust(function(x){ return fB(B,x).y; }) > 0.04 && versuch < 6){ B = initB(); trainB(B, 5000, 0.5); versuch++; }
+    mal();
+  });
+  W("xo-reset").addEventListener("click", neu);
+  window.addEventListener("modus", mal);
+  neu();
+})();
+
+/* ============================ 8 · Versuch 05 · BPE ============================ */
+(function(){
+  var ta = W("bp-in"), rg = W("bp-merges"), mv = W("bp-mval");
+  if(!ta) return;
+  var chips = W("bp-chips"), mlist = W("bp-merge"), vok = W("bp-vok"), anz = W("bp-anz");
+  var SEP = "\u0000";
+  function zerlege(t){ return t.toLowerCase().match(/[a-zäöüß0-9']+|[^\sa-zäöüß0-9']/g) || []; }
+  function trainiere(text, maxMerges){
+    var woerter = zerlege(text), haeuf = {}, splits = {}, w, i, j;
+    woerter.forEach(function(x){ haeuf[x] = (haeuf[x]||0)+1; });
+    for(w in haeuf) splits[w] = Array.from(w);
+    var merges = [];
+    for(i=0;i<maxMerges;i++){
+      var paare = {}, best = null, bv = 0;
+      for(w in splits){
+        var s = splits[w];
+        for(j=0;j<s.length-1;j++){
+          var k = s[j]+SEP+s[j+1];
+          paare[k] = (paare[k]||0) + haeuf[w];
+        }
+      }
+      for(var k2 in paare) if(paare[k2] > bv){ bv = paare[k2]; best = k2; }
+      if(best === null || bv < 2) break;
+      var teile = best.split(SEP), a = teile[0], b = teile[1];
+      merges.push({ a:a, b:b, n:bv });
+      for(w in splits){
+        var s2 = splits[w], o = [];
+        for(j=0;j<s2.length;j++){
+          if(j < s2.length-1 && s2[j] === a && s2[j+1] === b){ o.push(a+b); j++; }
+          else o.push(s2[j]);
+        }
+        splits[w] = o;
+      }
+    }
+    var v = {}, folge = [];
+    woerter.forEach(function(x){ splits[x].forEach(function(t){ v[t] = 1; folge.push(t); }); });
+    return { merges:merges, vokabular:Object.keys(v), folge:folge };
+  }
+  function lauf(){
+    var m = parseInt(rg.value,10);
+    mv.textContent = String(m);
+    var r = trainiere(ta.value, m);
+    vok.textContent = String(r.vokabular.length);
+    anz.textContent = String(r.folge.length);
+    chips.textContent = "";
+    r.folge.forEach(function(t,i){
+      var s = document.createElement("span");
+      s.className = "chip " + (i%2 ? "t1" : "t0");
+      s.textContent = (t === " " ? "␣" : t);
+      chips.appendChild(s);
+    });
+    if(!r.merges.length){ mlist.textContent = "Noch keine Verschmelzung — jedes Zeichen ist ein eigenes Token."; return; }
+    mlist.textContent = r.merges.map(function(x,i){
+      return String(i+1).padStart(2," ") + ".  \"" + x.a + "\" + \"" + x.b + "\"  →  \"" + x.a + x.b + "\"   (" + x.n + "×)";
+    }).join("\n");
+  }
+  ta.addEventListener("input", lauf);
+  rg.addEventListener("input", lauf);
+  W("bp-bsp").addEventListener("click", function(){ ta.value = "the cat sat on the mat"; rg.value = 3; lauf(); });
+  lauf();
+})();
+
+/* ============================ 9 · Versuch 06 · Embeddings ============================ */
+(function(){
+  var bars = W("em-bars"); if(!bars) return;
+  /* Dimensionen: königlich, Person, männlich, weiblich, Tier, Ort, Land, jung, CH, FR */
+  var TAB = {
+    "könig":       [.90,.85,.90,.00,.00,.00,.00,.00,.00,.00],
+    "königin":     [.90,.85,.00,.90,.00,.00,.00,.00,.00,.00],
+    "prinz":       [.70,.85,.90,.00,.00,.00,.00,.55,.00,.00],
+    "prinzessin":  [.70,.85,.00,.90,.00,.00,.00,.55,.00,.00],
+    "mann":        [.00,.90,.90,.00,.00,.00,.00,.00,.00,.00],
+    "frau":        [.00,.90,.00,.90,.00,.00,.00,.00,.00,.00],
+    "junge":       [.00,.90,.90,.00,.00,.00,.00,.85,.00,.00],
+    "mädchen":     [.00,.90,.00,.90,.00,.00,.00,.85,.00,.00],
+    "hund":        [.00,.00,.00,.00,.90,.00,.00,.00,.00,.00],
+    "katze":       [.00,.00,.00,.00,.88,.00,.00,.00,.00,.00],
+    "welpe":       [.00,.00,.00,.00,.90,.00,.00,.85,.00,.00],
+    "kätzchen":    [.00,.00,.00,.00,.88,.00,.00,.85,.00,.00],
+    "bern":        [.00,.00,.00,.00,.00,.95,.00,.00,.90,.00],
+    "zürich":      [.00,.00,.00,.00,.00,.95,.00,.00,.90,.00],
+    "paris":       [.00,.00,.00,.00,.00,.95,.00,.00,.00,.90],
+    "schweiz":     [.00,.00,.00,.00,.00,.00,.95,.00,.90,.00],
+    "frankreich":  [.00,.00,.00,.00,.00,.00,.95,.00,.00,.90]
+  };
+  var SCHL = { koenig:"könig", mann:"mann", frau:"frau", paris:"paris", frankreich:"frankreich", schweiz:"schweiz", hund:"hund", katze:"katze", welpe:"welpe" };
+  var namen = Object.keys(TAB);
+  var selA = W("em-a"), selB = W("em-b"), selC = W("em-c");
+  [selA,selB,selC].forEach(function(s){
+    namen.forEach(function(n){
+      var o = document.createElement("option"); o.value = n; o.textContent = n; s.appendChild(o);
+    });
+  });
+  function rechne(){
+    var a = TAB[selA.value], b = TAB[selB.value], c = TAB[selC.value], i;
+    var z = [];
+    for(i=0;i<a.length;i++) z.push(a[i]-b[i]+c[i]);
+    var aus = [selA.value, selB.value, selC.value];
+    var zeilen = namen.filter(function(n){ return aus.indexOf(n) < 0; })
+      .map(function(n){ return { name:n, wert:Math.max(0, kosinus(z, TAB[n])) }; })
+      .sort(function(x,y){ return y.wert - x.wert; }).slice(0,7);
+    balken(bars, zeilen, function(v){ return v.toFixed(3); });
+  }
+  function setze(a,b,c){ selA.value = a; selB.value = b; selC.value = c; rechne(); }
+  [selA,selB,selC].forEach(function(s){ s.addEventListener("change", rechne); });
+  Array.prototype.slice.call(document.querySelectorAll("[data-em]")).forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var t = btn.dataset.em.split(",");
+      setze(SCHL[t[0]]||t[0], SCHL[t[1]]||t[1], SCHL[t[2]]||t[2]);
+    });
+  });
+  setze("könig","mann","frau");
+})();
+
+/* ============================ 10 · Versuch 07 · Attention ============================ */
+(function(){
+  var bars = W("at-bars"); if(!bars) return;
+  var les = W("at-les"), erg = W("at-erg");
+  /* Dimensionen: wasser, geld, sitzen, bewegung, person, ort */
+  var E = {
+    "wir":    [.00,.00,.05,.00,.90,.00],
+    "sie":    [.00,.00,.00,.00,.90,.00],
+    "sassen": [.00,.00,.92,.00,.10,.10],
+    "ging":   [.00,.00,.00,.90,.10,.10],
+    "holte":  [.00,.25,.00,.55,.05,.00],
+    "an":     [.00,.00,.00,.00,.00,.15],
+    "am":     [.00,.00,.00,.00,.00,.15],
+    "der":    [.00,.00,.00,.00,.00,.00],
+    "zur":    [.00,.00,.00,.10,.00,.20],
+    "und":    [.00,.00,.00,.00,.00,.00],
+    "fluss":  [.95,.00,.00,.10,.00,.60],
+    "geld":   [.00,.95,.00,.00,.00,.00],
+    "bank":   [.10,.10,.30,.00,.00,.50]
+  };
+  var Q_BANK = [.85,.85,.80,.20,.05,.35];
+  var LESARTEN = {
+    "Flussufer":      [.95,.00,.25,.00,.00,.80],
+    "Geldinstitut":   [.00,.95,.00,.05,.05,.55],
+    "Sitzgelegenheit":[.05,.00,.95,.00,.05,.60]
+  };
+  var SAETZE = [
+    ["wir","sassen","an","der","bank","am","fluss"],
+    ["sie","ging","zur","bank","und","holte","geld"]
+  ];
+  var D = 6;
+  function lauf(k){
+    var s = SAETZE[k], i;
+    var andere = s.filter(function(w){ return w !== "bank"; });
+    var roh = andere.map(function(w){
+      var p = 0; for(i=0;i<D;i++) p += Q_BANK[i]*E[w][i];
+      return p/Math.sqrt(D)*6;
+    });
+    var g = softmax(roh, 1);
+    balken(bars, andere.map(function(w,j){ return { name:w, wert:g[j] }; }), pct);
+    var misch = E["bank"].slice();
+    andere.forEach(function(w,j){ for(i=0;i<D;i++) misch[i] += g[j]*E[w][i]; });
+    var zeilen = Object.keys(LESARTEN).map(function(n){ return { name:n, wert:Math.max(0,kosinus(misch, LESARTEN[n])) }; })
+      .sort(function(x,y){ return y.wert - x.wert; });
+    balken(les, zeilen, function(v){ return v.toFixed(3); });
+    erg.textContent =
+      "Startvektor  bank   = [" + E["bank"].map(function(v){ return v.toFixed(2); }).join(", ") + "]\n" +
+      "Nach Attention       = [" + misch.map(function(v){ return v.toFixed(2); }).join(", ") + "]\n" +
+      "Lesart mit höchster Ähnlichkeit: " + zeilen[0].name + " (" + zeilen[0].wert.toFixed(3) + ")";
+    Array.prototype.slice.call(document.querySelectorAll("[data-att]")).forEach(function(b){
+      b.className = "knopf" + (parseInt(b.dataset.att,10) === k ? "" : " sek");
+    });
+  }
+  Array.prototype.slice.call(document.querySelectorAll("[data-att]")).forEach(function(b){
+    b.addEventListener("click", function(){ lauf(parseInt(b.dataset.att,10)); });
+  });
+  lauf(0);
+})();
+
+/* ============================ 11 · Versuch 08 · Softmax ============================ */
+(function(){
+  var bars = W("sm-bars"); if(!bars) return;
+  var temp = W("sm-temp"), topp = W("sm-topp"), tv = W("sm-tval"), pv = W("sm-pval"), zug = W("sm-zug");
+  var KAND = [
+    ["kleines", 4.20], ["kleiner", 3.60], ["Mann", 3.10], ["Mädchen", 2.90],
+    ["König", 2.60], ["Junge", 2.20], ["Haus", 1.60], ["Tag", 1.20],
+    ["Drache", 0.90], ["Programm", -0.40], ["Fahrrad", -1.10], ["Quadrat", -2.30]
+  ];
+  var letztP = [];
+  function lauf(){
+    var t = parseFloat(temp.value), p = parseFloat(topp.value);
+    tv.textContent = t.toFixed(2); pv.textContent = p.toFixed(2);
+    var ps = softmax(KAND.map(function(k){ return k[1]; }), t);
+    var idx = KAND.map(function(_,i){ return i; }).sort(function(a,b){ return ps[b]-ps[a]; });
+    var kum = 0, erlaubt = {};
+    for(var i=0;i<idx.length;i++){ erlaubt[idx[i]] = true; kum += ps[idx[i]]; if(kum >= p) break; }
+    letztP = idx.filter(function(i){ return erlaubt[i]; }).map(function(i){ return { i:i, p:ps[i] }; });
+    balken(bars, idx.map(function(i){ return { name:KAND[i][0], wert:ps[i], aus:!erlaubt[i] }; }), pct);
+  }
+  function ziehe(){
+    var s = 0, i; for(i=0;i<letztP.length;i++) s += letztP[i].p;
+    var out = [];
+    for(var k=0;k<10;k++){
+      var r = Math.random()*s, acc = 0, g = letztP[0];
+      for(i=0;i<letztP.length;i++){ acc += letztP[i].p; if(r <= acc){ g = letztP[i]; break; } }
+      out.push(KAND[g.i][0]);
+    }
+    zug.textContent = out.join(" · ");
+  }
+  temp.addEventListener("input", lauf);
+  topp.addEventListener("input", lauf);
+  W("sm-zieh").addEventListener("click", ziehe);
+  lauf();
+})();
+
+/* ============================ 12 · Versuch 09 · Trigramm-Modell ============================ */
+(function(){
+  var txtEl = W("ng-text"); if(!txtEl) return;
+  var bars = W("ng-bars"), temp = W("ng-temp"), topp = W("ng-topp"), tv = W("ng-tval"), pv = W("ng-pval");
+  var GESCHICHTEN = [
+    "es war einmal ein kleines mädchen das im wald wohnte",
+    "es war einmal ein kleiner junge der einen hund hatte",
+    "das kleine mädchen ging am morgen in den wald und suchte beeren",
+    "der kleine junge ging am abend zum fluss und warf steine ins wasser",
+    "der hund lief über die brücke und bellte den mond an",
+    "die katze sass auf dem dach und sah dem vogel zu",
+    "am morgen fand das mädchen einen alten schlüssel im garten",
+    "der schlüssel passte in die tür hinter dem grossen baum",
+    "hinter der tür war eine treppe und die treppe führte nach unten",
+    "unten im keller stand ein korb voller äpfel",
+    "das mädchen nahm einen apfel und ging zurück nach hause",
+    "der alte bäcker im dorf backte jeden morgen frisches brot",
+    "der junge brachte dem bäcker einen korb mit äpfeln",
+    "der bäcker lachte und gab dem jungen ein warmes brot",
+    "in der nacht schien der mond über dem stillen wald",
+    "der vogel sang ein lied und der hund hörte zu",
+    "am fluss lag ein kleines boot mit einem weissen segel",
+    "der wind kam vom berg und trieb das boot über das wasser",
+    "das mädchen und der junge ruderten gemeinsam zur insel",
+    "auf der insel wuchs ein alter baum mit roten früchten",
+    "unter dem baum schlief eine graue katze im schatten",
+    "die katze erwachte und lief dem mädchen entgegen",
+    "am abend ruderten alle zurück und der mond stand schon hoch",
+    "der hund wartete am ufer und wedelte mit dem schwanz",
+    "die mutter rief vom haus und das essen stand auf dem tisch",
+    "nach dem essen erzählte der vater eine geschichte vom meer",
+    "im meer gab es fische die im dunkeln leuchteten",
+    "das mädchen träumte von der insel und vom weissen segel",
+    "am nächsten morgen lag frischer schnee im ganzen garten",
+    "der junge und der hund liefen durch den schnee bis zur brücke"
+  ];
+  var tri = {}, bi = {}, uni = {}, i, j;
+  GESCHICHTEN.forEach(function(g){
+    var w = ["<s>","<s>"].concat(g.split(/\s+/)).concat(["</s>"]);
+    for(j=0;j<w.length;j++){
+      uni[w[j]] = (uni[w[j]]||0)+1;
+      if(j>=1){ var k1 = w[j-1]; bi[k1] = bi[k1]||{}; bi[k1][w[j]] = (bi[k1][w[j]]||0)+1; }
+      if(j>=2){ var k2 = w[j-2]+" "+w[j-1]; tri[k2] = tri[k2]||{}; tri[k2][w[j]] = (tri[k2][w[j]]||0)+1; }
+    }
+  });
+  var zustand, ausgabe, quelle;
+  function kandidaten(){
+    var k2 = zustand[0]+" "+zustand[1];
+    if(tri[k2]){ quelle = "Trigramm"; return tri[k2]; }
+    if(bi[zustand[1]]){ quelle = "Bigramm (Rückfall)"; return bi[zustand[1]]; }
+    quelle = "Einzelwort (Rückfall)"; return uni;
+  }
+  function verteilung(){
+    var c = kandidaten(), namen = Object.keys(c).filter(function(n){ return n !== "<s>"; });
+    if(!namen.length) namen = ["</s>"];
+    var logits = namen.map(function(n){ return Math.log(c[n] || 1); });
+    var ps = softmax(logits, parseFloat(temp.value));
+    var idx = namen.map(function(_,i){ return i; }).sort(function(a,b){ return ps[b]-ps[a]; });
+    var p = parseFloat(topp.value), kum = 0, erlaubt = {};
+    for(var i=0;i<idx.length;i++){ erlaubt[idx[i]] = true; kum += ps[idx[i]]; if(kum >= p) break; }
+    return { namen:namen, ps:ps, idx:idx, erlaubt:erlaubt };
+  }
+  function zeichne(v){
+    tv.textContent = parseFloat(temp.value).toFixed(2);
+    pv.textContent = parseFloat(topp.value).toFixed(2);
+    var zeilen = v.idx.slice(0,8).map(function(i){
+      return { name:(v.namen[i] === "</s>" ? "• Ende" : v.namen[i]), wert:v.ps[i], aus:!v.erlaubt[i] };
+    });
+    balken(bars, zeilen, pct);
+    txtEl.textContent = (ausgabe.length ? ausgabe.join(" ") : "▮") +
+      "\n\n[ Zustand: \"" + zustand.join(" ") + "\"  →  " + quelle + ", " + v.namen.length + " Kandidaten ]";
+  }
+  function schritt(){
+    var v = verteilung(), s = 0, i;
+    var erl = v.idx.filter(function(i){ return v.erlaubt[i]; });
+    for(i=0;i<erl.length;i++) s += v.ps[erl[i]];
+    var r = Math.random()*s, acc = 0, g = erl[0];
+    for(i=0;i<erl.length;i++){ acc += v.ps[erl[i]]; if(r <= acc){ g = erl[i]; break; } }
+    var w = v.namen[g];
+    if(w === "</s>"){ ausgabe.push("•"); zustand = ["<s>","<s>"]; }
+    else { ausgabe.push(w); zustand = [zustand[1], w]; }
+    if(ausgabe.length > 70) ausgabe = ausgabe.slice(-70);
+    zeichne(verteilung());
+  }
+  function neu(){ zustand = ["<s>","<s>"]; ausgabe = []; zeichne(verteilung()); }
+  W("ng-schritt").addEventListener("click", schritt);
+  W("ng-zehn").addEventListener("click", function(){ for(var i=0;i<10;i++) schritt(); });
+  W("ng-neu").addEventListener("click", neu);
+  temp.addEventListener("input", function(){ zeichne(verteilung()); });
+  topp.addEventListener("input", function(){ zeichne(verteilung()); });
+  neu();
+})();
+
+/* ============================ 13 · Versuch 10 · Request ============================ */
+(function(){
+  var form = W("rq-form"); if(!form) return;
+  var inp = W("rq-in"), aus = W("rq-aus"), zE = W("rq-zuege"), tE = W("rq-tok"), reset = W("rq-reset");
+  var SYSTEM = "Du bist ein hilfsbereiter Assistent für Schülerinnen und Schüler der NKSA.\nAntworte knapp, auf Deutsch, und erfinde keine Quellen.";
+  var ANTWORTEN = [
+    "Gern. Was genau soll ich dazu erklären?",
+    "Das lässt sich in drei Schritten beantworten.",
+    "Dazu brauche ich noch eine Angabe von dir.",
+    "Kurz gesagt: ja, aber mit einer Einschränkung.",
+    "Ich fasse zusammen, was wir bisher festgehalten haben."
+  ];
+  var zuege = [];
+  function mal(){
+    var zeilen = ["[system]", SYSTEM, ""];
+    zuege.forEach(function(z){ zeilen.push("[" + z.rolle + "]"); zeilen.push(z.text); zeilen.push(""); });
+    zeilen.push("[user]");
+    zeilen.push("▮  ← hier wird deine nächste Nachricht angehängt");
+    var t = zeilen.join("\n");
+    aus.textContent = t;
+    aus.scrollTop = aus.scrollHeight;
+    zE.textContent = String(zuege.filter(function(z){ return z.rolle === "user"; }).length);
+    tE.textContent = String(Math.ceil(t.length/4));
+  }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = inp.value.trim(); if(!v) return;
+    inp.value = "";
+    zuege.push({ rolle:"user", text:v });
+    zuege.push({ rolle:"assistant", text:ANTWORTEN[(zuege.length/2|0) % ANTWORTEN.length] });
+    mal();
+  });
+  reset.addEventListener("click", function(){ zuege = []; mal(); });
+  mal();
+})();
+
+/* ============================ 14 · Versuch 12 · Werkzeug-Umlauf ============================ */
+(function(){
+  var aus = W("tl-aus"); if(!aus) return;
+  var pos = W("tl-pos"), note = W("tl-note"), next = W("tl-next"), reset = W("tl-reset");
+  var SCHRITTE = [
+    { n:"Schritt 1 · Dein Programm ruft das Modell auf",
+      t:'[system]  Du hast Werkzeuge. Nutze sie, wenn du Daten brauchst.\n[tools]   [ { "name": "wetter", "parameter": { "ort": "string" } } ]\n[user]    Wie ist das Wetter in Aarau?',
+      k:"Die Werkzeugliste ist einfach Text in der Eingabe. Das Modell liest sie wie jeden anderen Teil des Prompts." },
+    { n:"Schritt 2 · Das Modell antwortet — mit Text",
+      t:'[assistant]\n{ "werkzeug": "wetter", "argumente": { "ort": "Aarau" } }',
+      k:"Das ist keine Ausführung. Das Modell hat Token vorhergesagt, die zufällig gültiges JSON bilden. Mehr kann es nicht." },
+    { n:"Schritt 3 · Dein Programm führt aus",
+      t:'  wetter({ ort: "Aarau" })\n  → HTTPS-Anfrage an die Wetter-API\n  ← { "temperatur": 11, "zustand": "bedeckt" }\n\n[tool: wetter]\n{ "temperatur": 11, "zustand": "bedeckt" }   ← an den Verlauf angehängt',
+      k:"Hier arbeitet ausschliesslich dein Code. Das Modell läuft in diesem Schritt überhaupt nicht." },
+    { n:"Schritt 4 · Zweiter Aufruf, jetzt mit dem Ergebnis",
+      t:'[system]  …\n[user]    Wie ist das Wetter in Aarau?\n[assistant] { "werkzeug": "wetter", … }\n[tool]    { "temperatur": 11, "zustand": "bedeckt" }\n\n[assistant]\nIn Aarau ist es bedeckt bei 11 Grad.',
+      k:"Das Modell sieht das Ergebnis als Text in seiner Eingabe — genau wie den Verlauf aus Kapitel 10. Zweimal Modell, einmal echte Arbeit durch dein Programm." }
+  ];
+  var i = 0;
+  function mal(){
+    pos.textContent = "Schritt " + i + " von 4";
+    if(i === 0){
+      aus.textContent = "Frage: «Wie ist das Wetter in Aarau?»\n\nDas Modell kennt das Wetter nicht und kann es nicht nachschauen.\nDrücke «Nächster Schritt».";
+      note.textContent = "Vier Schritte, in denen das Modell zweimal aufgerufen wird und nie etwas selbst tut.";
+    } else {
+      var s = SCHRITTE[i-1];
+      aus.textContent = s.n + "\n\n" + s.t;
+      note.textContent = s.k;
+    }
+    next.disabled = (i >= 4);
+  }
+  next.addEventListener("click", function(){ if(i < 4){ i++; mal(); } });
+  reset.addEventListener("click", function(){ i = 0; mal(); });
+  mal();
+})();
+</script>
