@@ -8,17 +8,23 @@ Bewertet wird vor allem, wie verständlich erklärt wird — nicht, wie viel Tec
 
 ## Inhaltliche Vorgaben
 
-- **Ein Kapitel pro Schritt** aus dem Video *I Built an LLM From Scratch* (CJ, Syntax, 51 Min.):
-  https://www.youtube.com/watch?v=YmLp8qe87A0
-- Jahreszahlen, Namen und Kennzahlen stammen aus diesem Video. Ergänzungen von anderswo
-  werden im Text als `Hintergrund` gekennzeichnet.
+- Die Kapitel folgen dem Weg eines Textes durch ein Sprachmodell (01–03 Vorgeschichte,
+  04–09 das Modell, 10–12 drumherum, 13 Schluss).
+- **Jede Jahreszahl, jeder Name und jede Kennzahl braucht eine Quelle** im Abschnitt «Quellen»
+  am Ende von Kapitel 13 (nach Kapitelnummer geordnet, möglichst Originalarbeit mit DOI- oder
+  arXiv-Link). Neue Links vor dem Eintragen aufrufen und prüfen, ob sie zum richtigen Werk führen.
+- Nichts auf der Seite übernehmen, was sich nicht belegen lässt. Beispiel: Dass Shannons Frau
+  Betty die Versuchsperson war, liess sich nicht belegen (das Paper von 1951 nennt niemanden) und
+  ist deshalb nicht mehr auf der Seite. Zitate nur wörtlich und in der Originalsprache.
+- Ein YouTube-Video (CJ/Syntax) war früher Hauptquelle und wurde am 17.11.2026 auf Wunsch
+  entfernt. Nicht wieder einbauen oder erwähnen.
 - **Zwei Ebenen:**
   1. Haupttext: einfach, keine Formeln, kein Vorwissen nötig.
   2. Vertiefung: ausklappbare `<details class="tief">`-Kästen am Kapitelende, mit Mathematik
      und genauen Verfahren. Vorausgesetzt wird höchstens Gymnasialmathematik.
 - Sprache Deutsch, **Schweizer Rechtschreibung**: `ss` statt `ß`, Anführungszeichen «so».
-- Wo das Video und unsere Rechnung nicht übereinstimmen, wird das offen hingeschrieben,
-  nicht passend gemacht (siehe «Bekannte Abweichungen»).
+- Wo eine Quelle und unsere Rechnung nicht übereinstimmen, wird das offen hingeschrieben,
+  nicht passend gemacht.
 
 ## Dateien
 
@@ -82,6 +88,8 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
   Formeln **einzeilig** schreiben. Mehrzeilige Brüche aus Klammerzeichen verrutschen,
   sobald `<sub>` darin vorkommt.
 - **Farben** nur über Tokens, nie als Literalwerte in Komponenten (sonst bricht ein Modus).
+  Ausnahme: das Favicon (`<link rel="icon">`, Zeile 3) ist ein Daten-URI ohne Zugriff auf Tokens;
+  bewusst schwarz-weiss (`#000` / `#fff`), unabhängig vom Modus.
 - **Externe Ressourcen:** Im Artifact sind nur Skripte von cdnjs/jsDelivr/unpkg und Schriften von
   Google Fonts erlaubt. `fetch` zu anderen Servern (z. B. Supabase) ist dort blockiert.
 - Zufall und Rechnungen der Versuche sollen echt bleiben. Wenn etwas vereinfacht ist,
@@ -94,12 +102,15 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    jeden Versuch einmal bedienen.
 3. Schmale Breite (≈ 390 px): kein horizontales Scrollen.
 
-## Bekannte Abweichungen (absichtlich so im Text)
+## Zahlen, die an mehreren Stellen vorkommen (zusammen ändern)
 
-- **Kapitel 05:** Das Video nennt für «the cat sat on the mat» 6 Token, unser BPE ergibt 7
-  (`the c at s o n m`). Grund: Behandlung der Wortgrenzen. Steht so im Text.
-- **Kapitel 07:** Standardrechnung für 6 Blöcke mit d = 32 und d_ff = 128 ergibt ≈ 73 700 Parameter,
-  das Video nennt 52 000. Das Modell im Video muss schlanker gebaut sein. Steht so in der Vertiefung.
+- **Mini-Transformer (Kap. 07):** 6 Schichten, d = 32, d_ff = 128, Kontext 32 → 73 728 Parameter in
+  den Blöcken, im Text «rund 74 000». Steht im Merkkasten und in der Vertiefung von Kap. 07, in
+  Kap. 04 (Grössenordnung) und in Kap. 10 (Kontextfenster). Eigenes Rechenbeispiel, kein echtes Modell.
+- **GPT-OSS-120B:** 116,8 Milliarden Parameter laut Model Card, im Text «rund 117 Milliarden»
+  (Kap. 04 und 07).
+- **Kapitel 05:** Unser BPE ergibt für «the cat sat on the mat» 7 Token (`the c at s o n m`);
+  andere Umsetzungen kommen je nach Wortgrenzen auf andere Zahlen. Steht so im Text.
 
 ## Veröffentlichung und Kopien
 

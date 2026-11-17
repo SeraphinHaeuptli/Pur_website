@@ -1,5 +1,6 @@
 <title>Wie ein LLM funktioniert</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='6' width='4' height='20' fill='%23fff'/%3E%3Crect x='14' y='14' width='4' height='12' fill='%23fff'/%3E%3Crect x='22' y='20' width='4' height='6' fill='%23fff'/%3E%3C/svg%3E">
 <style>
 /* Layout: feste Kapitelspalte links, eine Spalte Lesetext rechts; Swiss International Typographic:
    Haarlinien, Mono-Eyebrows, rotes Signal, keine Radien, keine Schatten. */
@@ -332,8 +333,8 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
     </div>
 
     <h2 class="sec">Grundlage</h2>
-    <p>Die Kapitelstruktur folgt dem Video <em>I Built an LLM From Scratch</em> von CJ (Syntax), 51 Minuten, in dem ein Sprachmodell von null auf in Python gebaut wird. Alle Jahreszahlen, Namen und Kennzahlen auf dieser Seite stammen aus diesem Video; ergänzende Angaben sind als <span class="mono">Hintergrund</span> gekennzeichnet.</p>
-    <p class="hinweis">Quelle: <a href="https://www.youtube.com/watch?v=YmLp8qe87A0" target="_blank" rel="noopener">youtube.com/watch?v=YmLp8qe87A0</a></p>
+    <p>Die Kapitel folgen dem Weg, den ein Text durch ein Sprachmodell nimmt, eingerahmt von der Vorgeschichte und dem, was um das Modell herum gebaut ist. Jahreszahlen, Namen und Kennzahlen stammen aus den Originalarbeiten — von Shannons Aufsatz von 1951 bis zu den heutigen Modellbeschreibungen.</p>
+    <p class="hinweis">Alle Quellen, nach Kapiteln geordnet: <a href="#kap13">Kapitel 13, Abschnitt Quellen</a>.</p>
 
     <div class="fussnav"><span></span><a href="#kap01"><span class="pf">→</span> 01 Shannons Spiel</a></div>
   </section>
@@ -341,11 +342,11 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
   <section class="kap" id="kap01" hidden>
     <p class="eyebrow">Kapitel 01 · Die Aufgabe</p>
     <h1>Shannons Spiel, 1950</h1>
-    <p class="lead">Claude Shannon, der Begründer der Informationstheorie, setzte sich 1950 mit seiner Frau Betty hin und spielte ein Spiel. Er zeigte ihr einen Text, in dem der nächste Buchstabe verdeckt war, und sie musste raten — Buchstabe für Buchstabe. Er zählte mit, wie oft sie richtig lag.</p>
+    <p class="lead">Claude Shannon, der Begründer der Informationstheorie, liess um 1950 Versuchspersonen ein Spiel spielen. Er zeigte ihnen einen Text, in dem der nächste Buchstabe verdeckt war, und sie mussten raten — Buchstabe für Buchstabe. Er zählte mit, wie oft sie richtig lagen.</p>
 
-    <p>Gemessen hat er damit nicht das Sprachgefühl seiner Frau. Er hat gemessen, <em>wie vorhersagbar geschriebene Sprache überhaupt ist</em>. Und die Antwort war: sehr. Nach «Der Hund bellt im Gar…» ist der nächste Buchstabe kein Zufall. Nach «Es war einmal ein kl…» auch nicht. Sprache hat Struktur, und diese Struktur ist statistisch — man kann sie zählen, ohne zu verstehen, wovon die Rede ist.</p>
+    <p>Gemessen hat er damit nicht das Sprachgefühl seiner Versuchspersonen. Er hat gemessen, <em>wie vorhersagbar geschriebene Sprache überhaupt ist</em>. Und die Antwort war: sehr. Nach «Der Hund bellt im Gar…» ist der nächste Buchstabe kein Zufall. Nach «Es war einmal ein kl…» auch nicht. Sprache hat Struktur, und diese Struktur ist statistisch — man kann sie zählen, ohne zu verstehen, wovon die Rede ist.</p>
 
-    <p>Damit war die Aufgabe definiert, an der die nächsten 75 Jahre gearbeitet wurde. Nicht «verstehe Sprache». Sondern: <strong>schätze, was als nächstes kommt.</strong> Genau diese eine Aufgabe löst ein grosses Sprachmodell. Es ist kein Gesprächspartner, kein Nachschlagewerk und keine Denkmaschine. Es ist ein Next-Token-Prädiktor — und dieselbe Sache, die Betty Shannon 1950 von Hand gemacht hat.</p>
+    <p>Damit war die Aufgabe definiert, an der die nächsten 75 Jahre gearbeitet wurde. Nicht «verstehe Sprache». Sondern: <strong>schätze, was als nächstes kommt.</strong> Genau diese eine Aufgabe löst ein grosses Sprachmodell. Es ist kein Gesprächspartner, kein Nachschlagewerk und keine Denkmaschine. Es ist ein Next-Token-Prädiktor — und macht dasselbe, was Shannons Versuchspersonen 1950 von Hand gemacht haben.</p>
 
     <div class="merk">
       <div class="lbl">Kernidee</div>
@@ -377,12 +378,12 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
     <div class="daten">
       <dl>
         <div><dt>Jahr</dt><dd>1950</dd></div>
-        <div><dt>Personen</dt><dd>Claude Shannon mit Betty Shannon</dd></div>
+        <div><dt>Personen</dt><dd>Claude Shannon und seine Versuchspersonen</dd></div>
         <div><dt>Methode</dt><dd>Nächstes Zeichen verdecken, raten lassen, Trefferquote zählen</dd></div>
         <div><dt>Ergebnis</dt><dd>Geschriebene Sprache ist stark vorhersagbar</dd></div>
       </dl>
     </div>
-    <p class="hinweis"><span class="mono">Hintergrund:</span> Shannon veröffentlichte die Auswertung 1951 als <em>Prediction and Entropy of Printed English</em>. Sein Schätzwert lag bei etwa 1 Bit Information pro Buchstabe — von den 4.7 Bit, die 27 gleich wahrscheinliche Zeichen theoretisch bräuchten.</p>
+    <p class="hinweis">Shannon reichte die Auswertung im September 1950 ein; sie erschien im Januar 1951 als <em>Prediction and Entropy of Printed English</em>. Die Textproben stammten aus einer Biografie, <em>Jefferson the Virginian</em> von Dumas Malone. Sein Schätzwert lag bei etwa 1 Bit Information pro Buchstabe — von den 4.7 Bit, die 27 gleich wahrscheinliche Zeichen theoretisch bräuchten.</p>
 
 
     <h2 class="sec vert">Vertiefung</h2>
@@ -415,7 +416,7 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
         <tbody>
           <tr><td class="num">1950</td><td><strong>Imitation Game</strong></td><td>Alan Turing</td><td>Kein Programm, sondern die Frage: Kann ein Mensch im Gespräch Maschine und Mensch unterscheiden?</td></tr>
           <tr><td class="num">1966</td><td><strong>ELIZA</strong></td><td>Joseph Weizenbaum, MIT</td><td>Mustererkennung. Spiegelt die Aussage als Frage zurück.</td></tr>
-          <tr><td class="num">1972</td><td><strong>PARRY</strong></td><td>Kenneth Colby</td><td>Simuliert einen paranoiden Patienten — mit Zustand und Stimmungswerten.</td></tr>
+          <tr><td class="num">1971</td><td><strong>PARRY</strong></td><td>Kenneth Colby</td><td>Simuliert einen paranoiden Patienten — mit Zustand und Stimmungswerten.</td></tr>
           <tr><td class="num">1995</td><td><strong>A.L.I.C.E.</strong></td><td>Richard Wallace</td><td>Rund 41 000 von Hand geschriebene Muster.</td></tr>
           <tr><td class="num">2001</td><td><strong>SmarterChild</strong></td><td>ActiveBuddy</td><td>Regeln plus Datenbankabfragen für Wetter, Kino, Börsenkurse.</td></tr>
         </tbody>
@@ -423,7 +424,7 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
     </div>
 
     <h2 class="sec">Der Fall Weizenbaum</h2>
-    <p>ELIZA lief mit einem Skript namens DOCTOR, das einen Gesprächstherapeuten nachahmte. Das Programm war wenige hundert Zeilen lang und verstand kein einziges Wort. Es suchte Schlüsselwörter und drehte den Satz um: aus «Ich bin traurig» wurde «Warum bist du traurig?».</p>
+    <p>ELIZA lief mit einem Skript namens DOCTOR, das einen Gesprächstherapeuten nachahmte. Das Programm verstand kein einziges Wort. Es suchte Schlüsselwörter und drehte den Satz um: aus «Ich bin traurig» wurde «Warum bist du traurig?».</p>
     <p>Weizenbaum erzählte später, dass seine eigene Sekretärin, die wusste, wie das Programm aufgebaut war, ihn aus dem Raum bat — damit sie sich ungestört mit ELIZA unterhalten könne. Das hat ihn nicht stolz gemacht, sondern erschreckt. Er wurde zu einem der scharfsten Kritiker der Branche.</p>
 
     <div class="merk">
@@ -478,7 +479,7 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
 
     <div class="aus wide" id="box-diagramm" style="overflow-x:auto;white-space:pre;font-size:12px"></div>
 
-    <p>Das ist keine Vereinfachung für den Unterricht, sondern tatsächlich die Architektur. Ein Programm, das mit einem Sprachmodell arbeitet, schickt eine Zeichenkette los und bekommt eine Zeichenkette zurück. Was dazwischen liegt — ELIZAs Regeltabelle oder ein Modell mit 120 Milliarden Gewichten — ist für den aufrufenden Code nicht zu unterscheiden.</p>
+    <p>Das ist keine Vereinfachung für den Unterricht, sondern tatsächlich die Architektur. Ein Programm, das mit einem Sprachmodell arbeitet, schickt eine Zeichenkette los und bekommt eine Zeichenkette zurück. Was dazwischen liegt — ELIZAs Regeltabelle oder ein Modell mit über 100 Milliarden Gewichten — ist für den aufrufenden Code nicht zu unterscheiden.</p>
 
     <p>Nützlich ist das aus zwei Gründen. Erstens erklärt es, warum man Modelle austauschen kann, ohne die Anwendung neu zu bauen. Zweitens zeigt es, wo in dieser Seite die eigentliche Arbeit steckt: Die Kapitel 04 bis 09 öffnen genau diesen Kasten, in der Reihenfolge, in der Text durch ihn hindurchläuft.</p>
 
@@ -553,7 +554,7 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
 
     <div class="merk">
       <div class="lbl">Grössenordnung</div>
-      <p>Das Netz rechts hat 17 Gewichte. Das kleine Transformer-Modell aus Kapitel 07 hat 52 000. GPT-OSS-120B hat 120 Milliarden — die Zahl steht im Namen. Es ist dieselbe Art von Datei, nur länger.</p>
+      <p>Das Netz rechts hat 17 Gewichte. Das kleine Transformer-Beispiel aus Kapitel 07 hat allein in seinen Blöcken rund 74 000. GPT-OSS-120B hat rund 117 Milliarden — gerundet steht die Zahl im Namen. Es ist dieselbe Art von Datei, nur länger.</p>
     </div>
 
 
@@ -606,7 +607,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
       <li>Das häufigste benachbarte Zeichenpaar im ganzen Text suchen — gewichtet mit der Worthäufigkeit — und zu einem neuen Token verschmelzen.</li>
       <li>Wiederholen, bis die vorher festgelegte Zahl von Verschmelzungen erreicht ist.</li>
     </ul>
-    <p>Diese Zahl bestimmt die Grösse des Vokabulars. Bei «the cat sat on the mat» und drei Verschmelzungen entsteht zuerst <span class="mono">at</span> — es kommt in <em>cat</em>, <em>sat</em> und <em>mat</em> vor —, dann <span class="mono">th</span> und daraus <span class="mono">the</span>, weil das Wort zweimal auftaucht. Alles andere bleibt in Einzelzeichen liegen. Wie viele Token am Ende im Vokabular stehen, hängt davon ab, wie die Umsetzung Wortgrenzen behandelt; im Video sind es für dieses Beispiel sechs, im Versuch unten sieben. Wer viele Verschmelzungen zulässt, bekommt ein Vokabular, in dem die häufigen Wörter ganz und die seltenen in Teilen gespeichert sind.</p>
+    <p>Diese Zahl bestimmt die Grösse des Vokabulars. Bei «the cat sat on the mat» und drei Verschmelzungen entsteht zuerst <span class="mono">at</span> — es kommt in <em>cat</em>, <em>sat</em> und <em>mat</em> vor —, dann <span class="mono">th</span> und daraus <span class="mono">the</span>, weil das Wort zweimal auftaucht. Alles andere bleibt in Einzelzeichen liegen. Wie viele Token am Ende im Vokabular stehen, hängt davon ab, wie die Umsetzung Wortgrenzen behandelt: Im Versuch unten sind es sieben, Umsetzungen mit anderen Regeln kommen auf andere Zahlen. Wer viele Verschmelzungen zulässt, bekommt ein Vokabular, in dem die häufigen Wörter ganz und die seltenen in Teilen gespeichert sind.</p>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 05</span><span class="h">BPE auf eigenem Text</span></div>
@@ -616,7 +617,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         <div class="steuer" style="margin-top:10px">
           <label for="bp-merges">Verschmelzungen <input type="range" id="bp-merges" min="0" max="40" value="8" step="1"></label>
           <span class="mono" id="bp-mval" style="min-width:2.5em">8</span>
-          <button class="knopf sek" type="button" id="bp-bsp">Beispiel aus dem Video</button>
+          <button class="knopf sek" type="button" id="bp-bsp">Beispiel: the cat sat on the mat</button>
         </div>
         <div class="daten" style="margin-top:4px">
           <dl>
@@ -712,7 +713,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         <h4>Das Trainingsziel von word2vec (Skip-Gram)</h4>
         <p>Für jedes Wort im Text sollen die Wörter in seinem Fenster möglichst wahrscheinlich werden:</p>
         <div class="formel">p(o | c) = exp(u<sub>o</sub> · v<sub>c</sub>) / Σ<sub>w</sub> exp(u<sub>w</sub> · v<sub>c</sub>)<span class="wo">c: das Wort in der Mitte · o: ein Wort im Fenster daneben · v und u: die beiden Vektoren, die jedes Wort bekommt. Die Summe unten läuft über das ganze Vokabular. Das ist dieselbe Softmax wie in Kapitel 08.</span></div>
-        <p>Das Training verschiebt die Vektoren so, dass diese Wahrscheinlichkeit für echte Nachbarn steigt. Weil die Summe über das ganze Vokabular sehr teuer ist, nimmt man in der Praxis nur ein paar zufällige «Nicht-Nachbarn» und schiebt deren Vektoren weg — das heisst <em>negative sampling</em> und ist das «push/pull» aus dem Video.</p>
+        <p>Das Training verschiebt die Vektoren so, dass diese Wahrscheinlichkeit für echte Nachbarn steigt. Weil die Summe über das ganze Vokabular sehr teuer ist, nimmt man in der Praxis nur ein paar zufällige «Nicht-Nachbarn» und schiebt deren Vektoren weg — das heisst <em>negative sampling</em>: echte Nachbarn ziehen, zufällige Nicht-Nachbarn stossen.</p>
         <h4>Warum die Rechnung mit «könig» funktioniert</h4>
         <p>Wenn das Paar mann/frau im Text in denselben Mustern vorkommt wie könig/königin, dann zeigt der Unterschied der beiden Vektoren in dieselbe Richtung. Diese Richtung kann man abziehen und addieren. In echten Modellen gilt das nur ungefähr: «≈» ist ernst gemeint.</p>
       </div>
@@ -733,7 +734,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         <div><dt>Titel</dt><dd>Attention Is All You Need, 2017</dd></div>
         <div><dt>Umfang</dt><dd>15 Seiten</dd></div>
         <div><dt>Autoren</dt><dd>8, ausdrücklich als gleichwertig gekennzeichnet</dd></div>
-        <div><dt>Zitate</dt><dd>über <b>100 000</b></dd></div>
+        <div><dt>Zitate</dt><dd>über <b>100 000</b> (Google Scholar)</dd></div>
       </dl>
     </div>
 
@@ -767,8 +768,8 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
     <p>Nach der Attention folgt in jedem Block ein kleines vorwärtsgerichtetes Netz, das das Ergebnis weiterverarbeitet. Dann beginnt der nächste Block von vorn, mit eigenen Gewichten. Gestapelt ergibt sich eine Arbeitsteilung: Die unteren Schichten behandeln eher Form und Grammatik, die mittleren Bedeutung, die oberen längere Zusammenhänge.</p>
 
     <div class="merk">
-      <div class="lbl">Das Modell aus dem Video, in Zahlen</div>
-      <p>6 Schichten, Embedding-Grösse 32, Kontextlänge 32 Token, trainiert auf 30 Kindergeschichten, rund 1,5 Stunden auf einer normalen CPU. Ergebnis: <strong>52 000 Parameter</strong> — 52 000 Zahlen, die im Training verstellt wurden. Zum Vergleich steht die Grösse bei GPT-OSS-120B direkt im Namen: 120 Milliarden.</p>
+      <div class="lbl">Ein Mini-Transformer, in Zahlen</div>
+      <p>Ein Beispiel zum Nachrechnen: 6 Schichten, Embedding-Grösse 32, Kontextlänge 32 Token. Allein die sechs Blöcke haben dann rund <strong>74 000 Parameter</strong> — 74 000 Zahlen, die im Training verstellt werden (Rechnung in der Vertiefung unten). Zum Vergleich: GPT-OSS-120B hat rund 117 Milliarden, gerundet steht die Zahl im Namen.</p>
     </div>
 
 
@@ -807,7 +808,7 @@ y  =  h + FFN(LayerNorm(h))<span class="wo">Das «x +» heisst Restverbindung: D
           + 2 · d · d<sub>ff</sub>      (vorwärtsgerichtetes Netz)
 
 d = 32, d<sub>ff</sub> = 4·d = 128:   4096 + 8192 = 12 288 pro Block</div>
-        <p>Sechs solche Blöcke wären schon 73 728 Parameter — mehr als die 52 000 aus dem Video. Das Modell dort muss also Teile schlanker bauen, zum Beispiel ein schmaleres vorwärtsgerichtetes Netz. Gerade daran sieht man: «6 Schichten, Embedding 32» legt ein Modell noch nicht fest. Die Parameterzahl hängt an solchen Entscheidungen.</p>
+        <p>Sechs solche Blöcke ergeben 73 728 Parameter, rund 74 000. Nicht mitgezählt sind die Embedding-Tabelle (eine Zeile mit d Zahlen pro Token des Vokabulars), die Bias-Werte und LayerNorm. Und die Zahl hängt an Entscheidungen: Wer das vorwärtsgerichtete Netz schmaler baut, etwa mit d<sub>ff</sub> = 2·d, kommt mit denselben «6 Schichten, Embedding 32» auf deutlich weniger. Die Angabe von Schichten und Embedding-Grösse legt ein Modell also noch nicht fest.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap06">← 06 Embeddings</a><a href="#kap08"><span class="pf">→</span> 08 Die Ausgabe</a></div>
@@ -960,7 +961,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
     </div>
 
     <h2 class="sec">Das Kontextfenster</h2>
-    <p>Dieses ganze Paket muss in das Kontextfenster passen — die maximale Zahl von Token, die das Modell in einem Durchgang verarbeiten kann. Bei dem kleinen Modell aus Kapitel 07 sind es 32 Token, bei heutigen Modellen Hunderttausende. Ist das Fenster voll, muss die Anwendung etwas wegwerfen oder zusammenfassen: Dann «vergisst» der Chat den Anfang — und zwar nicht, weil das Modell müde wird, sondern weil der Anfang nicht mehr mitgeschickt wird.</p>
+    <p>Dieses ganze Paket muss in das Kontextfenster passen — die maximale Zahl von Token, die das Modell in einem Durchgang verarbeiten kann. Beim Mini-Beispiel aus Kapitel 07 wären es 32 Token, bei heutigen Modellen sind es Hunderttausende. Ist das Fenster voll, muss die Anwendung etwas wegwerfen oder zusammenfassen: Dann «vergisst» der Chat den Anfang — und zwar nicht, weil das Modell müde wird, sondern weil der Anfang nicht mehr mitgeschickt wird.</p>
     <p>Und selbst innerhalb des Fensters wird es nicht beliebig besser. Je länger der mitgeschickte Text, desto eher verliert das Modell Angaben, die mittendrin stehen. Ein kurzer, präziser Kontext ist in der Praxis besser als ein langer vollständiger.</p>
 
     <div class="merk">
@@ -1106,40 +1107,66 @@ wiederhole höchstens 10-mal:
   <section class="kap" id="kap13" hidden>
     <p class="eyebrow">Kapitel 13 · Schluss</p>
     <h1>Dartmouth 1956 und ein falscher Name</h1>
-    <p class="lead">Im Sommer 1956 versammelten vier Forscher — John McCarthy, Marvin Minsky, Nathaniel Rochester und Claude Shannon — rund zehn Leute im obersten Stock des Mathematikgebäudes des Dartmouth College in Hanover, New Hampshire. Sie hatten einen Zuschuss der Rockefeller Foundation über 7 500 Dollar und einen Plan für acht Wochen Arbeit.</p>
+    <p class="lead">Im August 1955 beantragten vier Forscher — John McCarthy, Marvin Minsky, Nathaniel Rochester und Claude Shannon — ein Sommerprojekt am Dartmouth College in Hanover, New Hampshire: «a 2 month, 10 man study of artificial intelligence». Die Rockefeller Foundation gab 7 500 Dollar dazu, und im Sommer 1956 fand das Treffen statt.</p>
 
     <div class="daten">
       <dl>
         <div><dt>Titel</dt><dd>Dartmouth Summer Research Project on Artificial Intelligence</dd></div>
         <div><dt>Budget</dt><dd><b>7 500</b> Dollar</dd></div>
-        <div><dt>Dauer</dt><dd>geplante <b>8</b> Wochen</dd></div>
-        <div><dt>Bedeutung</dt><dd>Erste Verwendung des Begriffs «artificial intelligence»</dd></div>
+        <div><dt>Plan</dt><dd><b>2</b> Monate, <b>10</b> Personen</dd></div>
+        <div><dt>Bedeutung</dt><dd>Im Antrag vom 31. August 1955 steht der Begriff «artificial intelligence» zum ersten Mal</dd></div>
       </dl>
     </div>
 
-    <p>Derselbe Claude Shannon, der sechs Jahre vorher mit seiner Frau Buchstaben geraten hatte, sass mit am Tisch, als das Feld seinen Namen bekam. Die Linie von Kapitel 01 bis hierher ist also kürzer, als sie aussieht.</p>
+    <p>Derselbe Claude Shannon, der wenige Jahre vorher gemessen hatte, wie vorhersagbar geschriebenes Englisch ist, unterschrieb den Antrag, mit dem das Feld seinen Namen bekam. Die Linie von Kapitel 01 bis hierher ist also kürzer, als sie aussieht.</p>
 
     <h2 class="sec">Warum der Name vielleicht schlecht gewählt ist</h2>
-    <p>Diese Seite hat dreizehn Schritte beschrieben, in denen an keiner Stelle etwas vorkommt, das dem menschlichen Denken nachgebaut wäre. Token, Vektoren, Aufmerksamkeitsgewichte, eine Ziehung aus einer Verteilung — das ist kein vereinfachtes Gehirn, das ist etwas anderes. Der Autor des Videos zieht daraus den Schluss, dass <em>alien intelligence</em> treffender wäre als <em>artificial intelligence</em>: intelligent im Ergebnis, aber keine künstliche Nachbildung unserer Intelligenz, sondern eine eigene Art.</p>
-
-    <blockquote class="quote">Es ist intelligent, aber nicht unbedingt eine künstliche Version menschlicher Intelligenz. Es ist etwas völlig Anderes.<cite>CJ, «I Built an LLM From Scratch»</cite></blockquote>
+    <p>Diese Seite hat dreizehn Schritte beschrieben, in denen an keiner Stelle etwas vorkommt, das dem menschlichen Denken nachgebaut wäre. Token, Vektoren, Aufmerksamkeitsgewichte, eine Ziehung aus einer Verteilung — das ist kein vereinfachtes Gehirn, das ist etwas anderes. Der Historiker Yuval Noah Harari schlägt deshalb vor, die Abkürzung «AI» als <em>alien intelligence</em> zu lesen statt als <em>artificial intelligence</em>. «Fremd» meint dabei nicht ausserirdisch — die Systeme kommen aus unseren eigenen Labors —, sondern dass sie Entscheidungen treffen und Ideen hervorbringen, auf eine grundlegend andere Art als Menschen.</p>
 
     <p>Man muss dieser Einschätzung nicht folgen — das ist eine offene Frage, und andere halten den Vergleich mit dem Gehirn für fruchtbar. Für die Arbeit mit diesen Systemen ist der nützliche Teil ohnehin der kleinere: Wer weiss, dass vorne Token hineingehen, in der Mitte Zahlen multipliziert werden und hinten gezogen wird, stellt andere Fragen und glaubt andere Antworten.</p>
 
     <h2 class="sec">Die dreizehn Schritte in einem Satz</h2>
-    <p class="mono" style="font-size:13.5px;line-height:1.75;margin-top:12px">Sprache ist vorhersagbar <span style="color:hsl(var(--signal))">→</span> Chatbots taten das mit Regeln <span style="color:hsl(var(--signal))">→</span> die Form bleibt Eingabe/Ausgabe <span style="color:hsl(var(--signal))">→</span> im Kasten liegen Gewichte <span style="color:hsl(var(--signal))">→</span> Text wird zu Token <span style="color:hsl(var(--signal))">→</span> Token werden zu Vektoren <span style="color:hsl(var(--signal))">→</span> Attention mischt den Zusammenhang hinein <span style="color:hsl(var(--signal))">→</span> heraus kommt eine Verteilung <span style="color:hsl(var(--signal))">→</span> daraus wird gezogen und angehängt <span style="color:hsl(var(--signal))">→</span> der ganze Verlauf geht jedes Mal mit <span style="color:hsl(var(--signal))">→</span> die Gewichte kommen aus drei Trainingsphasen <span style="color:hsl(var(--signal))">→</span> Werkzeuge führt das Programm aus <span style="color:hsl(var(--signal))">→</span> und der Name stammt von 1956.</p>
+    <p class="mono" style="font-size:13.5px;line-height:1.75;margin-top:12px">Sprache ist vorhersagbar <span style="color:hsl(var(--signal))">→</span> Chatbots taten das mit Regeln <span style="color:hsl(var(--signal))">→</span> die Form bleibt Eingabe/Ausgabe <span style="color:hsl(var(--signal))">→</span> im Kasten liegen Gewichte <span style="color:hsl(var(--signal))">→</span> Text wird zu Token <span style="color:hsl(var(--signal))">→</span> Token werden zu Vektoren <span style="color:hsl(var(--signal))">→</span> Attention mischt den Zusammenhang hinein <span style="color:hsl(var(--signal))">→</span> heraus kommt eine Verteilung <span style="color:hsl(var(--signal))">→</span> daraus wird gezogen und angehängt <span style="color:hsl(var(--signal))">→</span> der ganze Verlauf geht jedes Mal mit <span style="color:hsl(var(--signal))">→</span> die Gewichte kommen aus drei Trainingsphasen <span style="color:hsl(var(--signal))">→</span> Werkzeuge führt das Programm aus <span style="color:hsl(var(--signal))">→</span> und der Name stammt von 1955.</p>
 
     <h2 class="sec">Quellen</h2>
+    <p>Nach Kapiteln geordnet. Wo ein Link steht, führt er zum Originaltext; arXiv-Fassungen sind frei lesbar.</p>
     <ul class="liste">
-      <li><strong>Hauptquelle:</strong> CJ (Syntax), <em>I Built an LLM From Scratch</em>, 51 Min. — <a href="https://www.youtube.com/watch?v=YmLp8qe87A0" target="_blank" rel="noopener">youtube.com/watch?v=YmLp8qe87A0</a>. Kapitelstruktur, Jahreszahlen, Namen und Kennzahlen dieser Seite folgen diesem Video.</li>
-      <li>C. E. Shannon, <em>Prediction and Entropy of Printed English</em>, 1951.</li>
-      <li>A. M. Turing, <em>Computing Machinery and Intelligence</em>, 1950.</li>
-      <li>J. Weizenbaum, <em>ELIZA — A Computer Program For the Study of Natural Language Communication</em>, 1966.</li>
-      <li>P. Gage, <em>A New Algorithm for Data Compression</em>, 1994; R. Sennrich, B. Haddow, A. Birch, <em>Neural Machine Translation of Rare Words with Subword Units</em>, 2015.</li>
-      <li>T. Mikolov u. a., word2vec, 2013.</li>
-      <li>D. Bahdanau, K. Cho, Y. Bengio, <em>Neural Machine Translation by Jointly Learning to Align and Translate</em>, 2014.</li>
-      <li>A. Vaswani u. a., <em>Attention Is All You Need</em>, 2017.</li>
-      <li>Neue Kantonsschule Aarau, <em>Richtlinien zum Umgang mit KI</em> (NKSA), für die Hinweise zur Quellenprüfung in Kapitel 11.</li>
+      <li><span class="mono">01</span> C. E. Shannon (1951): <em>Prediction and Entropy of Printed English.</em> Bell System Technical Journal 30 (1), 50–64. <a href="https://doi.org/10.1002/j.1538-7305.1951.tb01366.x" target="_blank" rel="noopener">doi.org/10.1002/j.1538-7305.1951.tb01366.x</a></li>
+      <li><span class="mono">02</span> A. M. Turing (1950): <em>Computing Machinery and Intelligence.</em> Mind 59 (236), 433–460. <a href="https://doi.org/10.1093/mind/LIX.236.433" target="_blank" rel="noopener">doi.org/10.1093/mind/LIX.236.433</a></li>
+      <li><span class="mono">02</span> J. Weizenbaum (1966): <em>ELIZA — A Computer Program for the Study of Natural Language Communication between Man and Machine.</em> Communications of the ACM 9 (1), 36–45. <a href="https://doi.org/10.1145/365153.365168" target="_blank" rel="noopener">doi.org/10.1145/365153.365168</a></li>
+      <li><span class="mono">02</span> J. Weizenbaum (1976): <em>Computer Power and Human Reason.</em> W. H. Freeman. (Die Episode mit der Sekretärin.)</li>
+      <li><span class="mono">02</span> K. M. Colby, S. Weber, F. D. Hilf (1971): <em>Artificial Paranoia.</em> Artificial Intelligence 2 (1), 1–25. <a href="https://doi.org/10.1016/0004-3702(71)90002-6" target="_blank" rel="noopener">doi.org/10.1016/0004-3702(71)90002-6</a></li>
+      <li><span class="mono">02</span> R. S. Wallace (2009): <em>The Anatomy of A.L.I.C.E.</em> In: Parsing the Turing Test, Springer, 181–210. <a href="https://doi.org/10.1007/978-1-4020-6710-5_13" target="_blank" rel="noopener">doi.org/10.1007/978-1-4020-6710-5_13</a></li>
+      <li><span class="mono">02</span> Computer History Museum: <em>SmarterChild: A Chatbot Buddy from 2001.</em> <a href="https://computerhistory.org/blog/smarterchild-a-chatbot-buddy-from-2001/" target="_blank" rel="noopener">computerhistory.org</a></li>
+      <li><span class="mono">04</span> W. S. McCulloch, W. Pitts (1943): <em>A Logical Calculus of the Ideas Immanent in Nervous Activity.</em> Bulletin of Mathematical Biophysics 5, 115–133. <a href="https://doi.org/10.1007/BF02478259" target="_blank" rel="noopener">doi.org/10.1007/BF02478259</a></li>
+      <li><span class="mono">04</span> F. Rosenblatt (1958): <em>The Perceptron.</em> Psychological Review 65 (6), 386–408. <a href="https://doi.org/10.1037/h0042519" target="_blank" rel="noopener">doi.org/10.1037/h0042519</a></li>
+      <li><span class="mono">04</span> M. Minsky, S. Papert (1969): <em>Perceptrons.</em> MIT Press.</li>
+      <li><span class="mono">04</span> D. E. Rumelhart, G. E. Hinton, R. J. Williams (1986): <em>Learning Representations by Back-propagating Errors.</em> Nature 323, 533–536. <a href="https://doi.org/10.1038/323533a0" target="_blank" rel="noopener">doi.org/10.1038/323533a0</a></li>
+      <li><span class="mono">05</span> P. Gage (1994): <em>A New Algorithm for Data Compression.</em> The C Users Journal 12 (2), 23–38.</li>
+      <li><span class="mono">05</span> R. Sennrich, B. Haddow, A. Birch (2016): <em>Neural Machine Translation of Rare Words with Subword Units.</em> ACL 2016. <a href="https://arxiv.org/abs/1508.07909" target="_blank" rel="noopener">arxiv.org/abs/1508.07909</a></li>
+      <li><span class="mono">05</span> A. Radford u. a. (2019): <em>Language Models are Unsupervised Multitask Learners</em> (GPT-2, Byte-Level-BPE). <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf" target="_blank" rel="noopener">cdn.openai.com</a></li>
+      <li><span class="mono">06</span> G. Frege (1884): <em>Die Grundlagen der Arithmetik.</em> Breslau: Koebner.</li>
+      <li><span class="mono">06</span> J. R. Firth (1957): <em>A Synopsis of Linguistic Theory, 1930–1955.</em> In: Studies in Linguistic Analysis, Blackwell, 1–32.</li>
+      <li><span class="mono">06</span> T. Mikolov u. a. (2013): <em>Efficient Estimation of Word Representations in Vector Space.</em> <a href="https://arxiv.org/abs/1301.3781" target="_blank" rel="noopener">arxiv.org/abs/1301.3781</a></li>
+      <li><span class="mono">06</span> T. Mikolov u. a. (2013): <em>Distributed Representations of Words and Phrases and their Compositionality</em> (Negative Sampling). <a href="https://arxiv.org/abs/1310.4546" target="_blank" rel="noopener">arxiv.org/abs/1310.4546</a></li>
+      <li><span class="mono">06</span> T. B. Brown u. a. (2020): <em>Language Models are Few-Shot Learners</em> (GPT-3, 12 288 Dimensionen). <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">arxiv.org/abs/2005.14165</a></li>
+      <li><span class="mono">07</span> D. Bahdanau, K. Cho, Y. Bengio (2014): <em>Neural Machine Translation by Jointly Learning to Align and Translate.</em> <a href="https://arxiv.org/abs/1409.0473" target="_blank" rel="noopener">arxiv.org/abs/1409.0473</a></li>
+      <li><span class="mono">07</span> A. Vaswani u. a. (2017): <em>Attention Is All You Need.</em> NeurIPS 2017. <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">arxiv.org/abs/1706.03762</a></li>
+      <li><span class="mono">07</span> OpenAI (2025): <em>gpt-oss-120b &amp; gpt-oss-20b Model Card</em> (116,8 Milliarden Parameter). <a href="https://arxiv.org/abs/2508.10925" target="_blank" rel="noopener">arxiv.org/abs/2508.10925</a></li>
+      <li><span class="mono">08</span> A. Holtzman u. a. (2020): <em>The Curious Case of Neural Text Degeneration</em> (Top-p). <a href="https://arxiv.org/abs/1904.09751" target="_blank" rel="noopener">arxiv.org/abs/1904.09751</a></li>
+      <li><span class="mono">10</span> N. F. Liu u. a. (2024): <em>Lost in the Middle: How Language Models Use Long Contexts.</em> TACL 12. <a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener">arxiv.org/abs/2307.03172</a></li>
+      <li><span class="mono">11</span> L. Ouyang u. a. (2022): <em>Training Language Models to Follow Instructions with Human Feedback.</em> <a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">arxiv.org/abs/2203.02155</a></li>
+      <li><span class="mono">11</span> R. A. Bradley, M. E. Terry (1952): <em>Rank Analysis of Incomplete Block Designs.</em> Biometrika 39, 324–345. <a href="https://doi.org/10.2307/2334029" target="_blank" rel="noopener">doi.org/10.2307/2334029</a></li>
+      <li><span class="mono">11</span> Neue Kantonsschule Aarau: <em>Richtlinien zum Umgang mit KI.</em> (Hinweise zur Quellenprüfung.)</li>
+      <li><span class="mono">12</span> T. Schick u. a. (2023): <em>Toolformer: Language Models Can Teach Themselves to Use Tools.</em> <a href="https://arxiv.org/abs/2302.04761" target="_blank" rel="noopener">arxiv.org/abs/2302.04761</a></li>
+      <li><span class="mono">12</span> K. Greshake u. a. (2023): <em>Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection.</em> <a href="https://arxiv.org/abs/2302.12173" target="_blank" rel="noopener">arxiv.org/abs/2302.12173</a></li>
+      <li><span class="mono">13</span> J. McCarthy, M. L. Minsky, N. Rochester, C. E. Shannon (1955): <em>A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence.</em> <a href="http://jmc.stanford.edu/articles/dartmouth/dartmouth.pdf" target="_blank" rel="noopener">jmc.stanford.edu</a></li>
+      <li><span class="mono">13</span> Philanthropy Roundtable: <em>Artificial Intelligence</em> (Rockefeller-Zuschuss von 7 500 Dollar). <a href="https://www.philanthropyroundtable.org/almanac/artificial-intelligence/" target="_blank" rel="noopener">philanthropyroundtable.org</a></li>
+      <li><span class="mono">13</span> Y. N. Harari im Gespräch mit B. Edwards (2024): <em>Humankind's Comparative Advantage.</em> IMF Finance &amp; Development, Dezember 2024. <a href="https://www.imf.org/en/publications/fandd/issues/2024/12/cafe-economics-humankinds-comparative-advantage-yuval-noah-harari" target="_blank" rel="noopener">imf.org</a></li>
+      <li><span class="mono">13</span> Y. N. Harari (2024): <em>Nexus: A Brief History of Information Networks from the Stone Age to AI.</em> Random House.</li>
+      <li><span class="mono">13</span> J. R. Searle (1980): <em>Minds, Brains, and Programs.</em> Behavioral and Brain Sciences 3 (3), 417–424. <a href="https://doi.org/10.1017/S0140525X00005756" target="_blank" rel="noopener">doi.org/10.1017/S0140525X00005756</a></li>
+      <li><span class="mono">13</span> E. M. Bender, T. Gebru, A. McMillan-Major, S. Shmitchell (2021): <em>On the Dangers of Stochastic Parrots.</em> FAccT 2021. <a href="https://doi.org/10.1145/3442188.3445922" target="_blank" rel="noopener">doi.org/10.1145/3442188.3445922</a></li>
+      <li><span class="mono">13</span> K. Li u. a. (2023): <em>Emergent World Representations: Exploring a Sequence Model Trained on a Synthetic Task</em> (das Spielbrett). <a href="https://arxiv.org/abs/2210.13382" target="_blank" rel="noopener">arxiv.org/abs/2210.13382</a></li>
     </ul>
 
 
@@ -1152,7 +1179,7 @@ wiederhole höchstens 10-mal:
           <li><strong>Nein, es rechnet nur Statistik.</strong> John Searle beschrieb 1980 das Gedankenexperiment des «chinesischen Zimmers»: Jemand ohne Chinesischkenntnisse beantwortet chinesische Fragen, indem er Regeln aus einem Buch befolgt. Von aussen sieht das wie Verstehen aus, innen gibt es keines. Kritikerinnen von Sprachmodellen nennen sie in diesem Sinn «stochastische Papageien».</li>
           <li><strong>Vielleicht doch, auf eine andere Art.</strong> Um Text über Physik, Recht und Programmierung gut vorherzusagen, muss ein Modell intern Strukturen aufbauen, die diese Gebiete abbilden. Forschende haben in Modellen messbare innere Darstellungen gefunden, etwa für Positionen auf einem Spielbrett, das nie direkt beschrieben wurde. Ob man das «Verstehen» nennt, ist dann eine Frage der Definition.</li>
         </ul>
-        <p>CJs Vorschlag «alien intelligence» umgeht diese Frage: Er misst das Modell nicht am Menschen. Eine Konsequenz davon ist praktisch. Wer ein Modell für ein verkleinertes Gehirn hält, erwartet menschliche Fehler. Es macht aber andere — es verrechnet sich bei einfachen Zahlen und löst zugleich schwierige Aufgaben, es erfindet Quellen mit derselben Sicherheit, mit der es echte nennt.</p>
+        <p>Hararis Vorschlag «alien intelligence» umgeht diese Frage: Er misst das Modell nicht am Menschen. Eine Konsequenz davon ist praktisch. Wer ein Modell für ein verkleinertes Gehirn hält, erwartet menschliche Fehler. Es macht aber andere — es verrechnet sich bei einfachen Zahlen und löst zugleich schwierige Aufgaben, es erfindet Quellen mit derselben Sicherheit, mit der es echte nennt.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap12">← 12 Werkzeuge</a><a href="#start"><span class="pf">→</span> 00 Überblick</a></div>
