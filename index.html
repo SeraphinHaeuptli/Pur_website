@@ -3,7 +3,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='6' width='4' height='20' fill='%23fff'/%3E%3Crect x='14' y='14' width='4' height='12' fill='%23fff'/%3E%3Crect x='22' y='20' width='4' height='6' fill='%23fff'/%3E%3C/svg%3E">
 <style>
 /* Layout «Modellkarte»: oben die Kopfzeile, darunter das ganze Modell als Karte (Kapitelnavigation),
-   eine Spalte Lesetext. Jede Stufe im Modell (Kap. 03–09) hat eine eigene Farbe (--st-03 … --st-09);
+   eine Spalte Lesetext. Jede Stufe der Maschine (Kap. 04–09) hat eine eigene Farbe (--st-04 … --st-09);
    ein Kapitel übernimmt seine Farbe als --stufe. Keine Radien, keine Schatten. */
 @font-face{font-family:"Figtree";src:url("fonts/figtree-latin.woff2") format("woff2");font-weight:300 900;font-style:normal;font-display:swap}
 @font-face{font-family:"Figtree";src:url("fonts/figtree-latin-italic.woff2") format("woff2");font-weight:300 900;font-style:italic;font-display:swap}
@@ -15,7 +15,6 @@
   --azur:214 70% 38%; --azur-soft:214 70% 96%;
   --moss:152 40% 30%; --amber:36 84% 42%;
   /* Stufen im Modell: Farbe und helle Fläche */
-  --st-03:220 7% 46%;  --st-03s:220 14% 95%;
   --st-04:222 24% 33%; --st-04s:222 30% 95%;
   --st-05:33 85% 35%;  --st-05s:38 90% 94%;
   --st-06:185 70% 28%; --st-06s:185 50% 94%;
@@ -38,8 +37,7 @@
     --signal:222 30% 74%; --signal-soft:222 20% 16%;
     --azur:214 85% 74%; --azur-soft:214 40% 15%;
     --moss:152 45% 60%; --amber:38 90% 62%;
-    --st-03:220 8% 64%;  --st-03s:220 10% 16%;
-    --st-04:222 30% 74%; --st-04s:222 20% 16%;
+        --st-04:222 30% 74%; --st-04s:222 20% 16%;
     --st-05:38 85% 60%;  --st-05s:36 40% 15%;
     --st-06:182 55% 55%; --st-06s:185 35% 14%;
     --st-07:262 75% 76%; --st-07s:262 30% 18%;
@@ -55,8 +53,7 @@
   --signal:222 30% 74%; --signal-soft:222 20% 16%;
   --azur:214 85% 74%; --azur-soft:214 40% 15%;
   --moss:152 45% 60%; --amber:38 90% 62%;
-  --st-03:220 8% 64%;  --st-03s:220 10% 16%;
-  --st-04:222 30% 74%; --st-04s:222 20% 16%;
+    --st-04:222 30% 74%; --st-04s:222 20% 16%;
   --st-05:38 85% 60%;  --st-05s:36 40% 15%;
   --st-06:182 55% 55%; --st-06s:185 35% 14%;
   --st-07:262 75% 76%; --st-07s:262 30% 18%;
@@ -71,7 +68,6 @@
   --signal:0 0% 0%; --signal-soft:0 0% 92%;
   --azur:0 0% 30%; --azur-soft:0 0% 94%;
   --moss:0 0% 26%; --amber:0 0% 34%;
-  --st-03:0 0% 45%; --st-03s:0 0% 94%;
   --st-04:0 0% 0%;  --st-04s:0 0% 92%;
   --st-05:0 0% 20%; --st-05s:0 0% 93%;
   --st-06:0 0% 30%; --st-06s:0 0% 93%;
@@ -81,7 +77,6 @@
   color-scheme:light;
 }
 /* Jedes Kapitel und jeder Link darauf kennt seine Stufe */
-#kap03,a[href="#kap03"]{--stufe:var(--st-03);--stufe-s:var(--st-03s)}
 #kap04,a[href="#kap04"]{--stufe:var(--st-04);--stufe-s:var(--st-04s)}
 #kap05,a[href="#kap05"]{--stufe:var(--st-05);--stufe-s:var(--st-05s)}
 #kap06,a[href="#kap06"]{--stufe:var(--st-06);--stufe-s:var(--st-06s)}
@@ -144,7 +139,7 @@ a:hover{border-bottom-color:hsl(var(--azur))}
 }
 
 /* ---- Modellkarte (Kapitelnavigation) ----
-   Eine Reihe: Vorgeschichte · Im Modell (farbig, Kap. 03–09) · Drumherum · Schluss · Glossar.
+   Eine Reihe: Überblick · Die Frage (01–03) · Die Maschine (farbig, 04–09) · Drumherum · Schluss · Glossar.
    Ab 980 px klebt die Karte unter der Kopfzeile; darunter steht, wo man gerade ist. */
 .toc{border-bottom:1px solid hsl(var(--rule));background:hsl(var(--paper))}
 .toc-in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:10px 8px;max-width:1280px;margin:0 auto}
@@ -168,6 +163,7 @@ a:hover{border-bottom-color:hsl(var(--azur))}
 .karte-status{font-size:13px;color:hsl(var(--ink-2));margin-top:7px;line-height:1.4;min-height:1.4em}
 .karte-status b{color:hsl(var(--ink));font-weight:700}
 @media (min-width:980px){
+  html{scroll-padding-top:calc(var(--kopf-h) + 120px)}
   .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--kopf-h));z-index:25}
   .toc h2{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .toc-in{max-width:1440px}
@@ -274,8 +270,8 @@ canvas{max-width:100%;height:auto;display:block;border:1px solid hsl(var(--rule)
   padding:11px 0;color:inherit;border-left:0;border-right:0;text-decoration:none;align-items:baseline}
 .pipe a:hover{background:hsl(var(--panel))}
 .pipe .n{font-family:var(--mono);font-size:11px;color:hsl(var(--stufe))}
-.pipe a:is([href="#kap03"],[href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]){border-left:3px solid hsl(var(--stufe));padding-left:9px;margin-left:-12px}
-.pipe a:is([href="#kap03"],[href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]) .n{font-weight:700}
+.pipe a:is([href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]){border-left:3px solid hsl(var(--stufe));padding-left:9px;margin-left:-12px}
+.pipe a:is([href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]) .n{font-weight:700}
 .pipe .t{font-weight:700;font-size:14.5px}
 .pipe .d{font-size:13px;color:hsl(var(--ink-2));margin-top:2px;grid-column:2}
 
@@ -369,8 +365,8 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
         <li><a href="#start"><span class="num">00</span><span>Überblick</span></a></li>
         <li class="neu-gruppe"><a href="#kap01"><span class="num">01</span><span>Shannons Spiel</span></a></li>
         <li><a href="#kap02"><span class="num">02</span><span>Vor den LLMs</span></a></li>
-        <li class="modell neu-gruppe"><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
-        <li class="modell"><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
+        <li><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
+        <li class="modell neu-gruppe"><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
         <li class="modell"><a href="#kap05"><span class="num">05</span><span>Tokenisierung</span></a></li>
         <li class="modell"><a href="#kap06"><span class="num">06</span><span>Embeddings</span></a></li>
         <li class="modell"><a href="#kap07"><span class="num">07</span><span>Der Transformer</span></a></li>
@@ -382,7 +378,7 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
         <li class="neu-gruppe"><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
         <li class="neu-gruppe"><a href="#glossar"><span class="num">A–Z</span><span>Glossar</span></a></li>
       </ol>
-      <p class="karte-status" id="karte-status" aria-live="polite"></p>
+      <p class="karte-status" id="karte-status"></p>
     </div>
   </nav>
 
@@ -2420,9 +2416,9 @@ var BEGRIFFE = [
 /* ============================ 16 · Modellkarte: «Du bist hier» ============================ */
 (function(){
   var st = W("karte-status"); if(!st) return;
-  var MODELL = ["kap03","kap04","kap05","kap06","kap07","kap08","kap09"];
-  var GRUPPE = { kap01:"Vorgeschichte", kap02:"Vorgeschichte", kap10:"Drumherum", kap11:"Drumherum", kap12:"Drumherum", kap13:"Schluss" };
-  MODELL.forEach(function(k){ GRUPPE[k] = "Im Modell"; });
+  /* Gruppen wie im Kasten «Worum es geht» auf der Startseite */
+  var GRUPPE = { kap01:"Die Frage", kap02:"Die Frage", kap03:"Die Frage", kap10:"Drumherum", kap11:"Drumherum", kap12:"Drumherum", kap13:"Schluss" };
+  ["kap04","kap05","kap06","kap07","kap08","kap09"].forEach(function(k){ GRUPPE[k] = "Die Maschine"; });
   function titel(id){
     var a = document.querySelector('#tocliste a[href="#' + id + '"]'); if(!a) return id;
     var s = a.querySelectorAll("span"); return s[s.length-1].textContent;
@@ -2443,9 +2439,7 @@ var BEGRIFFE = [
   function zeigKapitel(id){
     if(id === "start"){ setz("Du bist hier: Überblick", satz(id)); return; }
     if(id === "glossar"){ setz("Du bist hier: Glossar", satz(id)); return; }
-    var i = MODELL.indexOf(id);
-    var wo = GRUPPE[id] + (i >= 0 ? ", Stufe " + (i+1) + " von 7" : "");
-    setz("Du bist hier: " + wo + " · " + id.replace("kap","") + " " + titel(id), satz(id));
+    setz("Du bist hier: " + GRUPPE[id] + " · " + id.replace("kap","") + " " + titel(id), satz(id));
   }
   window.addEventListener("kapitel", function(e){ aktiv = e.detail; zeigKapitel(aktiv); });
   /* Nur wo die Karte klebt (ab 980 px). Auf schmalen Bildschirmen würde der neue Text anders umbrechen,

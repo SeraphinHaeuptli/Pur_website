@@ -47,7 +47,7 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    - Schwarz-Weiss: `:root.m-mono`
    - Stil «Modellkarte» (seit 17.11.2026, Vorbild Transformer Explainer): Schrift Figtree, weiss/hell,
      keine Radien, keine Schatten. Blau (`--azur`) nur für Links und Vertiefungen.
-   - **Stufenfarben:** `--st-03` … `--st-09` (+ `--st-03s` … helle Fläche) für die Kapitel im Modell,
+   - **Stufenfarben:** `--st-04` … `--st-09` (+ `--st-04s` … helle Fläche) für die Kapitel der Maschine,
      in allen vier Token-Blöcken gepflegt (hell, zweimal dunkel, S/W als Grautöne). Ein Kapitel setzt
      `--stufe`/`--stufe-s` per `#kapNN`, und `section.kap` leitet `--signal` daraus ab: Im Kapitel ist
      die Stufenfarbe der Akzent. Canvas-Zeichnungen lesen `--signal` weiter von `:root` (Graublau).
@@ -57,7 +57,9 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    - Der ASCII-Hintergrund ist per CSS ausgeblendet (`#ascii{display:none}`), Block 2 läuft weiter.
 2. **Kopfzeile** mit zwei Schaltergruppen: `Einfach / Mit Details` und `System / Hell / Dunkel / S/W`.
    Darunter die **Modellkarte** (`nav.toc`, Liste `#tocliste`): alle 15 Seiten in einer Reihe, gruppiert
-   (00 · 01–02 · Modell 03–09 farbig `li.modell` · 10–12 · 13 · Glossar), neue Gruppe mit `li.neu-gruppe`.
+   wie im Kasten «Worum es geht» (00 · Die Frage 01–03 · Die Maschine 04–09 farbig `li.modell` ·
+   Drumherum 10–12 · Schluss 13 · Glossar), neue Gruppe mit `li.neu-gruppe`. Kein eigener Zähler:
+   Die Kapitel nummerieren ihre Schritte selbst («Schritt 3 der Verarbeitung»).
    Ab 980 px klebt sie unter der Kopfzeile (`--kopf-h` misst Block 16). Darunter `#karte-status`
    («Du bist hier»), Sätze aus der Kette auf der Startseite (`.pipe .d`). Öffnet ein Glossar-Popup,
    leuchtet das Kapitel des Begriffs in der Karte auf (`a.verbunden`); die Statuszeile wechselt dabei
