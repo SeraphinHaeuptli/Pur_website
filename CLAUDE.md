@@ -68,6 +68,24 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
 | 09 | Generierung | Trigramm-Modell auf 30 Kindergeschichten |
 | 10 / 12 | Request, Werkzeuge | Ablauf-Darstellung, keine echten API-Aufrufe |
 
+## Fachbegriffe und Glossar
+
+- **Eine Datenquelle:** `var BEGRIFFE = [...]` in Script-Block 15. Daraus entstehen die Popups im
+  Text und die Glossar-Seite (`<section class="kap" id="glossar">`, in `#tocliste` als «A–Z»).
+- **Neuer Begriff:** nur einen Eintrag `{ id, wort, formen, kap, text }` in `BEGRIFFE` ergänzen.
+  `formen` sind die Schreibweisen, die im Text markiert werden (Gross-/Kleinschreibung zählt,
+  ganze Wörter; «Gewichte» trifft nicht «Aufmerksamkeitsgewichte»). `kap` ist das Kapitel,
+  das den Begriff erklärt. In `text` keine neuen Jahreszahlen oder Kennzahlen ohne Quelle.
+- **Markiert wird** automatisch, pro Kapitel nur das erste Vorkommen, in `p`, `li`, `td`, `dd`
+  und in den Erklärzeilen unter Formeln (`.formel .wo`). **Nie** in Überschriften, Versuchen
+  (`.labor`), Formeln, Buttons, Links, `.mono`, Zitaten, der Quellenliste (`ul.quellen`), der
+  Kette (`.pipe`) und im Glossar selbst. Liste: `AUSSCHLUSS` in Block 15a.
+- Begriffe, die nur in Überschriften vorkommen (z. B. KV-Cache), stehen nur im Glossar.
+- Popup: Maus darüber öffnet, Klick/Antippen hält es offen, Antippen daneben, Escape, Scrollen
+  oder Kapitelwechsel schliessen. «Im Glossar» öffnet den Begriff auf der Glossar-Seite.
+- Das Glossar ist kein Kapitel: «14 Kapitel» bleibt, nicht in `.pipe` aufnehmen.
+  Es gibt deshalb jetzt **15** `section.kap`; Tests, die Sektionen zählen, erwarten 15.
+
 ## Regeln für Änderungen
 
 - **Navigation:** Kapitelwechsel laufen über den Klick-Handler in Block 3, nicht über

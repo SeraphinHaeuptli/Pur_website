@@ -171,7 +171,7 @@ td.num:not(:last-child),th.num:not(:last-child){padding-right:12px}
 .steuer{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:12px}
 .steuer label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--ink-2));display:flex;gap:8px;align-items:center}
 input[type=range]{accent-color:hsl(var(--signal));width:132px}
-input[type=text],input[type=number],textarea,select{
+input[type=text],input[type=number],input[type=search],textarea,select{
   font-family:var(--mono);font-size:13px;background:hsl(var(--paper));color:hsl(var(--ink));
   border:1px solid hsl(var(--rule-strong));padding:6px 8px;border-radius:0;min-width:0;max-width:100%;
 }
@@ -240,6 +240,33 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
 .formel{font-family:var(--mono);font-size:14px;line-height:1.55;background:hsl(var(--panel));border:1px solid hsl(var(--rule));padding:10px 12px;overflow-x:auto;white-space:pre}
 .formel b{color:hsl(var(--signal));font-weight:400}
 .formel .wo{display:block;font-size:11.5px;color:hsl(var(--ink-3));white-space:pre-wrap;margin-top:7px;line-height:1.5}
+/* ---- Fachbegriffe: Markierung im Text und Popup ---- */
+.fb{border-bottom:1px dotted hsl(var(--ink-3));cursor:pointer}
+.fb:hover,.fb.offen{border-bottom:1px solid hsl(var(--signal))}
+.fb:focus-visible{outline:2px solid hsl(var(--signal));outline-offset:1px}
+.fb-pop{position:fixed;z-index:60;width:max-content;max-width:min(320px,calc(100vw - 32px));background:hsl(var(--panel));color:hsl(var(--ink));
+  border:1px solid hsl(var(--rule-strong));border-top:2px solid hsl(var(--signal));padding:10px 12px}
+.fb-pop[hidden]{display:none}
+.fb-kopf{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--signal));margin-bottom:5px}
+.fb-text{font-size:14px;line-height:1.5}
+.fb-link{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:0;color:hsl(var(--ink-2))}
+.fb-link:hover{color:hsl(var(--signal))}
+/* ---- Glossar ---- */
+.gl-suche{margin-top:24px}
+.gl-suche input{width:100%;font-size:16px;padding:9px 10px}
+ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--rule-strong))}
+.gl-zw{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--signal));padding:16px 0 5px;border-bottom:1px solid hsl(var(--rule))}
+.gl-b{appearance:none;background:none;border:0;border-bottom:1px solid hsl(var(--rule));border-radius:0;width:100%;display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+  padding:10px 0;text-align:left;color:hsl(var(--ink));font:inherit;font-size:15.5px;cursor:pointer}
+.gl-b .gl-w::before{content:"+";display:inline-block;width:1.1em;font-family:var(--mono);color:hsl(var(--signal))}
+.gl-b[aria-expanded="true"] .gl-w::before{content:"\2212"}
+.gl-b:hover .gl-w{color:hsl(var(--signal))}
+.gl-b:focus-visible{outline:2px solid hsl(var(--signal));outline-offset:-2px}
+.gl-b[aria-expanded="true"]{border-bottom-color:transparent;font-weight:700}
+.gl-k{font-family:var(--mono);font-size:10.5px;color:hsl(var(--ink-3));flex:0 0 auto}
+.gl-p{padding:0 0 14px 1.1em;border-bottom:1px solid hsl(var(--rule))}
+.gl-p p{font-size:15.5px}
+.gl-p .hinweis{margin-top:8px}
 @media (prefers-reduced-motion:reduce){#ascii{display:none}}
 </style>
 
@@ -285,6 +312,7 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
         <li><a href="#kap11"><span class="num">11</span><span>Wie trainiert wird</span></a></li>
         <li><a href="#kap12"><span class="num">12</span><span>Werkzeuge</span></a></li>
         <li><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
+        <li><a href="#glossar"><span class="num">A–Z</span><span>Glossar</span></a></li>
       </ol>
     </div>
   </nav>
@@ -304,6 +332,7 @@ details.tief>summary:focus-visible{outline:2px solid hsl(var(--signal));outline-
     <h2 class="sec">Zwei Ebenen</h2>
     <p>Jedes Kapitel lässt sich auf zwei Arten lesen. Der normale Text braucht kein Vorwissen: keine Formeln, keine Programmierkenntnisse. Wer genauer wissen will, was passiert, klappt am Kapitelende die blauen Kästen mit der Aufschrift <span class="mono">Vertiefung</span> auf. Dort stehen die Mathematik, die genauen Verfahren und die Stellen, an denen die einfache Erklärung etwas weglässt.</p>
     <p>Oben rechts schaltet <span class="mono">Mit Details</span> alle Vertiefungen auf einmal auf, <span class="mono">Einfach</span> klappt sie wieder zu. Einzelne Kästen lassen sich auch für sich öffnen.</p>
+    <p>Gepunktet unterstrichene Wörter sind Fachbegriffe. Fährt man mit der Maus darüber oder tippt sie an, erscheint eine kurze Erklärung. Alle Begriffe zusammen, mit Suche, stehen im <a href="#glossar">Glossar</a>.</p>
     <details class="tief">
       <summary>Vertiefung · So sieht eine aus</summary>
       <div class="tiefinhalt">
@@ -1130,7 +1159,7 @@ wiederhole höchstens 10-mal:
 
     <h2 class="sec">Quellen</h2>
     <p>Nach Kapiteln geordnet. Wo ein Link steht, führt er zur Quelle; arXiv-Fassungen sind frei lesbar.</p>
-    <ul class="liste">
+    <ul class="liste quellen">
       <li><span class="mono">01</span> C. E. Shannon (1951): <em>Prediction and Entropy of Printed English.</em> Bell System Technical Journal 30 (1), 50–64. <a href="https://doi.org/10.1002/j.1538-7305.1951.tb01366.x" target="_blank" rel="noopener">doi.org/10.1002/j.1538-7305.1951.tb01366.x</a></li>
       <li><span class="mono">02</span> A. M. Turing (1950): <em>Computing Machinery and Intelligence.</em> Mind 59 (236), 433–460. <a href="https://doi.org/10.1093/mind/LIX.236.433" target="_blank" rel="noopener">doi.org/10.1093/mind/LIX.236.433</a></li>
       <li><span class="mono">02</span> J. Weizenbaum (1966): <em>ELIZA — A Computer Program for the Study of Natural Language Communication between Man and Machine.</em> Communications of the ACM 9 (1), 36–45. <a href="https://doi.org/10.1145/365153.365168" target="_blank" rel="noopener">doi.org/10.1145/365153.365168</a></li>
@@ -1185,6 +1214,18 @@ wiederhole höchstens 10-mal:
     <div class="fussnav"><a href="#kap12">← 12 Werkzeuge</a><a href="#start"><span class="pf">→</span> 00 Überblick</a></div>
   </section>
 
+  <section class="kap" id="glossar" hidden>
+    <p class="eyebrow">Glossar · Fachbegriffe von A bis Z</p>
+    <h1>Fachbegriffe, einfach erklärt</h1>
+    <p class="lead">Alle Fachbegriffe dieser Seite an einem Ort. Such einen Begriff oder blättere durch die Liste; ein Klick klappt die Erklärung auf. Im Text der Kapitel erscheint dieselbe Erklärung, wenn man über einen gepunktet unterstrichenen Begriff fährt oder ihn antippt.</p>
+    <div class="gl-suche">
+      <input type="search" id="gl-in" placeholder="Begriff suchen, z. B. Token" autocomplete="off" spellcheck="false" aria-label="Begriff suchen" aria-controls="gl-liste">
+    </div>
+    <p class="hinweis" id="gl-anz" aria-live="polite"></p>
+    <ul class="gl wide" id="gl-liste"></ul>
+    <div class="fussnav"><a href="#kap13">← 13 Alien Intelligence</a><a href="#start"><span class="pf">→</span> 00 Überblick</a></div>
+  </section>
+
   </main>
 </div>
 
@@ -1195,6 +1236,12 @@ wiederhole höchstens 10-mal:
     <span>Alle Versuche rechnen im Browser, ohne Server</span>
   </div>
 </footer>
+
+<div class="fb-pop" id="fb-pop" role="tooltip" hidden>
+  <span class="fb-kopf" id="fb-kopf"></span>
+  <p class="fb-text" id="fb-text"></p>
+  <a href="#glossar" class="fb-link" id="fb-link">Im Glossar <span aria-hidden="true">→</span></a>
+</div>
 
 <script>
 "use strict";
@@ -1928,5 +1975,368 @@ var AKTIV = "start";
   next.addEventListener("click", function(){ if(i < 4){ i++; mal(); } });
   reset.addEventListener("click", function(){ i = 0; mal(); });
   mal();
+})();
+
+/* ============================ 15 · Fachbegriffe und Glossar ============================ */
+/* Eine Liste für beides: Popups im Text und die Glossar-Seite.
+   formen: Schreibweisen, die im Text markiert werden (Gross-/Kleinschreibung zählt).
+   kap: Kapitel, in dem der Begriff erklärt wird. Keine neuen Jahreszahlen oder Kennzahlen
+   ohne Eintrag in der Quellenliste (Kap. 13). */
+var BEGRIFFE = [
+  { id:"attention", wort:"Attention", formen:["Attention"], kap:"kap07",
+    text:"Der Mechanismus im Transformer, mit dem jedes Token auf alle anderen Token im Text schaut und gewichtet, welche davon für es wichtig sind. So wird der Zusammenhang in den Vektor des Tokens eingerechnet." },
+  { id:"backprop", wort:"Backpropagation", formen:["Backpropagation"], kap:"kap04",
+    text:"Das Verfahren, mit dem ein Netz aus seinen Fehlern lernt. Der Fehler am Ausgang wird Schicht für Schicht nach vorne zurückgerechnet, damit man für jedes Gewicht weiss, in welche Richtung es verstellt werden muss. Mathematisch ist das die Kettenregel der Ableitung." },
+  { id:"beam", wort:"Beam Search", formen:["Beam Search"], kap:"kap09",
+    text:"Ein Verfahren zur Textgenerierung, das nicht nur die eine beste Fortsetzung verfolgt, sondern mehrere Varianten gleichzeitig, und am Ende die insgesamt wahrscheinlichste nimmt." },
+  { id:"bewertungsmodell", wort:"Bewertungsmodell", formen:["Bewertungsmodell","Bewertungsmodells"], kap:"kap11",
+    text:"Ein eigenes Modell, das beim RLHF lernt vorherzusagen, welche von zwei Antworten Menschen besser finden. Es gibt jeder Antwort eine Punktzahl, an der das Sprachmodell dann ausgerichtet wird." },
+  { id:"bias", wort:"Bias", formen:["Bias"], kap:"kap04",
+    text:"Eine zusätzliche Zahl in einem Neuron, die zur gewichteten Summe addiert wird. Sie verschiebt die Schwelle, ab der das Neuron anspringt. Wie die Gewichte wird sie im Training gelernt." },
+  { id:"bit", wort:"Bit", formen:["Bit"], kap:"kap01",
+    text:"Die Einheit für Information. Ein Bit ist so viel Information, wie eine Ja-oder-Nein-Frage mit zwei gleich wahrscheinlichen Antworten liefert, etwa ein Münzwurf." },
+  { id:"blackbox", wort:"Blackbox", formen:["Blackbox"], kap:"kap03",
+    text:"Ein System, bei dem man nur sieht, was hineingeht und was herauskommt, aber nicht, was dazwischen passiert." },
+  { id:"bpe", wort:"Byte Pair Encoding (BPE)", formen:["Byte Pair Encoding","BPE"], kap:"kap05",
+    text:"Das Verfahren, mit dem Text in Token zerlegt wird. Es beginnt mit einzelnen Zeichen und verschmilzt immer wieder das häufigste benachbarte Paar zu einem neuen Token, bis die gewünschte Zahl von Verschmelzungen erreicht ist." },
+  { id:"chatbot", wort:"Chatbot", formen:["Chatbot","Chatbots"], kap:"kap02",
+    text:"Ein Programm, mit dem man sich in Textform unterhalten kann. Frühe Chatbots wie ELIZA arbeiteten mit von Hand geschriebenen Regeln, heutige mit einem Sprachmodell." },
+  { id:"zimmer", wort:"Chinesisches Zimmer", formen:["chinesischen Zimmers","chinesisches Zimmer"], kap:"kap13",
+    text:"Ein Gedankenexperiment von John Searle: Jemand ohne Chinesischkenntnisse beantwortet chinesische Fragen nur mit Hilfe eines Regelbuchs. Von aussen wirkt das wie Verstehen, innen gibt es keines." },
+  { id:"deterministisch", wort:"Deterministisch", formen:["deterministisch"], kap:"kap03",
+    text:"Ein Vorgang ist deterministisch, wenn dieselbe Eingabe immer genau dasselbe Ergebnis liefert, ohne jeden Zufall." },
+  { id:"embedding", wort:"Embedding", formen:["Embedding","Embeddings"], kap:"kap06",
+    text:"Die Liste von Zahlen (ein Vektor), die ein Token im Modell darstellt. Token mit ähnlicher Bedeutung bekommen ähnliche Embeddings, liegen im Raum also nah beieinander." },
+  { id:"entropie", wort:"Entropie", formen:["Entropie"], kap:"kap01",
+    text:"Ein Mass dafür, wie unvorhersehbar etwas im Durchschnitt ist, gemessen in Bit. Je höher die Entropie eines Textes, desto schwerer lässt sich das nächste Zeichen erraten." },
+  { id:"epoche", wort:"Epoche", formen:["Epoche","Epochen"], kap:"kap04",
+    text:"Ein Durchgang im Training, bei dem jedes Trainingsbeispiel einmal durchgerechnet wurde." },
+  { id:"finetuning", wort:"Finetuning", formen:["Finetuning"], kap:"kap11",
+    text:"Die zweite Trainingsphase. Ein vortrainiertes Modell wird mit ausgewählten Frage-Antwort-Paaren weitertrainiert und lernt so, auf Fragen zu antworten, statt sie bloss weiterzuschreiben." },
+  { id:"funktionsaufruf", wort:"Funktionsaufruf", formen:["Funktionsaufruf","Werkzeugaufruf","Werkzeugaufrufe"], kap:"kap12",
+    text:"Ein Stück Text, in dem das Modell in einem festen Format hinschreibt, welches Werkzeug mit welchen Angaben aufgerufen werden soll. Ausführen muss ihn das Programm um das Modell herum." },
+  { id:"gewicht", wort:"Gewicht", formen:["Gewicht","Gewichte","Gewichten","Gewichts"], kap:"kap04",
+    text:"Eine einzelne Zahl im Modell, die bestimmt, wie stark ein Eingang zählt. Ein Modell besteht im Kern aus sehr vielen Gewichten; trainieren heisst, sie so zu verstellen, dass die Vorhersagen besser werden." },
+  { id:"gradientenabstieg", wort:"Gradientenabstieg", formen:["Gradientenabstieg"], kap:"kap04",
+    text:"Das Rezept, nach dem trainiert wird: Man berechnet, in welche Richtung der Fehler steigt, und verschiebt jedes Gewicht ein kleines Stück in die Gegenrichtung. Viele kleine Schritte bergab ergeben einen kleineren Fehler." },
+  { id:"harness", wort:"Harness", formen:["Harness"], kap:"kap12",
+    text:"Das Programm um ein Sprachmodell herum. Es stellt die Eingabe zusammen, ruft das Modell auf, führt verlangte Werkzeuge aus und hängt die Ergebnisse an den Verlauf." },
+  { id:"turing", wort:"Imitation Game (Turing-Test)", formen:["Imitation Game","Turing-Test"], kap:"kap02",
+    text:"Alan Turings Vorschlag: Statt zu fragen «Kann eine Maschine denken?», fragt man, ob ein Mensch im schriftlichen Gespräch zuverlässig unterscheiden kann, ob er mit einer Maschine oder einem Menschen spricht." },
+  { id:"json", wort:"JSON-Schema", formen:["JSON-Schema"], kap:"kap12",
+    text:"Eine feste Beschreibung, welche Angaben ein Werkzeug erwartet: Name, Zweck und erlaubte Parameter mit ihrem Typ. Das Modell bekommt sie als Text in seiner Eingabe." },
+  { id:"maske", wort:"Kausale Maske", formen:["kausale Maske"], kap:"kap07",
+    text:"Eine Regel im Transformer, die verhindert, dass ein Token beim Training auf spätere Token schaut. Jede Position sieht nur sich selbst und das, was davor steht." },
+  { id:"kontextfenster", wort:"Kontextfenster", formen:["Kontextfenster","Kontextfensters","Kontextlänge"], kap:"kap10",
+    text:"Die grösste Menge Text, gemessen in Token, die ein Modell in einem Durchgang verarbeiten kann. Was nicht mehr hineinpasst, sieht das Modell nicht." },
+  { id:"kosinus", wort:"Kosinus-Ähnlichkeit", formen:["Kosinus-Ähnlichkeit"], kap:"kap06",
+    text:"Ein Mass dafür, wie ähnlich die Richtung zweier Vektoren ist, unabhängig von ihrer Länge. 1 heisst gleiche Richtung, 0 heisst senkrecht, −1 entgegengesetzt." },
+  { id:"kreuzentropie", wort:"Kreuzentropie", formen:["Kreuzentropie"], kap:"kap11",
+    text:"Die Fehlergrösse beim Pretraining. Sie misst, wie wenig Wahrscheinlichkeit das Modell dem Token gegeben hat, das im Trainingstext wirklich als nächstes kam. Je kleiner, desto besser." },
+  { id:"ki", wort:"Künstliche Intelligenz", formen:["artificial intelligence","künstliche Intelligenz","Künstliche Intelligenz"], kap:"kap13",
+    text:"Das Forschungsgebiet, Maschinen Aufgaben lösen zu lassen, für die man bei Menschen Intelligenz annimmt. Der englische Begriff «artificial intelligence» stammt aus dem Dartmouth-Antrag von 1955." },
+  { id:"kvcache", wort:"KV-Cache", formen:["KV-Cache"], kap:"kap09",
+    text:"Ein Zwischenspeicher bei der Textgenerierung. Die Keys und Values der schon bearbeiteten Token werden aufbewahrt, damit pro neuem Token nur noch die neue Position gerechnet werden muss." },
+  { id:"layernorm", wort:"LayerNorm", formen:["LayerNorm"], kap:"kap07",
+    text:"Ein Rechenschritt im Transformer-Block, der die Zahlen eines Vektors auf eine einheitliche Grössenordnung bringt. Das hält das Training stabil." },
+  { id:"lernrate", wort:"Lernrate", formen:["Lernrate"], kap:"kap04",
+    text:"Wie gross die Schritte beim Gradientenabstieg sind. Zu gross, und das Netz springt über das Ziel hinaus; zu klein, und es lernt sehr langsam." },
+  { id:"logit", wort:"Logit", formen:["Logit","Logits"], kap:"kap08",
+    text:"Die rohe Punktzahl, die das Modell am Ende für jedes Token des Vokabulars ausgibt. Logits können negativ sein; erst Softmax macht daraus Wahrscheinlichkeiten." },
+  { id:"lstm", wort:"LSTM", formen:["LSTMs","LSTM"], kap:"kap07",
+    text:"Long Short-Term Memory: eine verbesserte Bauart von RNN, die sich Informationen über längere Strecken merken kann. Vor dem Transformer der Standard für Sprache." },
+  { id:"multihead", wort:"Multi-Head Attention", formen:["Multi-Head Attention","Multi-Head"], kap:"kap07",
+    text:"Attention, die mehrmals nebeneinander läuft, jede mit eigenen Gewichten. Jeder dieser «Köpfe» kann auf etwas anderes achten, etwa auf grammatische Bezüge oder auf weit entfernte Wörter." },
+  { id:"negsampling", wort:"Negative Sampling", formen:["negative sampling","Negative Sampling"], kap:"kap06",
+    text:"Ein Trick beim Training von word2vec: Statt das ganze Vokabular zu verrechnen, nimmt man nur einige zufällige Nicht-Nachbarn und schiebt ihre Vektoren weg, während echte Nachbarn angezogen werden." },
+  { id:"neuron", wort:"Neuron", formen:["Neuron","Neurons","Neuronen"], kap:"kap04",
+    text:"Die kleinste Recheneinheit eines Netzes. Ein Neuron multipliziert seine Eingänge mit Gewichten, zählt alles zusammen, addiert den Bias und schickt das Ergebnis durch eine Funktion wie die Sigmoid." },
+  { id:"nexttoken", wort:"Next-Token-Prädiktor", formen:["Next-Token-Prädiktor"], kap:"kap01",
+    text:"Ein Programm, das zu einem Text schätzt, welches Token als nächstes kommt. Genau das ist ein Sprachmodell im Kern." },
+  { id:"parameter", wort:"Parameter", formen:["Parameter","Parametern"], kap:"kap07",
+    text:"Allgemein eine Einstellgrösse. Bei Modellen meist die Zahlen, die im Training gelernt werden, also Gewichte und Bias; ihre Anzahl gibt die Grösse eines Modells an. Bei der Ausgabe heissen auch Regler wie Temperature und Top-p Parameter." },
+  { id:"perplexitaet", wort:"Perplexität", formen:["Perplexität"], kap:"kap01",
+    text:"Die «effektive Zahl der Möglichkeiten» pro Schritt: Zwischen wie vielen gleich wahrscheinlichen Kandidaten schwankt ein Modell im Durchschnitt? Je niedriger, desto besser sagt es Text voraus." },
+  { id:"perzeptron", wort:"Perzeptron", formen:["Perzeptron","Perzeptrons"], kap:"kap04",
+    text:"Ein frühes lernfähiges Modell eines Neurons: ein einzelnes Neuron, das seine Gewichte anhand von Beispielen verändert. Es kann nur Aufgaben lösen, die sich mit einer geraden Linie trennen lassen." },
+  { id:"position", wort:"Positionsvektor", formen:["Positionsvektor"], kap:"kap07",
+    text:"Ein Vektor, der zu jedem Embedding addiert wird und angibt, an welcher Stelle im Text das Token steht. Ohne ihn wüsste die Attention nichts über die Reihenfolge." },
+  { id:"pretraining", wort:"Pretraining", formen:["Pretraining"], kap:"kap11",
+    text:"Die erste und grösste Trainingsphase. Das Modell lernt an riesigen Textmengen nur eines: das nächste Token vorherzusagen. Dabei entstehen die Sprachfähigkeit und der grösste Teil des Wissens." },
+  { id:"prompt", wort:"Prompt", formen:["Prompt","Prompts"], kap:"kap10",
+    text:"Der Text, den man einem Sprachmodell als Eingabe gibt, zum Beispiel eine Frage oder eine Anweisung." },
+  { id:"injection", wort:"Prompt Injection", formen:["Prompt Injection"], kap:"kap12",
+    text:"Ein Angriff, bei dem Anweisungen in einen Text geschmuggelt werden, den das Modell liest, etwa in eine Webseite. Weil für das Modell alles nur Text ist, kann es solche Anweisungen fälschlich befolgen." },
+  { id:"qkv", wort:"Query, Key, Value", formen:["Query","Queries","Key","Keys","Value","Values"], kap:"kap07",
+    text:"Die drei Vektoren, die jedes Token in der Attention bekommt: Die Query sagt, wonach das Token sucht, der Key, was es anbietet, und der Value, welche Information es weitergibt, wenn es ausgewählt wird." },
+  { id:"redundanz", wort:"Redundanz", formen:["Redundanz"], kap:"kap01",
+    text:"Der Teil einer Nachricht, der sich aus dem Zusammenhang vorhersagen lässt und deshalb keine neue Information trägt." },
+  { id:"regex", wort:"Regulärer Ausdruck (Regex)", formen:["regulärer Ausdruck","regulären Ausdruck","Regex"], kap:"kap02",
+    text:"Eine kurze Schreibweise für Textmuster, mit der ein Programm Stellen in einem Text finden und zerlegen kann. Die Mini-ELIZA in Kapitel 02 besteht aus solchen Mustern." },
+  { id:"rest", wort:"Restverbindung", formen:["Restverbindung"], kap:"kap07",
+    text:"Im Transformer-Block wird das Ergebnis eines Schritts zum Eingang addiert, statt ihn zu ersetzen. So können Informationen an Schichten vorbeifliessen, und tiefe Netze bleiben trainierbar." },
+  { id:"rlhf", wort:"RLHF", formen:["RLHF"], kap:"kap11",
+    text:"Reinforcement Learning from Human Feedback, die dritte Trainingsphase. Menschen bringen Antworten in eine Rangfolge, daraus entsteht ein Bewertungsmodell, und das Sprachmodell wird in Richtung der bevorzugten Antworten verstellt." },
+  { id:"rnn", wort:"RNN", formen:["RNNs","RNN"], kap:"kap07",
+    text:"Rekurrentes neuronales Netz: ein Netz, das Text Wort für Wort liest und dabei einen einzigen inneren Zustand mitträgt. Der Transformer hat es bei Sprache abgelöst." },
+  { id:"sampling", wort:"Sampling (Stichprobe)", formen:["Sampling","Stichprobe"], kap:"kap08",
+    text:"Das zufällige Ziehen des nächsten Tokens aus der Wahrscheinlichkeitsverteilung, statt immer das wahrscheinlichste zu nehmen. Darum kann dieselbe Frage zwei verschiedene Antworten ergeben." },
+  { id:"schicht", wort:"Schicht", formen:["Schicht","Schichten"], kap:"kap04",
+    text:"Eine Reihe von Neuronen, die gleichzeitig rechnen. Netze bestehen aus mehreren Schichten hintereinander; jede verarbeitet das Ergebnis der vorherigen weiter." },
+  { id:"sigmoid", wort:"Sigmoid", formen:["Sigmoid-Funktion","Sigmoid"], kap:"kap04",
+    text:"Eine S-förmige Funktion, die jede Zahl in den Bereich zwischen 0 und 1 presst. Sie steckt in Neuronen und im RLHF, wo sie aus einem Punkteabstand eine Wahrscheinlichkeit macht." },
+  { id:"softmax", wort:"Softmax", formen:["Softmax"], kap:"kap08",
+    text:"Die Rechnung, die aus beliebigen Punktzahlen Wahrscheinlichkeiten macht: Jeder Wert wird exponenziert und durch die Summe aller exponenzierten Werte geteilt. Danach liegen alle zwischen 0 und 1 und ergeben zusammen 1." },
+  { id:"sprachmodell", wort:"Sprachmodell (LLM)", formen:["Sprachmodell","Sprachmodells","Sprachmodelle","Sprachmodellen","LLM","LLMs"], kap:"kap01",
+    text:"Ein Programm, das gelernt hat, zu einem Text das nächste Token vorherzusagen. LLM steht für Large Language Model, also grosses Sprachmodell. Heutige Chatbots beruhen darauf." },
+  { id:"papagei", wort:"Stochastischer Papagei", formen:["stochastische Papageien","stochastischer Papagei"], kap:"kap13",
+    text:"Ein kritischer Ausdruck für Sprachmodelle: Sie setzten nur statistisch plausible Wortfolgen zusammen, ohne zu verstehen, was sie sagen. Er stammt aus einem Aufsatz von Bender, Gebru und anderen." },
+  { id:"systemprompt", wort:"System-Prompt", formen:["System-Prompt","System-Prompts"], kap:"kap10",
+    text:"Der Teil der Eingabe, der vor dem eigentlichen Gespräch steht und Rolle und Regeln für das Modell festlegt. Er wird bei jeder Anfrage mitgeschickt." },
+  { id:"temperature", wort:"Temperature", formen:["Temperature"], kap:"kap08",
+    text:"Ein Regler für den Zufall bei der Ausgabe. Kleine Werte machen das Modell vorhersehbar, grosse Werte machen die Ausgabe vielfältiger, aber auch unzusammenhängender." },
+  { id:"token", wort:"Token", formen:["Token","Tokens"], kap:"kap05",
+    text:"Ein Textstück, mit dem ein Sprachmodell rechnet: oft ein ganzes Wort, manchmal ein Wortteil, ein Satzzeichen oder ein einzelnes Zeichen. Jedes Token hat eine Nummer im Vokabular." },
+  { id:"tokenisierung", wort:"Tokenisierung", formen:["Tokenisierung"], kap:"kap05",
+    text:"Der erste Verarbeitungsschritt: Text wird in Token zerlegt und jedes Token durch seine Nummer ersetzt. Erst danach kann ein Netz damit rechnen." },
+  { id:"topp", wort:"Top-p", formen:["Top-p","Nucleus Sampling"], kap:"kap08",
+    text:"Eine Abschneidegrenze bei der Ausgabe. Die Token werden nach Wahrscheinlichkeit sortiert und von oben aufsummiert, bis der eingestellte Anteil erreicht ist. Nur aus diesem Teil wird gezogen." },
+  { id:"training", wort:"Training", formen:["Training"], kap:"kap11",
+    text:"Der Vorgang, bei dem die Gewichte eines Modells an Beispielen so lange verstellt werden, bis seine Vorhersagen gut sind. Bei Sprachmodellen läuft es in drei Phasen: Pretraining, Finetuning und RLHF." },
+  { id:"transformer", wort:"Transformer", formen:["Transformer"], kap:"kap07",
+    text:"Die Bauart, auf der heutige Sprachmodelle beruhen. Ihr Kern ist die Attention: Jedes Token kann direkt auf alle anderen schauen. Mehrere gleich gebaute Blöcke werden übereinandergestapelt." },
+  { id:"vektor", wort:"Vektor", formen:["Vektor","Vektoren","Vektors"], kap:"kap06",
+    text:"Eine geordnete Liste von Zahlen. Man kann sie sich als Pfeil in einem Raum mit vielen Richtungen vorstellen; Richtung und Länge des Pfeils tragen Information." },
+  { id:"vokabular", wort:"Vokabular", formen:["Vokabular","Vokabulars"], kap:"kap05",
+    text:"Die feste Liste aller Token, die ein Modell kennt. Jedes Token hat darin eine Nummer." },
+  { id:"ffn", wort:"Vorwärtsgerichtetes Netz", formen:["vorwärtsgerichtetes Netz","vorwärtsgerichtete Netz","vorwärtsgerichteten Netz"], kap:"kap07",
+    text:"Der zweite Teil jedes Transformer-Blocks: ein kleines Netz, das jeden Token-Vektor nach der Attention einzeln weiterverarbeitet." },
+  { id:"verteilung", wort:"Wahrscheinlichkeitsverteilung", formen:["Wahrscheinlichkeitsverteilung"], kap:"kap08",
+    text:"Eine Liste von Wahrscheinlichkeiten für alle möglichen Ausgänge, die zusammen 1 ergeben. Ein Sprachmodell gibt für das nächste Token eine solche Verteilung über das ganze Vokabular aus." },
+  { id:"word2vec", wort:"word2vec", formen:["word2vec"], kap:"kap06",
+    text:"Ein Verfahren, das Wort-Vektoren aus Text lernt: Wörter, die oft im selben Umfeld vorkommen, bekommen ähnliche Vektoren." },
+  { id:"xor", wort:"XOR", formen:["XOR"], kap:"kap04",
+    text:"«Entweder oder, aber nicht beides»: Das Ergebnis ist 1, wenn genau einer der beiden Eingänge 1 ist. XOR ist die einfachste Aufgabe, die ein einzelnes Neuron nicht lösen kann." }
+];
+
+(function(){
+  var NACH_ID = {}; BEGRIFFE.forEach(function(b){ NACH_ID[b.id] = b; });
+  function kapName(kap){
+    var a = document.querySelector('#tocliste a[href="#' + kap + '"]');
+    if(!a) return kap;
+    var s = a.querySelectorAll("span");
+    return s[0].textContent + " · " + s[s.length-1].textContent;
+  }
+
+  /* ---- 15a · Begriffe im Text markieren (pro Kapitel nur das erste Vorkommen) ---- */
+  var AUSSCHLUSS = ".labor,.formel,h1,h2,h3,h4,th,summary,a,button,label,select,input,textarea,code," +
+                   ".mono,.aus,.pipe,.fussnav,.eyebrow,.quote,cite,.quellen,#tocliste,#glossar,header,footer,#ascii";
+  var FORM_ZU_ID = {}, formen = [];
+  BEGRIFFE.forEach(function(b){ b.formen.forEach(function(f){ FORM_ZU_ID[f] = b.id; formen.push(f); }); });
+  formen.sort(function(a,b){ return b.length - a.length; });
+  var muster = null;
+  try{
+    muster = new RegExp("(?<![\\p{L}\\p{N}-])(?:" +
+      formen.map(function(f){ return f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|") +
+      ")(?![\\p{L}\\p{N}])", "gu");
+  }catch(e){ muster = null; } /* sehr alte Browser: keine Markierung, Glossar geht trotzdem */
+
+  if(muster){
+    Array.prototype.forEach.call(document.querySelectorAll("main section.kap"), function(sec){
+      if(sec.id === "glossar") return;
+      var gesehen = {}, knoten = [];
+      var w = document.createTreeWalker(sec, NodeFilter.SHOW_TEXT, null);
+      while(w.nextNode()){
+        var n = w.currentNode, el = n.parentElement;
+        if(!el || !n.nodeValue.trim()) continue;
+        /* Erklärzeilen unter Formeln (.formel .wo) sind Fliesstext und werden mitmarkiert */
+        var wo = el.closest(".formel .wo");
+        if(wo){ if(el !== wo && el.closest(".wo b")) continue; }
+        else if(el.closest(AUSSCHLUSS) || !el.closest("p,li,td,dd")) continue;
+        knoten.push(n);
+      }
+      knoten.forEach(function(n){
+        var s = n.nodeValue, m, letzt = 0, frag = null;
+        muster.lastIndex = 0;
+        while((m = muster.exec(s))){
+          var id = FORM_ZU_ID[m[0]];
+          if(!id || gesehen[id]) continue;
+          gesehen[id] = true;
+          if(!frag) frag = document.createDocumentFragment();
+          frag.appendChild(document.createTextNode(s.slice(letzt, m.index)));
+          var sp = document.createElement("span");
+          sp.className = "fb"; sp.tabIndex = 0; sp.dataset.fb = id; sp.textContent = m[0];
+          sp.setAttribute("aria-label", m[0] + ", Fachbegriff, Erklärung anzeigen");
+          frag.appendChild(sp);
+          letzt = m.index + m[0].length;
+        }
+        if(frag){ frag.appendChild(document.createTextNode(s.slice(letzt))); n.parentNode.replaceChild(frag, n); }
+      });
+    });
+  }
+
+  /* ---- 15b · Popup ---- */
+  var pop = W("fb-pop"), kopf = W("fb-kopf"), txt = W("fb-text"), link = W("fb-link");
+  var aktiv = null, fest = false, timer = null;
+  function zeige(sp, festhalten){
+    clearTimeout(timer);
+    var b = NACH_ID[sp.dataset.fb]; if(!b) return;
+    if(aktiv && aktiv !== sp) aktiv.classList.remove("offen");
+    aktiv = sp; fest = !!festhalten;
+    sp.classList.add("offen");
+    kopf.textContent = b.wort;
+    txt.textContent = b.text;
+    link.dataset.glossar = b.id;
+    pop.hidden = false;
+    sp.setAttribute("aria-describedby", "fb-pop");
+    var r = sp.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var links = Math.max(16, Math.min(r.left, vw - pw - 16));
+    var oben = r.bottom + 6;
+    if(oben + ph > vh - 8 && r.top - ph - 6 > 8) oben = r.top - ph - 6;
+    pop.style.left = links + "px"; pop.style.top = oben + "px";
+  }
+  function schliesse(){
+    clearTimeout(timer);
+    if(aktiv){ aktiv.classList.remove("offen"); aktiv.removeAttribute("aria-describedby"); }
+    aktiv = null; fest = false; pop.hidden = true;
+  }
+  function schliesseBald(){ clearTimeout(timer); if(!fest) timer = setTimeout(schliesse, 160); }
+
+  document.addEventListener("pointerover", function(e){
+    if(e.pointerType !== "mouse") return;
+    var sp = e.target.closest && e.target.closest(".fb");
+    if(sp){ if(sp !== aktiv) zeige(sp, false); else clearTimeout(timer); return; }
+    if(pop.contains(e.target)){ clearTimeout(timer); return; }
+  });
+  document.addEventListener("pointerout", function(e){
+    if(e.pointerType !== "mouse" || !aktiv) return;
+    var nach = e.relatedTarget;
+    if(nach && (pop.contains(nach) || (nach.closest && nach.closest(".fb") === aktiv))) return;
+    if((e.target.closest && e.target.closest(".fb")) || pop.contains(e.target)) schliesseBald();
+  });
+  document.addEventListener("click", function(e){
+    var sp = e.target.closest && e.target.closest(".fb");
+    if(sp){
+      if(sp === aktiv && fest) schliesse(); else zeige(sp, true);
+      return;
+    }
+    if(pop.contains(e.target)){
+      if(e.target.closest("#fb-link")){ var id = link.dataset.glossar; schliesse(); oeffneImGlossar(id); }
+      return;
+    }
+    if(aktiv) schliesse();
+  });
+  document.addEventListener("keydown", function(e){
+    var sp = e.target.closest && e.target.closest(".fb");
+    if(sp && (e.key === "Enter" || e.key === " ")){
+      e.preventDefault();
+      if(sp === aktiv && fest) schliesse(); else zeige(sp, true);
+    } else if(e.key === "Escape" && aktiv){
+      var z = aktiv; schliesse(); z.focus();
+    }
+  });
+  document.addEventListener("focusin", function(e){
+    var sp = e.target.closest && e.target.closest(".fb");
+    if(sp && sp !== aktiv) zeige(sp, false);
+  });
+  document.addEventListener("focusout", function(e){
+    if(!aktiv || fest) return;
+    var nach = e.relatedTarget;
+    if(nach && (pop.contains(nach) || nach === aktiv)) return;
+    if(e.target === aktiv) schliesse();
+  });
+  window.addEventListener("scroll", function(){ if(aktiv) schliesse(); }, {passive:true});
+  window.addEventListener("resize", function(){ if(aktiv) schliesse(); });
+  window.addEventListener("kapitel", function(){ if(aktiv) schliesse(); });
+
+  /* ---- 15c · Glossar-Seite: Suche und aufklappbare Liste ---- */
+  var liste = W("gl-liste"), ein = W("gl-in"), anz = W("gl-anz");
+  var SORTIERT = BEGRIFFE.slice().sort(function(a,b){ return a.wort.localeCompare(b.wort, "de"); });
+  function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function eintrag(b){
+    var li = document.createElement("li");
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "gl-b"; btn.dataset.gl = b.id;
+    btn.setAttribute("aria-expanded", "false"); btn.setAttribute("aria-controls", "gl-p-" + b.id);
+    var w = document.createElement("span"); w.className = "gl-w"; w.textContent = b.wort;
+    var k = document.createElement("span"); k.className = "gl-k"; k.textContent = b.kap.replace("kap", "Kap. ");
+    btn.appendChild(w); btn.appendChild(k);
+    var p = document.createElement("div"); p.className = "gl-p"; p.id = "gl-p-" + b.id; p.hidden = true;
+    var t = document.createElement("p"); t.textContent = b.text;
+    var h = document.createElement("p"); h.className = "hinweis";
+    h.appendChild(document.createTextNode("Erklärt in "));
+    var a = document.createElement("a"); a.href = "#" + b.kap; a.textContent = "Kapitel " + kapName(b.kap);
+    h.appendChild(a);
+    p.appendChild(t); p.appendChild(h);
+    li.appendChild(btn); li.appendChild(p);
+    return li;
+  }
+  function zw(text){ var li = document.createElement("li"); li.className = "gl-zw"; li.textContent = text; return li; }
+  function klappe(btn, auf){
+    btn.setAttribute("aria-expanded", auf ? "true" : "false");
+    W(btn.getAttribute("aria-controls")).hidden = !auf;
+  }
+  function zeichne(){
+    var q = norm(ein.value.trim());
+    liste.textContent = "";
+    var treffer = 0;
+    if(!q){
+      var buchst = "";
+      SORTIERT.forEach(function(b){
+        var c = norm(b.wort).charAt(0).toUpperCase();
+        if(c !== buchst){ buchst = c; liste.appendChild(zw(c)); }
+        liste.appendChild(eintrag(b)); treffer++;
+      });
+      anz.textContent = treffer + " Begriffe. Ein Klick auf einen Begriff zeigt die Erklärung.";
+      return;
+    }
+    var imNamen = [], imText = [];
+    SORTIERT.forEach(function(b){
+      var namen = [b.wort].concat(b.formen).map(norm);
+      /* Rang: 0 = genau, 1 = beginnt so, 2 = enthält */
+      var rang = 3;
+      namen.forEach(function(n){
+        if(n === q) rang = 0;
+        else if(rang > 1 && n.indexOf(q) === 0) rang = 1;
+        else if(rang > 2 && n.indexOf(q) >= 0) rang = 2;
+      });
+      if(rang < 3) imNamen.push({ b:b, rang:rang });
+      else if(norm(b.text).indexOf(q) >= 0) imText.push(b);
+    });
+    imNamen = imNamen.sort(function(x, y){ return x.rang - y.rang || x.b.wort.localeCompare(y.b.wort, "de"); })
+                     .map(function(x){ return x.b; });
+    imNamen.forEach(function(b){ liste.appendChild(eintrag(b)); });
+    if(imText.length){
+      liste.appendChild(zw("Kommt in der Erklärung vor"));
+      imText.forEach(function(b){ liste.appendChild(eintrag(b)); });
+    }
+    treffer = imNamen.length + imText.length;
+    if(treffer === 0){
+      anz.textContent = "Kein Begriff gefunden. Versuch es mit einem Wortteil, etwa «token» oder «netz».";
+    } else {
+      anz.textContent = treffer === 1 ? "1 Begriff gefunden." : treffer + " Begriffe gefunden.";
+      if(imNamen.length === 1 || treffer === 1) klappe(liste.querySelector(".gl-b"), true);
+    }
+  }
+  liste.addEventListener("click", function(e){
+    var btn = e.target.closest(".gl-b"); if(!btn) return;
+    klappe(btn, btn.getAttribute("aria-expanded") !== "true");
+  });
+  ein.addEventListener("input", zeichne);
+  ein.addEventListener("keydown", function(e){
+    if(e.key !== "Enter") return;
+    var btn = liste.querySelector(".gl-b"); if(!btn) return;
+    e.preventDefault(); klappe(btn, true); btn.focus();
+  });
+  /* Vom Popup aus: der Router (Block 3) hat das Glossar schon gezeigt; hier den Begriff öffnen */
+  function oeffneImGlossar(id){
+    ein.value = ""; zeichne();
+    var btn = liste.querySelector('.gl-b[data-gl="' + id + '"]'); if(!btn) return;
+    klappe(btn, true);
+    btn.scrollIntoView({block:"center"});
+    try{ btn.focus({preventScroll:true}); }catch(err){ btn.focus(); }
+  }
+  zeichne();
 })();
 </script>
