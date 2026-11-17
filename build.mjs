@@ -1,6 +1,6 @@
 // Baut dist/index.html: index.html (Artifact-Fassung ohne Gerüst) plus doctype/head/body.
 // index.html bleibt unverändert und ist die einzige Quelle. Aufruf: node build.mjs
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync } from "node:fs";
 
 const src = readFileSync(new URL("./index.html", import.meta.url), "utf8");
 
@@ -25,3 +25,9 @@ const html =
 mkdirSync(new URL("./dist/", import.meta.url), { recursive: true });
 writeFileSync(new URL("./dist/index.html", import.meta.url), html);
 console.log("dist/index.html geschrieben (" + html.length + " Zeichen).");
+
+// Schriften (Figtree, OFL) liegen in fonts/ und werden mit ausgeliefert.
+const fonts = new URL("./fonts/", import.meta.url);
+if (!existsSync(fonts)) abbruch("Ordner fonts/ fehlt.");
+cpSync(fonts, new URL("./dist/fonts/", import.meta.url), { recursive: true });
+console.log("fonts/ nach dist/fonts/ kopiert.");

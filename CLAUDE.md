@@ -45,9 +45,23 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    - Dunkel: `@media (prefers-color-scheme:dark)`, `:root[data-theme="dark"]` und `:root.m-dunkel`
      (alle drei Blöcke mit denselben Werten pflegen)
    - Schwarz-Weiss: `:root.m-mono`
-   - Stil: Swiss International — keine Radien, keine Schatten, Haarlinien, Mono-Schrift für Labels,
-     Rot (`--signal`) als einzige Akzentfarbe, Blau (`--azur`) nur für die Vertiefungen.
+   - Stil «Modellkarte» (seit 17.11.2026, Vorbild Transformer Explainer): Schrift Figtree, weiss/hell,
+     keine Radien, keine Schatten. Blau (`--azur`) nur für Links und Vertiefungen.
+   - **Stufenfarben:** `--st-03` … `--st-09` (+ `--st-03s` … helle Fläche) für die Kapitel im Modell,
+     in allen vier Token-Blöcken gepflegt (hell, zweimal dunkel, S/W als Grautöne). Ein Kapitel setzt
+     `--stufe`/`--stufe-s` per `#kapNN`, und `section.kap` leitet `--signal` daraus ab: Im Kapitel ist
+     die Stufenfarbe der Akzent. Canvas-Zeichnungen lesen `--signal` weiter von `:root` (Graublau).
+   - **Schrift:** `fonts/figtree-latin.woff2` und `-italic.woff2` (OFL, Lizenz in `fonts/OFL.txt`),
+     per `@font-face`. `build.mjs` kopiert `fonts/` nach `dist/fonts/`. Im claude.ai-Artifact fehlen
+     die Dateien, dort greift die Ersatzschrift.
+   - Der ASCII-Hintergrund ist per CSS ausgeblendet (`#ascii{display:none}`), Block 2 läuft weiter.
 2. **Kopfzeile** mit zwei Schaltergruppen: `Einfach / Mit Details` und `System / Hell / Dunkel / S/W`.
+   Darunter die **Modellkarte** (`nav.toc`, Liste `#tocliste`): alle 15 Seiten in einer Reihe, gruppiert
+   (00 · 01–02 · Modell 03–09 farbig `li.modell` · 10–12 · 13 · Glossar), neue Gruppe mit `li.neu-gruppe`.
+   Ab 980 px klebt sie unter der Kopfzeile (`--kopf-h` misst Block 16). Darunter `#karte-status`
+   («Du bist hier»), Sätze aus der Kette auf der Startseite (`.pipe .d`). Öffnet ein Glossar-Popup,
+   leuchtet das Kapitel des Begriffs in der Karte auf (`a.verbunden`); die Statuszeile wechselt dabei
+   nur ab 980 px (sonst verschiebt der Umbruch die Seite und schliesst das Popup).
 3. **14 Kapitel** als `<section class="kap" id="start">`, `id="kap01"` … `id="kap13"`.
    Immer nur eines ist sichtbar (`hidden`-Attribut).
 4. **Ein `<script>`** mit nummerierten Blöcken (`/* ===== 4 · Versuch 01 · Shannon ===== */` usw.),

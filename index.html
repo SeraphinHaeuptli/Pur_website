@@ -2,50 +2,94 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='6' width='4' height='20' fill='%23fff'/%3E%3Crect x='14' y='14' width='4' height='12' fill='%23fff'/%3E%3Crect x='22' y='20' width='4' height='6' fill='%23fff'/%3E%3C/svg%3E">
 <style>
-/* Layout: feste Kapitelspalte links, eine Spalte Lesetext rechts; Swiss International Typographic:
-   Haarlinien, Mono-Eyebrows, rotes Signal, keine Radien, keine Schatten. */
+/* Layout «Modellkarte»: oben die Kopfzeile, darunter das ganze Modell als Karte (Kapitelnavigation),
+   eine Spalte Lesetext. Jede Stufe im Modell (Kap. 03–09) hat eine eigene Farbe (--st-03 … --st-09);
+   ein Kapitel übernimmt seine Farbe als --stufe. Keine Radien, keine Schatten. */
+@font-face{font-family:"Figtree";src:url("fonts/figtree-latin.woff2") format("woff2");font-weight:300 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Figtree";src:url("fonts/figtree-latin-italic.woff2") format("woff2");font-weight:300 900;font-style:italic;font-display:swap}
 :root{
-  --paper:44 24% 95%; --paper-2:42 20% 91%; --panel:40 30% 98%;
-  --ink:240 8% 10%; --ink-2:240 5% 34%; --ink-3:240 4% 52%;
-  --rule:40 10% 82%; --rule-strong:240 6% 16%;
-  --signal:5 76% 46%; --signal-soft:5 76% 96%;
-  --azur:224 62% 34%; --azur-soft:224 62% 95%;
+  --paper:0 0% 100%; --paper-2:220 14% 96%; --panel:220 16% 96.5%;
+  --ink:220 17% 14%; --ink-2:219 10% 33%; --ink-3:219 8% 44%;
+  --rule:216 16% 89%; --rule-strong:220 10% 72%;
+  --signal:222 24% 33%; --signal-soft:222 30% 95%;
+  --azur:214 70% 38%; --azur-soft:214 70% 96%;
   --moss:152 40% 30%; --amber:36 84% 42%;
+  /* Stufen im Modell: Farbe und helle Fläche */
+  --st-03:220 7% 46%;  --st-03s:220 14% 95%;
+  --st-04:222 24% 33%; --st-04s:222 30% 95%;
+  --st-05:33 85% 35%;  --st-05s:38 90% 94%;
+  --st-06:185 70% 28%; --st-06s:185 50% 94%;
+  --st-07:262 45% 50%; --st-07s:262 60% 96%;
+  --st-08:350 60% 44%; --st-08s:350 70% 96%;
+  --st-09:135 45% 30%; --st-09s:135 40% 94%;
+  --stufe:var(--signal); --stufe-s:var(--signal-soft);
+  --kopf-h:62px;
   --radius:0px;
-  --sans:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
+  --sans:"Figtree","Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   --gut:max(16px,env(safe-area-inset-left,0px));
   --gutr:max(16px,env(safe-area-inset-right,0px));
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]):not(.m-hell):not(.m-mono){
-    --paper:240 9% 7%; --paper-2:240 8% 12%; --panel:240 8% 10%;
-    --ink:40 18% 92%; --ink-2:40 8% 72%; --ink-3:240 5% 58%;
-    --rule:240 6% 22%; --rule-strong:40 12% 88%;
-    --signal:6 90% 63%; --signal-soft:6 44% 13%;
-    --azur:220 90% 74%; --azur-soft:220 44% 15%;
+    --paper:220 14% 8%; --paper-2:220 13% 11%; --panel:220 13% 12%;
+    --ink:220 15% 92%; --ink-2:220 9% 72%; --ink-3:220 7% 58%;
+    --rule:220 10% 21%; --rule-strong:220 9% 38%;
+    --signal:222 30% 74%; --signal-soft:222 20% 16%;
+    --azur:214 85% 74%; --azur-soft:214 40% 15%;
     --moss:152 45% 60%; --amber:38 90% 62%;
+    --st-03:220 8% 64%;  --st-03s:220 10% 16%;
+    --st-04:222 30% 74%; --st-04s:222 20% 16%;
+    --st-05:38 85% 60%;  --st-05s:36 40% 15%;
+    --st-06:182 55% 55%; --st-06s:185 35% 14%;
+    --st-07:262 75% 76%; --st-07s:262 30% 18%;
+    --st-08:350 80% 70%; --st-08s:350 35% 17%;
+    --st-09:135 45% 60%; --st-09s:135 25% 14%;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]:not(.m-hell):not(.m-mono), :root.m-dunkel{
-  --paper:240 9% 7%; --paper-2:240 8% 12%; --panel:240 8% 10%;
-  --ink:40 18% 92%; --ink-2:40 8% 72%; --ink-3:240 5% 58%;
-  --rule:240 6% 22%; --rule-strong:40 12% 88%;
-  --signal:6 90% 63%; --signal-soft:6 44% 13%;
-  --azur:220 90% 74%; --azur-soft:220 44% 15%;
+  --paper:220 14% 8%; --paper-2:220 13% 11%; --panel:220 13% 12%;
+  --ink:220 15% 92%; --ink-2:220 9% 72%; --ink-3:220 7% 58%;
+  --rule:220 10% 21%; --rule-strong:220 9% 38%;
+  --signal:222 30% 74%; --signal-soft:222 20% 16%;
+  --azur:214 85% 74%; --azur-soft:214 40% 15%;
   --moss:152 45% 60%; --amber:38 90% 62%;
+  --st-03:220 8% 64%;  --st-03s:220 10% 16%;
+  --st-04:222 30% 74%; --st-04s:222 20% 16%;
+  --st-05:38 85% 60%;  --st-05s:36 40% 15%;
+  --st-06:182 55% 55%; --st-06s:185 35% 14%;
+  --st-07:262 75% 76%; --st-07s:262 30% 18%;
+  --st-08:350 80% 70%; --st-08s:350 35% 17%;
+  --st-09:135 45% 60%; --st-09s:135 25% 14%;
   color-scheme:dark;
 }
 :root.m-mono{
-  --paper:0 0% 100%; --paper-2:0 0% 96%; --panel:0 0% 100%;
-  --ink:0 0% 0%; --ink-2:0 0% 24%; --ink-3:0 0% 44%;
-  --rule:0 0% 74%; --rule-strong:0 0% 0%;
+  --paper:0 0% 100%; --paper-2:0 0% 96%; --panel:0 0% 97%;
+  --ink:0 0% 0%; --ink-2:0 0% 24%; --ink-3:0 0% 40%;
+  --rule:0 0% 82%; --rule-strong:0 0% 45%;
   --signal:0 0% 0%; --signal-soft:0 0% 92%;
-  --azur:0 0% 38%; --azur-soft:0 0% 92%;
+  --azur:0 0% 30%; --azur-soft:0 0% 94%;
   --moss:0 0% 26%; --amber:0 0% 34%;
+  --st-03:0 0% 45%; --st-03s:0 0% 94%;
+  --st-04:0 0% 0%;  --st-04s:0 0% 92%;
+  --st-05:0 0% 20%; --st-05s:0 0% 93%;
+  --st-06:0 0% 30%; --st-06s:0 0% 93%;
+  --st-07:0 0% 12%; --st-07s:0 0% 93%;
+  --st-08:0 0% 0%;  --st-08s:0 0% 92%;
+  --st-09:0 0% 38%; --st-09s:0 0% 93%;
   color-scheme:light;
 }
+/* Jedes Kapitel und jeder Link darauf kennt seine Stufe */
+#kap03,a[href="#kap03"]{--stufe:var(--st-03);--stufe-s:var(--st-03s)}
+#kap04,a[href="#kap04"]{--stufe:var(--st-04);--stufe-s:var(--st-04s)}
+#kap05,a[href="#kap05"]{--stufe:var(--st-05);--stufe-s:var(--st-05s)}
+#kap06,a[href="#kap06"]{--stufe:var(--st-06);--stufe-s:var(--st-06s)}
+#kap07,a[href="#kap07"]{--stufe:var(--st-07);--stufe-s:var(--st-07s)}
+#kap08,a[href="#kap08"]{--stufe:var(--st-08);--stufe-s:var(--st-08s)}
+#kap09,a[href="#kap09"]{--stufe:var(--st-09);--stufe-s:var(--st-09s)}
+/* Im Kapitel ist die Stufenfarbe der Akzent. Canvas-Zeichnungen lesen --signal weiterhin von :root. */
+section.kap{--signal:var(--stufe);--signal-soft:var(--stufe-s)}
 *{box-sizing:border-box}
 body{
   margin:0; background:hsl(var(--paper)); color:hsl(var(--ink));
@@ -53,7 +97,7 @@ body{
   -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:hsl(var(--paper))}
-h1,h2,h3{text-wrap:balance;margin:0;font-weight:700;letter-spacing:-.015em}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:800;letter-spacing:-.02em}
 p{margin:0}
 a{color:hsl(var(--azur));text-decoration:none;border-bottom:1px solid hsl(var(--azur)/.4)}
 a:hover{border-bottom-color:hsl(var(--azur))}
@@ -67,6 +111,8 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   margin:0;padding:0;
 }
 :root.m-mono #ascii{color:hsl(var(--ink)/.07)}
+/* Modellkarte: kein ASCII-Hintergrund. Block 2 im Script läuft weiter, das Element bleibt nur unsichtbar. */
+#ascii{display:none}
 
 /* ---- Kopfzeile ---- */
 .topbar{
@@ -81,7 +127,7 @@ a:hover{border-bottom-color:hsl(var(--azur))}
 }
 .brand{display:flex;flex-direction:column;min-width:0}
 .brand .kicker{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--ink-3))}
-.brand strong{font-size:15px;letter-spacing:-.01em}
+.brand strong{font-size:16px;font-weight:800;letter-spacing:-.015em}
 .modes{display:flex;border:1px solid hsl(var(--rule-strong))}
 .modes button{
   appearance:none;background:transparent;border:0;border-left:1px solid hsl(var(--rule));
@@ -96,32 +142,52 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   position:relative;z-index:1;max-width:1280px;margin:0 auto;
   display:grid;grid-template-columns:minmax(0,1fr);
 }
-@media (min-width:980px){ .shell{grid-template-columns:232px minmax(0,1fr)} }
 
-/* ---- Kapitelnavigation ---- */
-.toc{border-bottom:1px solid hsl(var(--rule))}
-.toc-in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:12px}
+/* ---- Modellkarte (Kapitelnavigation) ----
+   Eine Reihe: Vorgeschichte · Im Modell (farbig, Kap. 03–09) · Drumherum · Schluss · Glossar.
+   Ab 980 px klebt die Karte unter der Kopfzeile; darunter steht, wo man gerade ist. */
+.toc{border-bottom:1px solid hsl(var(--rule));background:hsl(var(--paper))}
+.toc-in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:10px 8px;max-width:1280px;margin:0 auto}
 .toc h2{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--ink-3));font-weight:400;margin-bottom:8px}
-.toc ol{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
-.toc li{flex:0 0 auto}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+.toc li{flex:0 0 auto;display:flex}
+.toc li.neu-gruppe{margin-left:12px}
 .toc a{
-  display:flex;gap:7px;align-items:baseline;border:1px solid hsl(var(--rule));
-  padding:5px 8px;font-size:12px;color:hsl(var(--ink-2));white-space:nowrap;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:1px;width:100%;
+  border:0;border-top:3px solid hsl(var(--rule));background:transparent;
+  padding:6px 9px 7px;font-size:12.5px;line-height:1.25;color:hsl(var(--ink-2));white-space:nowrap;
 }
+.toc li.modell a{border-top-color:hsl(var(--stufe));background:hsl(var(--panel))}
 .toc a .num{font-family:var(--mono);font-size:10px;color:hsl(var(--ink-3))}
-.toc a[aria-current="page"]{border-color:hsl(var(--rule-strong));background:hsl(var(--panel));color:hsl(var(--ink));font-weight:700}
-.toc a[aria-current="page"] .num{color:hsl(var(--signal))}
+.toc li.modell a .num{color:hsl(var(--stufe))}
+.toc a:hover{background:hsl(var(--panel));color:hsl(var(--ink))}
+.toc a[aria-current="page"]{background:hsl(var(--stufe-s));border-top-color:hsl(var(--stufe));color:hsl(var(--ink));font-weight:700}
+.toc li:not(.modell) a[aria-current="page"]{border-top-color:hsl(var(--ink))}
+.toc a.verbunden{outline:2px solid hsl(var(--stufe));outline-offset:-2px;color:hsl(var(--ink))}
+.toc li:not(.modell) a.verbunden{outline-color:hsl(var(--ink-2))}
+.karte-status{font-size:13px;color:hsl(var(--ink-2));margin-top:7px;line-height:1.4;min-height:1.4em}
+.karte-status b{color:hsl(var(--ink));font-weight:700}
 @media (min-width:980px){
-  .toc{border-bottom:0;border-right:1px solid hsl(var(--rule))}
-  .toc-in{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);padding-block:28px;padding-right:20px}
-  .toc ol{flex-direction:column;overflow:visible;gap:0}
-  .toc a{border:0;border-left:2px solid transparent;padding:6px 10px;white-space:normal}
-  .toc a[aria-current="page"]{border-left-color:hsl(var(--signal));background:transparent}
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--kopf-h));z-index:25}
+  .toc h2{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .toc-in{max-width:1440px}
+  .toc li{flex:1 1 auto}
+  .toc li.neu-gruppe{margin-left:8px}
+  .toc a{white-space:normal;padding:6px 6px 7px}
+  .karte-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+/* Schmale Laptops: Titel einzeilig, die Karte scrollt in sich (das aktive Kapitel wird mittig gehalten) */
+@media (min-width:980px) and (max-width:1199px){
+  .toc li{flex:0 0 auto}
+  .toc a{white-space:nowrap}
 }
 
 /* ---- Kapitel ---- */
 main{min-width:0}
 .kap{padding-left:var(--gut);padding-right:var(--gutr);padding-block:32px 56px;max-width:none}
+@media (min-width:980px){.kap{max-width:1000px;margin-inline:auto;padding-block:40px 64px}}
+body{font-size:16.5px}
+.lead{font-weight:400}
 .kap>*{max-width:68ch}
 .kap .wide{max-width:none}
 .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:hsl(var(--signal));display:flex;gap:10px;align-items:center}
@@ -207,7 +273,9 @@ canvas{max-width:100%;height:auto;display:block;border:1px solid hsl(var(--rule)
 .pipe a{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;border-bottom:1px solid hsl(var(--rule));
   padding:11px 0;color:inherit;border-left:0;border-right:0;text-decoration:none;align-items:baseline}
 .pipe a:hover{background:hsl(var(--panel))}
-.pipe .n{font-family:var(--mono);font-size:11px;color:hsl(var(--signal))}
+.pipe .n{font-family:var(--mono);font-size:11px;color:hsl(var(--stufe))}
+.pipe a:is([href="#kap03"],[href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]){border-left:3px solid hsl(var(--stufe));padding-left:9px;margin-left:-12px}
+.pipe a:is([href="#kap03"],[href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]) .n{font-weight:700}
 .pipe .t{font-weight:700;font-size:14.5px}
 .pipe .d{font-size:13px;color:hsl(var(--ink-2));margin-top:2px;grid-column:2}
 
@@ -299,21 +367,22 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
       <h2>Kapitel</h2>
       <ol id="tocliste">
         <li><a href="#start"><span class="num">00</span><span>Überblick</span></a></li>
-        <li><a href="#kap01"><span class="num">01</span><span>Shannons Spiel</span></a></li>
+        <li class="neu-gruppe"><a href="#kap01"><span class="num">01</span><span>Shannons Spiel</span></a></li>
         <li><a href="#kap02"><span class="num">02</span><span>Vor den LLMs</span></a></li>
-        <li><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
-        <li><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
-        <li><a href="#kap05"><span class="num">05</span><span>Tokenisierung</span></a></li>
-        <li><a href="#kap06"><span class="num">06</span><span>Embeddings</span></a></li>
-        <li><a href="#kap07"><span class="num">07</span><span>Der Transformer</span></a></li>
-        <li><a href="#kap08"><span class="num">08</span><span>Die Ausgabe</span></a></li>
-        <li><a href="#kap09"><span class="num">09</span><span>Token für Token</span></a></li>
-        <li><a href="#kap10"><span class="num">10</span><span>Der echte Request</span></a></li>
+        <li class="modell neu-gruppe"><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
+        <li class="modell"><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
+        <li class="modell"><a href="#kap05"><span class="num">05</span><span>Tokenisierung</span></a></li>
+        <li class="modell"><a href="#kap06"><span class="num">06</span><span>Embeddings</span></a></li>
+        <li class="modell"><a href="#kap07"><span class="num">07</span><span>Der Transformer</span></a></li>
+        <li class="modell"><a href="#kap08"><span class="num">08</span><span>Die Ausgabe</span></a></li>
+        <li class="modell"><a href="#kap09"><span class="num">09</span><span>Token für Token</span></a></li>
+        <li class="neu-gruppe"><a href="#kap10"><span class="num">10</span><span>Der echte Request</span></a></li>
         <li><a href="#kap11"><span class="num">11</span><span>Wie trainiert wird</span></a></li>
         <li><a href="#kap12"><span class="num">12</span><span>Werkzeuge</span></a></li>
-        <li><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
-        <li><a href="#glossar"><span class="num">A–Z</span><span>Glossar</span></a></li>
+        <li class="neu-gruppe"><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
+        <li class="neu-gruppe"><a href="#glossar"><span class="num">A–Z</span><span>Glossar</span></a></li>
       </ol>
+      <p class="karte-status" id="karte-status" aria-live="polite"></p>
     </div>
   </nav>
 
@@ -2178,12 +2247,20 @@ var BEGRIFFE = [
   /* ---- 15b · Popup ---- */
   var pop = W("fb-pop"), kopf = W("fb-kopf"), txt = W("fb-text"), link = W("fb-link");
   var aktiv = null, fest = false, timer = null;
+  /* Modellkarte: das Kapitel des Begriffs in der Karte hervorheben (Block 16 zeigt dazu die Statuszeile) */
+  function karte(b){
+    Array.prototype.forEach.call(document.querySelectorAll("#tocliste a"), function(a){
+      a.classList.toggle("verbunden", !!b && a.getAttribute("href") === "#" + b.kap);
+    });
+    window.dispatchEvent(new CustomEvent("karte-begriff", { detail: b ? { kap:b.kap, wort:b.wort } : null }));
+  }
   function zeige(sp, festhalten){
     clearTimeout(timer);
     var b = NACH_ID[sp.dataset.fb]; if(!b) return;
     if(aktiv && aktiv !== sp) aktiv.classList.remove("offen");
     aktiv = sp; fest = !!festhalten;
     sp.classList.add("offen");
+    karte(b);
     kopf.textContent = b.wort;
     txt.textContent = b.text;
     link.dataset.glossar = b.id;
@@ -2198,7 +2275,7 @@ var BEGRIFFE = [
   }
   function schliesse(){
     clearTimeout(timer);
-    if(aktiv){ aktiv.classList.remove("offen"); aktiv.removeAttribute("aria-describedby"); }
+    if(aktiv){ aktiv.classList.remove("offen"); aktiv.removeAttribute("aria-describedby"); karte(null); }
     aktiv = null; fest = false; pop.hidden = true;
   }
   function schliesseBald(){ clearTimeout(timer); if(!fest) timer = setTimeout(schliesse, 160); }
@@ -2338,5 +2415,53 @@ var BEGRIFFE = [
     try{ btn.focus({preventScroll:true}); }catch(err){ btn.focus(); }
   }
   zeichne();
+})();
+
+/* ============================ 16 · Modellkarte: «Du bist hier» ============================ */
+(function(){
+  var st = W("karte-status"); if(!st) return;
+  var MODELL = ["kap03","kap04","kap05","kap06","kap07","kap08","kap09"];
+  var GRUPPE = { kap01:"Vorgeschichte", kap02:"Vorgeschichte", kap10:"Drumherum", kap11:"Drumherum", kap12:"Drumherum", kap13:"Schluss" };
+  MODELL.forEach(function(k){ GRUPPE[k] = "Im Modell"; });
+  function titel(id){
+    var a = document.querySelector('#tocliste a[href="#' + id + '"]'); if(!a) return id;
+    var s = a.querySelectorAll("span"); return s[s.length-1].textContent;
+  }
+  /* Die Sätze stammen aus der Kette auf der Startseite (.pipe .d) */
+  function satz(id){
+    if(id === "start") return "Alle Kapitel auf einen Blick.";
+    if(id === "glossar") return "Alle Fachbegriffe von A bis Z.";
+    var d = document.querySelector('.pipe a[href="#' + id + '"] .d');
+    return d ? d.textContent : "";
+  }
+  function setz(fett, rest){
+    st.textContent = "";
+    var b = document.createElement("b"); b.textContent = fett; st.appendChild(b);
+    if(rest) st.appendChild(document.createTextNode(" · " + rest));
+  }
+  var aktiv = AKTIV;
+  function zeigKapitel(id){
+    if(id === "start"){ setz("Du bist hier: Überblick", satz(id)); return; }
+    if(id === "glossar"){ setz("Du bist hier: Glossar", satz(id)); return; }
+    var i = MODELL.indexOf(id);
+    var wo = GRUPPE[id] + (i >= 0 ? ", Stufe " + (i+1) + " von 7" : "");
+    setz("Du bist hier: " + wo + " · " + id.replace("kap","") + " " + titel(id), satz(id));
+  }
+  window.addEventListener("kapitel", function(e){ aktiv = e.detail; zeigKapitel(aktiv); });
+  /* Nur wo die Karte klebt (ab 980 px). Auf schmalen Bildschirmen würde der neue Text anders umbrechen,
+     die Seite verschieben und damit das Popup gleich wieder schliessen. */
+  var breit = window.matchMedia ? window.matchMedia("(min-width:980px)") : { matches:true };
+  window.addEventListener("karte-begriff", function(e){
+    if(!breit.matches) return;
+    if(!e.detail){ zeigKapitel(aktiv); return; }
+    setz(e.detail.wort, "erklärt in Kapitel " + e.detail.kap.replace("kap","") + " · " + titel(e.detail.kap));
+  });
+  zeigKapitel(aktiv);
+  /* Höhe der Kopfzeile, damit die Karte darunter kleben kann */
+  var kopf = document.querySelector(".topbar");
+  function hoehe(){ if(kopf) document.documentElement.style.setProperty("--kopf-h", kopf.offsetHeight + "px"); }
+  hoehe();
+  window.addEventListener("resize", hoehe);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(hoehe);
 })();
 </script>
