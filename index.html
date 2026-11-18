@@ -28,7 +28,7 @@
   --g-drum:318 40% 45%;   --g-drum-s:318 40% 96%;
   --g-schluss:78 48% 29%; --g-schluss-s:75 35% 94.5%;
   --stufe:var(--signal); --stufe-s:var(--signal-soft);
-  --kopf-h:62px;
+  --kopf-h:62px; --mini-oben:8px; --mini-h:34px;
   --radius:0px;
   --sans:"Figtree","Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
@@ -194,6 +194,23 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   .toc li.neu-gruppe{margin-left:8px}
   .toc a{white-space:normal;padding:6px 6px 7px}
   .karte-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Autohide (Block 17): Beim Runterscrollen fährt die Kopfzeile weg, von der Karte bleibt ein Streifen
+     mit Farbbalken und Nummern. Nur Verschieben und Ausschneiden, im Textfluss ändert sich nichts,
+     darum springt der Text nicht. Maus auf dem Streifen (.auf) oder Tastaturfokus klappt sie auf. */
+  .topbar{transition:transform .22s ease}
+  .toc{transition:top .22s ease, clip-path .22s ease}
+  .toc::after{content:"";position:absolute;left:0;right:0;top:calc(var(--mini-h) - 1px);height:1px;
+    background:hsl(var(--rule-strong));opacity:0;transition:opacity .22s ease;pointer-events:none}
+  :root.kompakt .topbar{transform:translateY(-100%)}
+  :root.kompakt .topbar:has(:focus-visible){transform:none}
+  :root.kompakt .toc{top:calc(var(--mini-oben) * -1);clip-path:inset(0 0 calc(100% - var(--mini-h)) 0)}
+  :root.kompakt .toc::after{opacity:1}
+  :root.kompakt .toc:is(.auf,:has(:focus-visible)){clip-path:inset(0)}
+  :root.kompakt .toc:is(.auf,:has(:focus-visible))::after{opacity:0}
+  :root.kompakt .toc:not(.auf):not(:has(:focus-visible)) a > span:not(.num){visibility:hidden}
+}
+@media (min-width:980px) and (prefers-reduced-motion:reduce){
+  .topbar,.toc,.toc::after{transition:none}
 }
 /* Schmale Laptops: Titel einzeilig, die Karte scrollt in sich (das aktive Kapitel wird mittig gehalten) */
 @media (min-width:980px) and (max-width:1199px){
@@ -2482,5 +2499,46 @@ var BEGRIFFE = [
   hoehe();
   window.addEventListener("resize", hoehe);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(hoehe);
+})();
+
+/* ============================ 17 · Autohide der Kopfzeile und Karte ============================ */
+/* Ab 980 px: nach 40 px Runterscrollen wird alles zum Streifen (:root.kompakt), nach 80 px Hochscrollen
+   oder ganz oben wieder voll. Der Streifen klappt auf, wenn die Maus wirklich auf ihn fährt,
+   nicht schon, wenn er beim Scrollen unter einer ruhenden Maus auftaucht. */
+(function(){
+  var R = document.documentElement, toc = document.querySelector(".toc");
+  if(!toc || !window.matchMedia) return;
+  var breit = window.matchMedia("(min-width:980px)");
+  var letzt = window.scrollY, runter = 0, hoch = 0, an = false, uhr = 0, px = -1, py = -1, bewegt = false;
+  function masse(){
+    var a = toc.querySelector("#tocliste a"), n = toc.querySelector("#tocliste .num"); if(!a || !n) return;
+    var t = toc.getBoundingClientRect().top;
+    R.style.setProperty("--mini-oben", Math.max(0, Math.round(a.getBoundingClientRect().top - t - 2)) + "px");
+    R.style.setProperty("--mini-h", Math.round(n.getBoundingClientRect().bottom - t + 5) + "px");
+  }
+  function auf(o){ clearTimeout(uhr); uhr = 0; toc.classList.toggle("auf", o); }
+  function setz(k){
+    if(k === an) return;
+    an = k; R.classList.toggle("kompakt", k);
+    if(!k) auf(false);
+  }
+  function pruef(){
+    var y = window.scrollY, d = y - letzt; letzt = y;
+    if(!breit.matches || y < 160){ runter = hoch = 0; setz(false); return; }
+    if(d > 0){ runter += d; hoch = 0; if(runter > 40) setz(true); }
+    else if(d < 0){ hoch -= d; runter = 0; if(hoch > 80) setz(false); }
+  }
+  window.addEventListener("scroll", pruef, {passive:true});
+  window.addEventListener("pointermove", function(e){
+    bewegt = Math.abs(e.clientX - px) + Math.abs(e.clientY - py) > 0; px = e.clientX; py = e.clientY;
+  }, true);
+  toc.addEventListener("pointermove", function(e){
+    if(!an || e.pointerType !== "mouse" || !bewegt || uhr || toc.classList.contains("auf")) return;
+    uhr = setTimeout(function(){ uhr = 0; toc.classList.add("auf"); }, 120);
+  });
+  toc.addEventListener("pointerleave", function(){ auf(false); });
+  window.addEventListener("resize", function(){ masse(); pruef(); });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(masse);
+  masse();
 })();
 </script>
