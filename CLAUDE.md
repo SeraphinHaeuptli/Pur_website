@@ -42,8 +42,11 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
 
 1. **`<style>`** — Design-Tokens auf `:root` als HSL-Tripel (z. B. `--signal:5 76% 46%`),
    verwendet als `hsl(var(--signal))`. Drei Modi:
-   - Dunkel: `@media (prefers-color-scheme:dark)`, `:root[data-theme="dark"]` und `:root.m-dunkel`
-     (alle drei Blöcke mit denselben Werten pflegen)
+   - **Standard ist Hell (weiss)**, auch wenn das Betriebssystem dunkel eingestellt ist. Block 1 setzt
+     immer eine Klasse auf `<html>`: `m-hell` (Standard, auch bei ungültigem Speicherwert), `m-system`,
+     `m-dunkel` oder `m-mono`. Ohne JavaScript bleibt die Seite hell.
+   - Dunkel: `@media (prefers-color-scheme:dark){:root.m-system…}` (nur wenn «System» gewählt ist),
+     `:root[data-theme="dark"]` und `:root.m-dunkel` (alle drei Blöcke mit denselben Werten pflegen)
    - Schwarz-Weiss: `:root.m-mono`
    - Stil «Modellkarte» (seit 17.11.2026, Vorbild Transformer Explainer): Schrift Figtree, weiss/hell,
      keine Radien, keine Schatten. Blau (`--azur`) nur für Links und Vertiefungen.

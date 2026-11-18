@@ -29,8 +29,9 @@
   --gut:max(16px,env(safe-area-inset-left,0px));
   --gutr:max(16px,env(safe-area-inset-right,0px));
 }
+/* Standard ist Hell (weiss). Die Systemeinstellung gilt nur, wenn «System» gewählt ist (Klasse m-system). */
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]):not(.m-hell):not(.m-mono){
+  :root.m-system:not([data-theme="light"]){
     --paper:220 14% 8%; --paper-2:220 13% 11%; --panel:220 13% 12%;
     --ink:220 15% 92%; --ink-2:220 9% 72%; --ink-3:220 7% 58%;
     --rule:220 10% 21%; --rule-strong:220 9% 38%;
@@ -348,8 +349,8 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
       <button type="button" data-stufe="tief" aria-pressed="false">Mit Details</button>
     </div>
     <div class="modes" role="group" aria-label="Darstellung">
-      <button type="button" data-mode="auto" aria-pressed="true">System</button>
-      <button type="button" data-mode="hell" aria-pressed="false">Hell</button>
+      <button type="button" data-mode="auto" aria-pressed="false">System</button>
+      <button type="button" data-mode="hell" aria-pressed="true">Hell</button>
       <button type="button" data-mode="dunkel" aria-pressed="false">Dunkel</button>
       <button type="button" data-mode="mono" aria-pressed="false">S/W</button>
     </div>
@@ -1348,19 +1349,20 @@ function pct(v){ return (v*100).toFixed(1)+" %"; }
 
 /* ============================ 1 · Darstellungsmodus ============================ */
 (function(){
-  var btns = Array.prototype.slice.call(document.querySelectorAll(".modes button"));
+  /* nur die Knöpfe mit data-mode (nicht Einfach/Mit Details, die auch in einem .modes stehen) */
+  var btns = Array.prototype.slice.call(document.querySelectorAll(".modes button[data-mode]"));
   var R = document.documentElement;
+  var MODI = ["auto","hell","dunkel","mono"];
   function setz(m, speichern){
-    R.classList.remove("m-hell","m-dunkel","m-mono");
-    if(m==="hell") R.classList.add("m-hell");
-    if(m==="dunkel") R.classList.add("m-dunkel");
-    if(m==="mono") R.classList.add("m-mono");
+    if(MODI.indexOf(m) < 0) m = "hell";   /* Standard: Hell, auch bei altem oder ungültigem Speicherwert */
+    R.classList.remove("m-system","m-hell","m-dunkel","m-mono");
+    R.classList.add(m === "auto" ? "m-system" : "m-" + m);
     btns.forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.mode===m ? "true":"false"); });
     if(speichern) sichern("pu-llm-modus", m);
     window.dispatchEvent(new CustomEvent("modus"));
   }
   btns.forEach(function(b){ b.addEventListener("click", function(){ setz(b.dataset.mode, true); }); });
-  setz(holen("pu-llm-modus") || "auto", false);
+  setz(holen("pu-llm-modus"), false);
 })();
 
 /* ============================ 1b · Zwei Ebenen ============================ */
