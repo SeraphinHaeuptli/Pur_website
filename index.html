@@ -15,12 +15,13 @@
   --azur:214 70% 38%; --azur-soft:214 70% 96%;
   --moss:152 40% 30%; --amber:36 84% 42%;
   /* Stufen im Modell: Farbe und helle Fläche */
-  --st-04:222 24% 33%; --st-04s:222 30% 95%;
-  --st-05:33 85% 35%;  --st-05s:38 90% 94%;
-  --st-06:185 70% 28%; --st-06s:185 50% 94%;
-  --st-07:262 45% 50%; --st-07s:262 60% 96%;
-  --st-08:350 60% 44%; --st-08s:350 70% 96%;
-  --st-09:135 45% 30%; --st-09s:135 40% 94%;
+  /* Verlauf entlang der Verarbeitung, kühl nach warm; alle mind. 4.5:1 auf Weiss */
+  --st-04:268 52% 52%; --st-04s:268 70% 96.5%;
+  --st-05:240 55% 55%; --st-05s:240 75% 96.5%;
+  --st-06:190 85% 30%; --st-06s:190 60% 95%;
+  --st-07:152 60% 30%; --st-07s:150 45% 95%;
+  --st-08:30 92% 35%;  --st-08s:36 90% 95%;
+  --st-09:356 70% 47%; --st-09s:356 80% 96.5%;
   --stufe:var(--signal); --stufe-s:var(--signal-soft);
   --kopf-h:62px;
   --radius:0px;
@@ -38,12 +39,12 @@
     --signal:222 30% 74%; --signal-soft:222 20% 16%;
     --azur:214 85% 74%; --azur-soft:214 40% 15%;
     --moss:152 45% 60%; --amber:38 90% 62%;
-        --st-04:222 30% 74%; --st-04s:222 20% 16%;
-    --st-05:38 85% 60%;  --st-05s:36 40% 15%;
-    --st-06:182 55% 55%; --st-06s:185 35% 14%;
-    --st-07:262 75% 76%; --st-07s:262 30% 18%;
-    --st-08:350 80% 70%; --st-08s:350 35% 17%;
-    --st-09:135 45% 60%; --st-09s:135 25% 14%;
+    --st-04:268 75% 76%; --st-04s:268 30% 17%;
+    --st-05:240 80% 78%; --st-05s:240 30% 17%;
+    --st-06:188 65% 58%; --st-06s:190 35% 14%;
+    --st-07:150 50% 58%; --st-07s:150 25% 14%;
+    --st-08:34 90% 62%;  --st-08s:34 40% 15%;
+    --st-09:356 85% 72%; --st-09s:356 35% 17%;
     color-scheme:dark;
   }
 }
@@ -54,12 +55,12 @@
   --signal:222 30% 74%; --signal-soft:222 20% 16%;
   --azur:214 85% 74%; --azur-soft:214 40% 15%;
   --moss:152 45% 60%; --amber:38 90% 62%;
-    --st-04:222 30% 74%; --st-04s:222 20% 16%;
-  --st-05:38 85% 60%;  --st-05s:36 40% 15%;
-  --st-06:182 55% 55%; --st-06s:185 35% 14%;
-  --st-07:262 75% 76%; --st-07s:262 30% 18%;
-  --st-08:350 80% 70%; --st-08s:350 35% 17%;
-  --st-09:135 45% 60%; --st-09s:135 25% 14%;
+  --st-04:268 75% 76%; --st-04s:268 30% 17%;
+  --st-05:240 80% 78%; --st-05s:240 30% 17%;
+  --st-06:188 65% 58%; --st-06s:190 35% 14%;
+  --st-07:150 50% 58%; --st-07s:150 25% 14%;
+  --st-08:34 90% 62%;  --st-08s:34 40% 15%;
+  --st-09:356 85% 72%; --st-09s:356 35% 17%;
   color-scheme:dark;
 }
 :root.m-mono{
@@ -153,7 +154,9 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   border:0;border-top:3px solid hsl(var(--rule));background:transparent;
   padding:6px 9px 7px;font-size:12.5px;line-height:1.25;color:hsl(var(--ink-2));white-space:nowrap;
 }
-.toc li.modell a{border-top-color:hsl(var(--stufe));background:hsl(var(--panel))}
+.toc li.modell a{border-top-color:hsl(var(--stufe));background:hsl(var(--stufe-s))}
+.toc li.modell a:hover{background:hsl(var(--stufe) / .1)}
+.toc li.modell a[aria-current="page"]{background:hsl(var(--stufe) / .16)}
 .toc a .num{font-family:var(--mono);font-size:10px;color:hsl(var(--ink-3))}
 .toc li.modell a .num{color:hsl(var(--stufe))}
 .toc a:hover{background:hsl(var(--panel));color:hsl(var(--ink))}
@@ -1313,8 +1316,9 @@ wiederhole höchstens 10-mal:
 "use strict";
 /* ============================ 0 · Werkzeuge ============================ */
 var W = document.getElementById.bind(document);
-function tok(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-function hsl(n,a){ return "hsl(" + tok(n) + (a==null?"":" / "+a) + ")"; }
+/* el (optional): Element, von dem der Token gelesen wird, z. B. ein Kapitel mit eigener Stufenfarbe */
+function tok(n,el){ return getComputedStyle(el || document.documentElement).getPropertyValue(n).trim(); }
+function hsl(n,a,el){ return "hsl(" + tok(n,el) + (a==null?"":" / "+a) + ")"; }
 function sichern(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function holen(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function softmax(xs,temp){
@@ -1630,16 +1634,16 @@ var AKTIV = "start";
     ctx.fillStyle = hsl("--paper"); ctx.fillRect(0,0,S,S);
     for(i=0;i<S;i+=z) for(j=0;j<S;j+=z){
       var x = [ LO + (i+z/2)/S*SPAN, LO + (1-(j+z/2)/S)*SPAN ], v = f(x), a = Math.abs(v-0.5)*1.5 + 0.06;
-      ctx.fillStyle = (v>0.5 ? hsl("--signal", a.toFixed(3)) : hsl("--azur", a.toFixed(3)));
+      ctx.fillStyle = (v>0.5 ? hsl("--signal", a.toFixed(3), W("kap04")) : hsl("--azur", a.toFixed(3)));
       ctx.fillRect(i, j, z, z);
     }
     ctx.strokeStyle = hsl("--rule-strong"); ctx.lineWidth = 1; ctx.strokeRect(0.5,0.5,S-1,S-1);
     for(i=0;i<4;i++){
       var px = (X[i][0]-LO)/SPAN*S, py = (1-(X[i][1]-LO)/SPAN)*S;
       ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2);
-      ctx.fillStyle = Y[i] ? hsl("--rule-strong") : hsl("--paper");
-      ctx.fill(); ctx.strokeStyle = hsl("--rule-strong"); ctx.lineWidth = 1.6; ctx.stroke();
-      ctx.fillStyle = Y[i] ? hsl("--paper") : hsl("--rule-strong");
+      ctx.fillStyle = Y[i] ? hsl("--ink") : hsl("--paper");
+      ctx.fill(); ctx.strokeStyle = hsl("--ink"); ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.fillStyle = Y[i] ? hsl("--paper") : hsl("--ink");
       ctx.font = "700 11px ui-monospace, monospace"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       ctx.fillText(String(Y[i]), px, py+0.5);
     }

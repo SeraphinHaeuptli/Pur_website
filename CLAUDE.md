@@ -53,7 +53,11 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    - **Stufenfarben:** `--st-04` … `--st-09` (+ `--st-04s` … helle Fläche) für die Kapitel der Maschine,
      in allen vier Token-Blöcken gepflegt (hell, zweimal dunkel, S/W als Grautöne). Ein Kapitel setzt
      `--stufe`/`--stufe-s` per `#kapNN`, und `section.kap` leitet `--signal` daraus ab: Im Kapitel ist
-     die Stufenfarbe der Akzent. Canvas-Zeichnungen lesen `--signal` weiter von `:root` (Graublau).
+     die Stufenfarbe der Akzent. Die Farben laufen entlang der Verarbeitung von kühl nach warm
+     (04 Violett, 05 Indigo, 06 Petrol, 07 Grün, 08 Orange, 09 Rot), alle mind. 4.5:1 auf Weiss.
+     In der Karte haben 04–09 einen hellen Hauch ihrer Farbe (`--stufe-s`) statt Grau.
+     Canvas-Zeichnungen lesen Tokens über `tok(n, el)`/`hsl(n, a, el)`; ohne `el` von `:root`
+     (Graublau), das XOR-Bild in Kap. 04 liest `--signal` von `#kap04`.
    - **Schrift:** `fonts/figtree-latin.woff2` und `-italic.woff2` (OFL, Lizenz in `fonts/OFL.txt`),
      per `@font-face`. `build.mjs` kopiert `fonts/` nach `dist/fonts/`. Im claude.ai-Artifact fehlen
      die Dateien, dort greift die Ersatzschrift.
