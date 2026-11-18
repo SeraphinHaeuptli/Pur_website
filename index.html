@@ -196,18 +196,18 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   .karte-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Autohide (Block 17): Beim Runterscrollen fährt die Kopfzeile weg, von der Karte bleibt ein Streifen
      mit Farbbalken und Nummern. Nur Verschieben und Ausschneiden, im Textfluss ändert sich nichts,
-     darum springt der Text nicht. Maus auf dem Streifen (.auf) oder Tastaturfokus klappt sie auf. */
+     darum springt der Text nicht. Maus auf dem Streifen (.auf) oder Fokus per Tab (.fokus) klappt sie auf. */
   .topbar{transition:transform .22s ease}
   .toc{transition:top .22s ease, clip-path .22s ease}
   .toc::after{content:"";position:absolute;left:0;right:0;top:calc(var(--mini-h) - 1px);height:1px;
     background:hsl(var(--rule-strong));opacity:0;transition:opacity .22s ease;pointer-events:none}
   :root.kompakt .topbar{transform:translateY(-100%)}
-  :root.kompakt .topbar:has(:focus-visible){transform:none}
+  :root.kompakt .topbar.fokus{transform:none}
   :root.kompakt .toc{top:calc(var(--mini-oben) * -1);clip-path:inset(0 0 calc(100% - var(--mini-h)) 0)}
   :root.kompakt .toc::after{opacity:1}
-  :root.kompakt .toc:is(.auf,:has(:focus-visible)){clip-path:inset(0)}
-  :root.kompakt .toc:is(.auf,:has(:focus-visible))::after{opacity:0}
-  :root.kompakt .toc:not(.auf):not(:has(:focus-visible)) a > span:not(.num){visibility:hidden}
+  :root.kompakt .toc:is(.auf,.fokus){clip-path:inset(0)}
+  :root.kompakt .toc:is(.auf,.fokus)::after{opacity:0}
+  :root.kompakt .toc:not(.auf):not(.fokus) a > span:not(.num){color:transparent}
 }
 @media (min-width:980px) and (prefers-reduced-motion:reduce){
   .topbar,.toc,.toc::after{transition:none}
@@ -2537,6 +2537,18 @@ var BEGRIFFE = [
     uhr = setTimeout(function(){ uhr = 0; toc.classList.add("auf"); }, 120);
   });
   toc.addEventListener("pointerleave", function(){ auf(false); });
+  /* Tastatur: nur Fokus per Tab klappt auf. :focus-visible genügt nicht, weil es nach einem Mausklick
+     auch beim Scrollen mit Pfeiltasten greift und die Karte dann offen über dem Text stehen bliebe. */
+  var kopf = document.querySelector(".topbar"), tab = false;
+  function fokus(){
+    var e = document.activeElement;
+    toc.classList.toggle("fokus", tab && toc.contains(e));
+    if(kopf) kopf.classList.toggle("fokus", tab && kopf.contains(e));
+  }
+  document.addEventListener("keydown", function(e){ if(e.key === "Tab") tab = true; }, true);
+  document.addEventListener("pointerdown", function(){ tab = false; fokus(); }, true);
+  document.addEventListener("focusin", fokus);
+  document.addEventListener("focusout", function(){ setTimeout(fokus, 0); });
   window.addEventListener("resize", function(){ masse(); pruef(); });
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(masse);
   masse();
