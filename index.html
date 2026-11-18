@@ -3,7 +3,8 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='6' width='4' height='20' fill='%23fff'/%3E%3Crect x='14' y='14' width='4' height='12' fill='%23fff'/%3E%3Crect x='22' y='20' width='4' height='6' fill='%23fff'/%3E%3C/svg%3E">
 <style>
 /* Layout «Modellkarte»: oben die Kopfzeile, darunter das ganze Modell als Karte (Kapitelnavigation),
-   eine Spalte Lesetext. Jede Stufe der Maschine (Kap. 04–09) hat eine eigene Farbe (--st-04 … --st-09);
+   eine Spalte Lesetext. Jedes Kapitel hat eine Farbe: jede Stufe der Maschine (Kap. 04–09) eine eigene
+   (--st-04 … --st-09), die anderen Teile je eine ruhigere (--g-frage, --g-drum, --g-schluss);
    ein Kapitel übernimmt seine Farbe als --stufe. Keine Radien, keine Schatten. */
 @font-face{font-family:"Figtree";src:url("fonts/figtree-latin.woff2") format("woff2");font-weight:300 900;font-style:normal;font-display:swap}
 @font-face{font-family:"Figtree";src:url("fonts/figtree-latin-italic.woff2") format("woff2");font-weight:300 900;font-style:italic;font-display:swap}
@@ -22,6 +23,10 @@
   --st-07:152 60% 30%; --st-07s:150 45% 95%;
   --st-08:30 92% 35%;  --st-08s:36 90% 95%;
   --st-09:356 70% 47%; --st-09s:356 80% 96.5%;
+  /* Die anderen Teile: je eine gedämpfte Farbe aus den freien Bereichen des Farbkreises */
+  --g-frage:40 68% 32%;   --g-frage-s:40 70% 95%;
+  --g-drum:318 40% 45%;   --g-drum-s:318 40% 96%;
+  --g-schluss:78 48% 29%; --g-schluss-s:75 35% 94.5%;
   --stufe:var(--signal); --stufe-s:var(--signal-soft);
   --kopf-h:62px;
   --radius:0px;
@@ -45,6 +50,9 @@
     --st-07:150 50% 58%; --st-07s:150 25% 14%;
     --st-08:34 90% 62%;  --st-08s:34 40% 15%;
     --st-09:356 85% 72%; --st-09s:356 35% 17%;
+    --g-frage:40 70% 62%;   --g-frage-s:40 30% 15%;
+    --g-drum:318 45% 74%;   --g-drum-s:318 22% 16%;
+    --g-schluss:78 45% 60%; --g-schluss-s:78 22% 14%;
     color-scheme:dark;
   }
 }
@@ -61,6 +69,9 @@
   --st-07:150 50% 58%; --st-07s:150 25% 14%;
   --st-08:34 90% 62%;  --st-08s:34 40% 15%;
   --st-09:356 85% 72%; --st-09s:356 35% 17%;
+    --g-frage:40 70% 62%;   --g-frage-s:40 30% 15%;
+    --g-drum:318 45% 74%;   --g-drum-s:318 22% 16%;
+    --g-schluss:78 45% 60%; --g-schluss-s:78 22% 14%;
   color-scheme:dark;
 }
 :root.m-mono{
@@ -76,6 +87,9 @@
   --st-07:0 0% 12%; --st-07s:0 0% 93%;
   --st-08:0 0% 0%;  --st-08s:0 0% 92%;
   --st-09:0 0% 38%; --st-09s:0 0% 93%;
+  --g-frage:0 0% 25%;   --g-frage-s:0 0% 94%;
+  --g-drum:0 0% 25%;    --g-drum-s:0 0% 94%;
+  --g-schluss:0 0% 25%; --g-schluss-s:0 0% 94%;
   color-scheme:light;
 }
 /* Jedes Kapitel und jeder Link darauf kennt seine Stufe */
@@ -85,6 +99,9 @@
 #kap07,a[href="#kap07"]{--stufe:var(--st-07);--stufe-s:var(--st-07s)}
 #kap08,a[href="#kap08"]{--stufe:var(--st-08);--stufe-s:var(--st-08s)}
 #kap09,a[href="#kap09"]{--stufe:var(--st-09);--stufe-s:var(--st-09s)}
+#kap01,#kap02,#kap03,a:is([href="#kap01"],[href="#kap02"],[href="#kap03"]){--stufe:var(--g-frage);--stufe-s:var(--g-frage-s)}
+#kap10,#kap11,#kap12,a:is([href="#kap10"],[href="#kap11"],[href="#kap12"]){--stufe:var(--g-drum);--stufe-s:var(--g-drum-s)}
+#kap13,a[href="#kap13"]{--stufe:var(--g-schluss);--stufe-s:var(--g-schluss-s)}
 /* Im Kapitel ist die Stufenfarbe der Akzent. Canvas-Zeichnungen lesen --signal weiterhin von :root. */
 section.kap{--signal:var(--stufe);--signal-soft:var(--stufe-s)}
 *{box-sizing:border-box}
@@ -141,7 +158,8 @@ a:hover{border-bottom-color:hsl(var(--azur))}
 }
 
 /* ---- Modellkarte (Kapitelnavigation) ----
-   Eine Reihe: Überblick · Die Frage (01–03) · Die Maschine (farbig, 04–09) · Drumherum · Schluss · Glossar.
+   Eine Reihe: Überblick · Die Frage (01–03) · Die Maschine (04–09) · Drumherum · Schluss · Glossar.
+   Alle Kapitel (li.farbig) zeigen ihre Farbe; Überblick und Glossar bleiben neutral.
    Ab 980 px klebt die Karte unter der Kopfzeile; darunter steht, wo man gerade ist. */
 .toc{border-bottom:1px solid hsl(var(--rule));background:hsl(var(--paper))}
 .toc-in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:10px 8px;max-width:1280px;margin:0 auto}
@@ -154,16 +172,17 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   border:0;border-top:3px solid hsl(var(--rule));background:transparent;
   padding:6px 9px 7px;font-size:12.5px;line-height:1.25;color:hsl(var(--ink-2));white-space:nowrap;
 }
-.toc li.modell a{border-top-color:hsl(var(--stufe));background:hsl(var(--stufe-s))}
-.toc li.modell a:hover{background:hsl(var(--stufe) / .1)}
-.toc li.modell a[aria-current="page"]{background:hsl(var(--stufe) / .16)}
+.toc li.farbig a{border-top-color:hsl(var(--stufe));background:hsl(var(--stufe-s))}
+.toc li.farbig a:hover{background:hsl(var(--stufe) / .1)}
+.toc li.farbig a[aria-current="page"]{background:hsl(var(--stufe) / .16)}
 .toc a .num{font-family:var(--mono);font-size:10px;color:hsl(var(--ink-3))}
-.toc li.modell a .num{color:hsl(var(--stufe))}
+.toc li.farbig a .num{color:hsl(var(--stufe))}
 .toc a:hover{background:hsl(var(--panel));color:hsl(var(--ink))}
 .toc a[aria-current="page"]{background:hsl(var(--stufe-s));border-top-color:hsl(var(--stufe));color:hsl(var(--ink));font-weight:700}
-.toc li:not(.modell) a[aria-current="page"]{border-top-color:hsl(var(--ink))}
+.toc li:not(.farbig) a[aria-current="page"]{border-top-color:hsl(var(--ink))}
+.toc li a[aria-current="page"] .num{color:hsl(var(--ink))}
 .toc a.verbunden{outline:2px solid hsl(var(--stufe));outline-offset:-2px;color:hsl(var(--ink))}
-.toc li:not(.modell) a.verbunden{outline-color:hsl(var(--ink-2))}
+.toc li:not(.farbig) a.verbunden{outline-color:hsl(var(--ink-2))}
 .karte-status{font-size:13px;color:hsl(var(--ink-2));margin-top:7px;line-height:1.4;min-height:1.4em}
 .karte-status b{color:hsl(var(--ink));font-weight:700}
 @media (min-width:980px){
@@ -274,8 +293,8 @@ canvas{max-width:100%;height:auto;display:block;border:1px solid hsl(var(--rule)
   padding:11px 0;color:inherit;border-left:0;border-right:0;text-decoration:none;align-items:baseline}
 .pipe a:hover{background:hsl(var(--panel))}
 .pipe .n{font-family:var(--mono);font-size:11px;color:hsl(var(--stufe))}
-.pipe a:is([href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]){border-left:3px solid hsl(var(--stufe));padding-left:9px;margin-left:-12px}
-.pipe a:is([href="#kap04"],[href="#kap05"],[href="#kap06"],[href="#kap07"],[href="#kap08"],[href="#kap09"]) .n{font-weight:700}
+.pipe a{border-left:3px solid hsl(var(--stufe));padding-left:9px;margin-left:-12px}
+.pipe .n{font-weight:700}
 .pipe .t{font-weight:700;font-size:14.5px}
 .pipe .d{font-size:13px;color:hsl(var(--ink-2));margin-top:2px;grid-column:2}
 
@@ -367,19 +386,19 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
       <h2>Kapitel</h2>
       <ol id="tocliste">
         <li><a href="#start"><span class="num">00</span><span>Überblick</span></a></li>
-        <li class="neu-gruppe"><a href="#kap01"><span class="num">01</span><span>Shannons Spiel</span></a></li>
-        <li><a href="#kap02"><span class="num">02</span><span>Vor den LLMs</span></a></li>
-        <li><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
-        <li class="modell neu-gruppe"><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
-        <li class="modell"><a href="#kap05"><span class="num">05</span><span>Tokenisierung</span></a></li>
-        <li class="modell"><a href="#kap06"><span class="num">06</span><span>Embeddings</span></a></li>
-        <li class="modell"><a href="#kap07"><span class="num">07</span><span>Der Transformer</span></a></li>
-        <li class="modell"><a href="#kap08"><span class="num">08</span><span>Die Ausgabe</span></a></li>
-        <li class="modell"><a href="#kap09"><span class="num">09</span><span>Token für Token</span></a></li>
-        <li class="neu-gruppe"><a href="#kap10"><span class="num">10</span><span>Der echte Request</span></a></li>
-        <li><a href="#kap11"><span class="num">11</span><span>Wie trainiert wird</span></a></li>
-        <li><a href="#kap12"><span class="num">12</span><span>Werkzeuge</span></a></li>
-        <li class="neu-gruppe"><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
+        <li class="farbig neu-gruppe"><a href="#kap01"><span class="num">01</span><span>Shannons Spiel</span></a></li>
+        <li class="farbig"><a href="#kap02"><span class="num">02</span><span>Vor den LLMs</span></a></li>
+        <li class="farbig"><a href="#kap03"><span class="num">03</span><span>Die Blackbox</span></a></li>
+        <li class="farbig neu-gruppe"><a href="#kap04"><span class="num">04</span><span>Was ein Modell ist</span></a></li>
+        <li class="farbig"><a href="#kap05"><span class="num">05</span><span>Tokenisierung</span></a></li>
+        <li class="farbig"><a href="#kap06"><span class="num">06</span><span>Embeddings</span></a></li>
+        <li class="farbig"><a href="#kap07"><span class="num">07</span><span>Der Transformer</span></a></li>
+        <li class="farbig"><a href="#kap08"><span class="num">08</span><span>Die Ausgabe</span></a></li>
+        <li class="farbig"><a href="#kap09"><span class="num">09</span><span>Token für Token</span></a></li>
+        <li class="farbig neu-gruppe"><a href="#kap10"><span class="num">10</span><span>Der echte Request</span></a></li>
+        <li class="farbig"><a href="#kap11"><span class="num">11</span><span>Wie trainiert wird</span></a></li>
+        <li class="farbig"><a href="#kap12"><span class="num">12</span><span>Werkzeuge</span></a></li>
+        <li class="farbig neu-gruppe"><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
         <li class="neu-gruppe"><a href="#glossar"><span class="num">A–Z</span><span>Glossar</span></a></li>
       </ol>
       <p class="karte-status" id="karte-status"></p>
@@ -1480,12 +1499,12 @@ var AKTIV = "start";
       var s = document.createElement("span");
       s.textContent = satz[i];
       if(marken[i] === 1){ s.style.color = hsl("--moss"); s.style.fontWeight = "700"; }
-      if(marken[i] === 0){ s.style.color = hsl("--signal"); s.style.textDecoration = "underline"; }
+      if(marken[i] === 0){ s.style.color = hsl("--signal", null, W("kap01")); s.style.textDecoration = "underline"; }
       txt.appendChild(s);
     }
     var cur = document.createElement("span");
     cur.textContent = pos < satz.length ? " ▮" : "   • Satz fertig";
-    cur.style.color = hsl("--signal");
+    cur.style.color = hsl("--signal", null, W("kap01"));
     txt.appendChild(cur);
     nE.textContent = n; tE.textContent = treffer;
     qE.textContent = n ? ((treffer/n*100).toFixed(1)+" %") : "—";

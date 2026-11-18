@@ -55,16 +55,20 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
      `--stufe`/`--stufe-s` per `#kapNN`, und `section.kap` leitet `--signal` daraus ab: Im Kapitel ist
      die Stufenfarbe der Akzent. Die Farben laufen entlang der Verarbeitung von kühl nach warm
      (04 Violett, 05 Indigo, 06 Petrol, 07 Grün, 08 Orange, 09 Rot), alle mind. 4.5:1 auf Weiss.
-     In der Karte haben 04–09 einen hellen Hauch ihrer Farbe (`--stufe-s`) statt Grau.
+   - **Gruppenfarben:** Alle Kapitel haben eine Farbe. Regel: jede Stufe der Maschine eine eigene,
+     jede andere Gruppe eine gemeinsame, gedämpfte aus den freien Bereichen des Farbkreises:
+     `--g-frage` Ocker (01–03), `--g-drum` Pflaume (10–12), `--g-schluss` Oliv (13). Überblick (00)
+     und Glossar bleiben neutral. In der Karte zeigt jedes Kapitel (`li.farbig`) einen hellen Hauch
+     seiner Farbe; die Nummer im aktiven Kästchen ist `--ink` (sonst zu wenig Kontrast auf der Tönung).
      Canvas-Zeichnungen lesen Tokens über `tok(n, el)`/`hsl(n, a, el)`; ohne `el` von `:root`
-     (Graublau), das XOR-Bild in Kap. 04 liest `--signal` von `#kap04`.
+     (Graublau), das XOR-Bild liest `--signal` von `#kap04`, Shannons Spiel von `#kap01`.
    - **Schrift:** `fonts/figtree-latin.woff2` und `-italic.woff2` (OFL, Lizenz in `fonts/OFL.txt`),
      per `@font-face`. `build.mjs` kopiert `fonts/` nach `dist/fonts/`. Im claude.ai-Artifact fehlen
      die Dateien, dort greift die Ersatzschrift.
    - Der ASCII-Hintergrund ist per CSS ausgeblendet (`#ascii{display:none}`), Block 2 läuft weiter.
 2. **Kopfzeile** mit zwei Schaltergruppen: `Einfach / Mit Details` und `System / Hell / Dunkel / S/W`.
    Darunter die **Modellkarte** (`nav.toc`, Liste `#tocliste`): alle 15 Seiten in einer Reihe, gruppiert
-   wie im Kasten «Worum es geht» (00 · Die Frage 01–03 · Die Maschine 04–09 farbig `li.modell` ·
+   wie im Kasten «Worum es geht» (00 · Die Frage 01–03 · Die Maschine 04–09 ·
    Drumherum 10–12 · Schluss 13 · Glossar), neue Gruppe mit `li.neu-gruppe`. Kein eigener Zähler:
    Die Kapitel nummerieren ihre Schritte selbst («Schritt 3 der Verarbeitung»).
    Ab 980 px klebt sie unter der Kopfzeile (`--kopf-h` misst Block 16). Darunter `#karte-status`
