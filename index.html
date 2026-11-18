@@ -197,8 +197,8 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   /* Autohide (Block 17): Beim Runterscrollen fährt die Kopfzeile weg, von der Karte bleibt ein Streifen
      mit Farbbalken und Nummern. Nur Verschieben und Ausschneiden, im Textfluss ändert sich nichts,
      darum springt der Text nicht. Maus auf dem Streifen (.auf) oder Fokus per Tab (.fokus) klappt sie auf. */
-  .topbar{transition:transform .22s ease}
-  .toc{transition:top .22s ease, clip-path .22s ease}
+  .topbar{transition:transform .2s cubic-bezier(.2,.7,.3,1)}
+  .toc{transition:top .2s cubic-bezier(.2,.7,.3,1), clip-path .2s cubic-bezier(.2,.7,.3,1)}
   .toc::after{content:"";position:absolute;left:0;right:0;top:calc(var(--mini-h) - 1px);height:1px;
     background:hsl(var(--rule-strong));opacity:0;transition:opacity .22s ease;pointer-events:none}
   :root.kompakt .topbar{transform:translateY(-100%)}
@@ -2502,8 +2502,8 @@ var BEGRIFFE = [
 })();
 
 /* ============================ 17 · Autohide der Kopfzeile und Karte ============================ */
-/* Ab 980 px: nach 40 px Runterscrollen wird alles zum Streifen (:root.kompakt), nach 80 px Hochscrollen
-   oder ganz oben wieder voll. Der Streifen klappt auf, wenn die Maus wirklich auf ihn fährt,
+/* Ab 980 px: nach 12 px Runterscrollen wird alles zum Streifen (:root.kompakt), nach 60 px Hochscrollen
+   oder in den obersten 80 px wieder voll. Der Streifen klappt auf, wenn die Maus wirklich auf ihn fährt,
    nicht schon, wenn er beim Scrollen unter einer ruhenden Maus auftaucht. */
 (function(){
   var R = document.documentElement, toc = document.querySelector(".toc");
@@ -2524,9 +2524,9 @@ var BEGRIFFE = [
   }
   function pruef(){
     var y = window.scrollY, d = y - letzt; letzt = y;
-    if(!breit.matches || y < 160){ runter = hoch = 0; setz(false); return; }
-    if(d > 0){ runter += d; hoch = 0; if(runter > 40) setz(true); }
-    else if(d < 0){ hoch -= d; runter = 0; if(hoch > 80) setz(false); }
+    if(!breit.matches || y < 80){ runter = hoch = 0; setz(false); return; }
+    if(d > 0){ runter += d; hoch = 0; if(runter > 12) setz(true); }
+    else if(d < 0){ hoch -= d; runter = 0; if(hoch > 60) setz(false); }
   }
   window.addEventListener("scroll", pruef, {passive:true});
   window.addEventListener("pointermove", function(e){

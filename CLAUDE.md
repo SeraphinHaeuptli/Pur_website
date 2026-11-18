@@ -75,9 +75,9 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    («Du bist hier»), Sätze aus der Kette auf der Startseite (`.pipe .d`). Öffnet ein Glossar-Popup,
    leuchtet das Kapitel des Begriffs in der Karte auf (`a.verbunden`); die Statuszeile wechselt dabei
    nur ab 980 px (sonst verschiebt der Umbruch die Seite und schliesst das Popup).
-   **Autohide (Block 17, ab 980 px):** Nach 40 px Runterscrollen bekommt `:root` die Klasse `kompakt`:
+   **Autohide (Block 17, ab 980 px):** Nach 12 px Runterscrollen (ab 80 px Tiefe) bekommt `:root` die Klasse `kompakt`:
    Kopfzeile fährt per `transform` weg, die Karte wird per `clip-path` zum Streifen (Farbbalken und
-   Nummern, `--mini-h`/`--mini-oben` misst Block 17). Nach 80 px Hochscrollen oder unter 160 px wieder voll.
+   Nummern, `--mini-h`/`--mini-oben` misst Block 17). Nach 60 px Hochscrollen oder in den obersten 80 px wieder voll.
    Nichts im Textfluss ändert sich, sonst springt der Text. Aufklappen (`.toc.auf`) nur, wenn die Maus
    wirklich auf den Streifen fährt (nicht, wenn er unter einer ruhenden Maus auftaucht); Tastaturfokus
    (`:focus-visible`) klappt ebenfalls auf.
