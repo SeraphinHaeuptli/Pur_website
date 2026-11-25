@@ -183,8 +183,6 @@ a:hover{border-bottom-color:hsl(var(--azur))}
 .toc li a[aria-current="page"] .num{color:hsl(var(--ink))}
 .toc a.verbunden{outline:2px solid hsl(var(--stufe));outline-offset:-2px;color:hsl(var(--ink))}
 .toc li:not(.farbig) a.verbunden{outline-color:hsl(var(--ink-2))}
-.karte-status{font-size:13px;color:hsl(var(--ink-2));margin-top:7px;line-height:1.4;min-height:1.4em}
-.karte-status b{color:hsl(var(--ink));font-weight:700}
 @media (min-width:980px){
   html{scroll-padding-top:calc(var(--kopf-h) + 120px)}
   .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--kopf-h));z-index:25}
@@ -193,7 +191,6 @@ a:hover{border-bottom-color:hsl(var(--azur))}
   .toc li{flex:1 1 auto}
   .toc li.neu-gruppe{margin-left:8px}
   .toc a{white-space:normal;padding:6px 6px 7px}
-  .karte-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Autohide (Block 17): Beim Runterscrollen fährt die Kopfzeile weg, von der Karte bleibt ein Streifen
      mit Farbbalken und Nummern. Nur Verschieben und Ausschneiden, im Textfluss ändert sich nichts,
      darum springt der Text nicht. Maus auf dem Streifen (.auf) oder Fokus per Tab (.fokus) klappt sie auf. */
@@ -418,7 +415,6 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
         <li class="farbig neu-gruppe"><a href="#kap13"><span class="num">13</span><span>Alien Intelligence</span></a></li>
         <li class="neu-gruppe"><a href="#glossar"><span class="num">A–Z</span><span>Glossar</span></a></li>
       </ol>
-      <p class="karte-status" id="karte-status"></p>
     </div>
   </nav>
 
@@ -427,11 +423,11 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
   <section class="kap" id="start">
     <p class="eyebrow">Projektunterricht · 14 Kapitel</p>
     <h1>Von Shannons Ratespiel zum fertigen Satz</h1>
-    <p class="lead">Ein grosses Sprachmodell macht genau eine Sache: Es schätzt, welches Zeichenstück als nächstes kommt. Alles, was danach wie ein Gespräch aussieht, entsteht daraus. Diese Seite geht die Verarbeitungskette Schritt für Schritt durch — ein Kapitel pro Schritt, jeweils mit einem Versuch, den man selbst bedienen kann.</p>
+    <p class="lead">Ein grosses Sprachmodell macht genau eine Sache: Es schätzt, welches Zeichenstück als nächstes kommt. Alles, was danach wie ein Gespräch aussieht, entsteht daraus. Diese Seite geht die Verarbeitungskette Schritt für Schritt durch: ein Kapitel pro Schritt, jeweils mit einem Versuch, den man selbst bedienen kann.</p>
 
     <div class="merk">
       <div class="lbl">Worum es geht</div>
-      <p>Die Kapitel 01 bis 03 klären die Frage, die das Ganze überhaupt lösbar macht. Die Kapitel 04 bis 09 sind die Maschine selbst, in der Reihenfolge, in der Text durch sie läuft. Die Kapitel 10 bis 12 zeigen, was um das Modell herum gebaut ist — und erklären das meiste von dem, was man für Magie hält. Kapitel 13 zieht die Linie zurück bis 1956.</p>
+      <p>Die Kapitel 01 bis 03 klären die Frage, die das Ganze überhaupt lösbar macht. Die Kapitel 04 bis 09 sind die Maschine selbst, in der Reihenfolge, in der Text durch sie läuft. Die Kapitel 10 bis 12 zeigen, was um das Modell herum gebaut ist, und erklären das meiste von dem, was man für Magie hält. Kapitel 13 zieht die Linie zurück bis 1956.</p>
     </div>
 
     <h2 class="sec">Zwei Ebenen</h2>
@@ -448,11 +444,11 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
     </details>
 
     <h2 class="sec">Die Kette</h2>
-    <p>Jeder Pfeil in dieser Liste ist ein eigenes Kapitel. Wer nur den Durchlauf sehen will, liest 05 bis 09 — das ist der Weg eines einzigen Tokens durch das Modell.</p>
+    <p>Jeder Pfeil in dieser Liste ist ein eigenes Kapitel. Wer nur den Durchlauf sehen will, liest 05 bis 09. Das ist der Weg eines einzigen Tokens durch das Modell.</p>
 
     <div class="pipe wide">
       <a href="#kap01"><span class="n">01</span><span class="t">Shannons Spiel, 1950</span><span class="d">Sprache ist statistisch vorhersagbar. Damit ist die Aufgabe definiert.</span></a>
-      <a href="#kap02"><span class="n">02</span><span class="t">Vor den LLMs</span><span class="d">Turing, ELIZA, PARRY, A.L.I.C.E., SmarterChild — alle nach Regeln, keiner mit Modell.</span></a>
+      <a href="#kap02"><span class="n">02</span><span class="t">Vor den LLMs</span><span class="d">Turing, ELIZA, PARRY, A.L.I.C.E., SmarterChild. Alle nach Regeln, keiner mit Modell.</span></a>
       <a href="#kap03"><span class="n">03</span><span class="t">Die Blackbox</span><span class="d">Eingabe, Verarbeitung, Ausgabe. Nur der Kasten in der Mitte wird ersetzt.</span></a>
       <a href="#kap04"><span class="n">04</span><span class="t">Das Modell</span><span class="d">Ein Netz aus Gewichten. Buchstäblich eine Datei voller Zahlen.</span></a>
       <a href="#kap05"><span class="n">05</span><span class="t">Tokenisierung</span><span class="d">Text wird in Stücke zerlegt und zu Zahlen. Byte Pair Encoding.</span></a>
@@ -463,11 +459,11 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
       <a href="#kap10"><span class="n">10</span><span class="t">Der echte Request</span><span class="d">System-Prompt plus kompletter Verlauf, bei jeder einzelnen Nachricht neu.</span></a>
       <a href="#kap11"><span class="n">11</span><span class="t">Training</span><span class="d">Pretraining, Finetuning, RLHF. Drei Phasen, drei verschiedene Ziele.</span></a>
       <a href="#kap12"><span class="n">12</span><span class="t">Werkzeuge</span><span class="d">Das Modell führt nichts aus. Es schreibt nur einen Funktionsaufruf hin.</span></a>
-      <a href="#kap13"><span class="n">13</span><span class="t">Alien Intelligence</span><span class="d">Dartmouth 1956 — und warum der Name vielleicht falsch gewählt war.</span></a>
+      <a href="#kap13"><span class="n">13</span><span class="t">Alien Intelligence</span><span class="d">Dartmouth 1956, und warum der Name vielleicht falsch gewählt war.</span></a>
     </div>
 
     <h2 class="sec">Grundlage</h2>
-    <p>Die Kapitel folgen dem Weg, den ein Text durch ein Sprachmodell nimmt, eingerahmt von der Vorgeschichte und dem, was um das Modell herum gebaut ist. Jahreszahlen, Namen und Kennzahlen sind mit Quellen belegt, wo möglich mit den Originalarbeiten — von Shannons Aufsatz von 1951 bis zu den heutigen Modellbeschreibungen.</p>
+    <p>Die Kapitel folgen dem Weg, den ein Text durch ein Sprachmodell nimmt, eingerahmt von der Vorgeschichte und dem, was um das Modell herum gebaut ist. Jahreszahlen, Namen und Kennzahlen sind mit Quellen belegt, wo möglich mit den Originalarbeiten, von Shannons Aufsatz von 1951 bis zu den heutigen Modellbeschreibungen.</p>
     <p class="hinweis">Alle Quellen, nach Kapiteln geordnet: <a href="#kap13">Kapitel 13, Abschnitt Quellen</a>.</p>
 
     <div class="fussnav"><span></span><a href="#kap01"><span class="pf">→</span> 01 Shannons Spiel</a></div>
@@ -476,21 +472,21 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
   <section class="kap" id="kap01" hidden>
     <p class="eyebrow">Kapitel 01 · Die Aufgabe</p>
     <h1>Shannons Spiel, 1950</h1>
-    <p class="lead">Claude Shannon, der Begründer der Informationstheorie, liess um 1950 eine Versuchsperson ein Spiel spielen. Er zeigte ihr einen Text, in dem der nächste Buchstabe verdeckt war, und sie musste raten — Buchstabe für Buchstabe. Er zählte mit, wie oft sie richtig lag.</p>
+    <p class="lead">Claude Shannon, der Begründer der Informationstheorie, liess um 1950 eine Versuchsperson ein Spiel spielen. Er zeigte ihr einen Text, in dem der nächste Buchstabe verdeckt war, und sie musste raten, Buchstabe für Buchstabe. Er zählte mit, wie oft sie richtig lag.</p>
 
-    <p>Gemessen hat er damit nicht das Sprachgefühl dieser einen Person. Er hat gemessen, <em>wie vorhersagbar geschriebene Sprache überhaupt ist</em>. Und die Antwort war: sehr. Nach «Der Hund bellt im Gar…» ist der nächste Buchstabe kein Zufall. Nach «Es war einmal ein kl…» auch nicht. Sprache hat Struktur, und diese Struktur ist statistisch — man kann sie zählen, ohne zu verstehen, wovon die Rede ist.</p>
+    <p>Gemessen hat er damit nicht das Sprachgefühl dieser einen Person. Er hat gemessen, <em>wie vorhersagbar geschriebene Sprache überhaupt ist</em>. Und die Antwort war: sehr. Nach «Der Hund bellt im Gar…» ist der nächste Buchstabe kein Zufall. Nach «Es war einmal ein kl…» auch nicht. Sprache hat Struktur, und diese Struktur ist statistisch: man kann sie zählen, ohne zu verstehen, wovon die Rede ist.</p>
 
-    <p>Damit war die Aufgabe definiert, an der die nächsten 75 Jahre gearbeitet wurde. Nicht «verstehe Sprache». Sondern: <strong>schätze, was als nächstes kommt.</strong> Genau diese eine Aufgabe löst ein grosses Sprachmodell. Es ist kein Gesprächspartner, kein Nachschlagewerk und keine Denkmaschine. Es ist ein Next-Token-Prädiktor — und macht dasselbe, was Shannons Versuchsperson 1950 von Hand gemacht hat.</p>
+    <p>Damit war die Aufgabe definiert, an der die nächsten 75 Jahre gearbeitet wurde. Nicht «verstehe Sprache». Sondern: <strong>schätze, was als nächstes kommt.</strong> Genau diese eine Aufgabe löst ein grosses Sprachmodell. Es ist kein Gesprächspartner, kein Nachschlagewerk und keine Denkmaschine. Es ist ein Next-Token-Prädiktor und macht dasselbe, was Shannons Versuchsperson 1950 von Hand gemacht hat.</p>
 
     <div class="merk">
       <div class="lbl">Kernidee</div>
-      <p>Wenn Sprache vorhersagbar ist, lässt sie sich mit Statistik bearbeiten. Alles, was in den folgenden zwölf Kapiteln vorkommt, ist Technik, um diese Vorhersage besser zu machen — nie, um die Aufgabe zu wechseln.</p>
+      <p>Wenn Sprache vorhersagbar ist, lässt sie sich mit Statistik bearbeiten. Alles, was in den folgenden zwölf Kapiteln vorkommt, ist Technik, um diese Vorhersage besser zu machen, und nie, um die Aufgabe zu wechseln.</p>
     </div>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 01</span><span class="h">Rate den nächsten Buchstaben</span></div>
       <div class="korpus">
-        <p class="hinweis" style="margin-top:0">Du siehst den Anfang eines Satzes. Tippe den Buchstaben, der deiner Meinung nach folgt. Richtig oder falsch — der Buchstabe wird danach aufgedeckt und du ratest weiter. Leerzeichen zählt als Zeichen (Taste: Leertaste).</p>
+        <p class="hinweis" style="margin-top:0">Du siehst den Anfang eines Satzes. Tippe den Buchstaben, der deiner Meinung nach folgt. Richtig oder falsch: Der Buchstabe wird danach aufgedeckt und du ratest weiter. Leerzeichen zählt als Zeichen (Taste: Leertaste).</p>
         <div class="aus" id="sh-text" style="font-size:14px;letter-spacing:.02em"></div>
         <div class="steuer" style="margin-top:12px;margin-bottom:0">
           <input type="text" id="sh-in" maxlength="1" size="2" autocomplete="off" aria-label="Nächster Buchstabe" style="width:46px;text-align:center;font-size:16px">
@@ -501,7 +497,7 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
           <dl>
             <div><dt>Versuche</dt><dd><b id="sh-n">0</b></dd></div>
             <div><dt>Treffer</dt><dd><b id="sh-t">0</b></dd></div>
-            <div><dt>Quote</dt><dd><b id="sh-q">—</b></dd></div>
+            <div><dt>Quote</dt><dd><b id="sh-q">–</b></dd></div>
             <div><dt>Zufall</dt><dd><b>3.7 %</b> bei 27 Zeichen</dd></div>
           </dl>
         </div>
@@ -517,7 +513,7 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
         <div><dt>Ergebnis</dt><dd>Geschriebene Sprache ist stark vorhersagbar</dd></div>
       </dl>
     </div>
-    <p class="hinweis">Shannon reichte die Auswertung im September 1950 ein; sie erschien im Januar 1951 als <em>Prediction and Entropy of Printed English</em>. Die Textproben stammten aus einer Biografie, <em>Jefferson the Virginian</em> von Dumas Malone. Sein Schätzwert lag bei etwa 1 Bit Information pro Buchstabe — von den 4.7 Bit, die 27 gleich wahrscheinliche Zeichen theoretisch bräuchten.</p>
+    <p class="hinweis">Shannon reichte die Auswertung im September 1950 ein; sie erschien im Januar 1951 als <em>Prediction and Entropy of Printed English</em>. Die Textproben stammten aus einer Biografie, <em>Jefferson the Virginian</em> von Dumas Malone. Sein Schätzwert lag bei etwa 1 Bit Information pro Buchstabe, von den 4.7 Bit, die 27 gleich wahrscheinliche Zeichen theoretisch bräuchten.</p>
 
 
     <h2 class="sec vert">Vertiefung</h2>
@@ -529,7 +525,7 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
         <p>Der Durchschnitt über alle möglichen Zeichen heisst <strong>Entropie</strong>:</p>
         <div class="formel">H = −Σ p(x) · log₂ p(x)<span class="wo">Summe über alle Zeichen x des Alphabets. H ist die mittlere Information pro Zeichen.</span></div>
         <h4>Rechenbeispiel</h4>
-        <p>Wären alle 27 Zeichen (26 Buchstaben und Leerzeichen) gleich wahrscheinlich, also p = 1/27, dann gilt H = log₂ 27 ≈ 4.75 Bit. Shannon kam für englischen Text auf etwa 1 Bit pro Zeichen. Rund drei Viertel jedes Zeichens sind also aus dem Zusammenhang vorhersagbar — das nennt man Redundanz.</p>
+        <p>Wären alle 27 Zeichen (26 Buchstaben und Leerzeichen) gleich wahrscheinlich, also p = 1/27, dann gilt H = log₂ 27 ≈ 4.75 Bit. Shannon kam für englischen Text auf etwa 1 Bit pro Zeichen. Rund drei Viertel jedes Zeichens sind also aus dem Zusammenhang vorhersagbar. Das nennt man Redundanz.</p>
         <h4>Die Brücke zu heutigen Modellen</h4>
         <div class="formel">Perplexität = 2<sup>H</sup><span class="wo">Die «effektive Zahl der Möglichkeiten». Bei H = 1 Bit verhält sich jedes Zeichen so, als gäbe es nur 2 gleich wahrscheinliche Kandidaten statt 27.</span></div>
         <p>Genau diese Zahl wird heute verwendet, um Sprachmodelle zu vergleichen: Je niedriger die Perplexität auf unbekanntem Text, desto besser sagt das Modell voraus. Shannons Spiel ist also nicht nur Vorgeschichte, sondern bis heute die Messlatte.</p>
@@ -541,7 +537,7 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
   <section class="kap" id="kap02" hidden>
     <p class="eyebrow">Kapitel 02 · Vorgeschichte</p>
     <h1>Vor den LLMs: 50 Jahre Regeln</h1>
-    <p class="lead">Zwischen Shannons Spiel und dem ersten brauchbaren Sprachmodell liegen fünf Jahrzehnte Chatbots. Sie haben alle funktioniert, manche erstaunlich gut — und keiner von ihnen hatte ein Modell. Sie hatten Regeln, die Menschen von Hand hingeschrieben hatten.</p>
+    <p class="lead">Zwischen Shannons Spiel und dem ersten brauchbaren Sprachmodell liegen fünf Jahrzehnte Chatbots. Sie haben alle funktioniert, manche erstaunlich gut, und keiner von ihnen hatte ein Modell. Sie hatten Regeln, die Menschen von Hand hingeschrieben hatten.</p>
 
     <h2 class="sec">Die Reihe</h2>
     <div class="tabwrap wide">
@@ -550,7 +546,7 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
         <tbody>
           <tr><td class="num">1950</td><td><strong>Imitation Game</strong></td><td>Alan Turing</td><td>Kein Programm, sondern die Frage: Kann ein Mensch im Gespräch Maschine und Mensch unterscheiden?</td></tr>
           <tr><td class="num">1966</td><td><strong>ELIZA</strong></td><td>Joseph Weizenbaum, MIT</td><td>Mustererkennung. Spiegelt die Aussage als Frage zurück.</td></tr>
-          <tr><td class="num">1971</td><td><strong>PARRY</strong></td><td>Kenneth Colby</td><td>Simuliert einen paranoiden Patienten — mit Zustand und Stimmungswerten.</td></tr>
+          <tr><td class="num">1971</td><td><strong>PARRY</strong></td><td>Kenneth Colby</td><td>Simuliert einen paranoiden Patienten, mit Zustand und Stimmungswerten.</td></tr>
           <tr><td class="num">1995</td><td><strong>A.L.I.C.E.</strong></td><td>Richard Wallace</td><td>Rund 41 000 von Hand geschriebene Muster.</td></tr>
           <tr><td class="num">2001</td><td><strong>SmarterChild</strong></td><td>ActiveBuddy</td><td>Regeln plus Datenbankabfragen für Wetter, Kino, Börsenkurse.</td></tr>
         </tbody>
@@ -559,24 +555,24 @@ ul.gl{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid hsl(var(--r
 
     <h2 class="sec">Der Fall Weizenbaum</h2>
     <p>ELIZA lief mit einem Skript namens DOCTOR, das einen Gesprächstherapeuten nachahmte. Das Programm verstand kein einziges Wort. Es suchte Schlüsselwörter und drehte den Satz um: aus «Ich bin traurig» wurde «Warum bist du traurig?».</p>
-    <p>Weizenbaum erzählte später, dass seine eigene Sekretärin, die wusste, wie das Programm aufgebaut war, ihn aus dem Raum bat — damit sie sich ungestört mit ELIZA unterhalten könne. Das hat ihn nicht stolz gemacht, sondern erschreckt. Er wurde zu einem der schärfsten Kritiker der Branche.</p>
+    <p>Weizenbaum erzählte später, dass seine eigene Sekretärin, die wusste, wie das Programm aufgebaut war, ihn aus dem Raum bat, damit sie sich ungestört mit ELIZA unterhalten könne. Das hat ihn nicht stolz gemacht, sondern erschreckt. Er wurde zu einem der schärfsten Kritiker der Branche.</p>
 
     <div class="merk">
       <div class="lbl">Warum das hierhin gehört</div>
-      <p>Alle diese Systeme lassen sich von aussen nicht von einem Modell unterscheiden. Sie zeigen damit: Ein Gespräch, das sich echt anfühlt, beweist über das Innenleben eines Programms gar nichts. Und sie zeigen, wo die Grenze liegt — Regeln muss jemand schreiben, und es gibt mehr Sätze als Regeln.</p>
+      <p>Alle diese Systeme lassen sich von aussen nicht von einem Modell unterscheiden. Sie zeigen damit: Ein Gespräch, das sich echt anfühlt, beweist über das Innenleben eines Programms gar nichts. Und sie zeigen, wo die Grenze liegt: Regeln muss jemand schreiben, und es gibt mehr Sätze als Regeln.</p>
     </div>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 02</span><span class="h">ELIZA, nachgebaut</span></div>
       <div class="korpus">
-        <p class="hinweis" style="margin-top:0">Zwölf Regeln, kein Modell, kein Training. Schreib etwas über dich — und beobachte, wie weit das Umdrehen von Sätzen trägt, bis es kippt.</p>
+        <p class="hinweis" style="margin-top:0">Zwölf Regeln, kein Modell, kein Training. Schreib etwas über dich und beobachte, wie weit das Umdrehen von Sätzen trägt, bis es kippt.</p>
         <div class="aus" id="el-log" style="min-height:8em;max-height:17em;overflow-y:auto"></div>
         <form class="steuer" id="el-form" style="margin-top:12px;margin-bottom:0">
           <input type="text" id="el-in" placeholder="Ich bin heute müde …" autocomplete="off" aria-label="Nachricht an ELIZA" style="flex:1 1 220px;min-width:140px">
           <button class="knopf" type="submit">Senden</button>
           <button class="knopf sek" type="button" id="el-reset">Zurücksetzen</button>
         </form>
-        <p class="hinweis" id="el-regel">Angewandte Regel: —</p>
+        <p class="hinweis" id="el-regel">Angewandte Regel: keine</p>
       </div>
     </div>
 
@@ -591,7 +587,7 @@ Vorlage:  Seit wann bist du <b>(X)</b>?
 
 Eingabe:  Heute ich bin <b>müde von der Schule</b>
 Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Stern steht für «beliebiger Text». Im Versuch oben ist das als regulärer Ausdruck umgesetzt: /ich bin (.+)/ fängt alles nach «ich bin» in der Klammer.</span></div>
-        <p>Vor dem Einsetzen tauscht eine feste Tabelle die Pronomen: ich → du, mein → dein, mir → dir. Darum klingt die Antwort, als hätte das Programm die Perspektive gewechselt. Hat es nicht — es hat Wörter nach Tabelle ersetzt.</p>
+        <p>Vor dem Einsetzen tauscht eine feste Tabelle die Pronomen: ich → du, mein → dein, mir → dir. Darum klingt die Antwort, als hätte das Programm die Perspektive gewechselt. Hat es nicht. Es hat Wörter nach Tabelle ersetzt.</p>
         <h4>Rangfolge</h4>
         <p>Passen mehrere Regeln, gewinnt die mit dem höchsten Rang. Im Original hatte jedes Schlüsselwort eine Zahl; im Versuch entscheidet die Reihenfolge der Liste. Passt keine Regel, kommt eine Standardantwort wie «Erzähl weiter».</p>
         <h4>Die eigentliche Grenze</h4>
@@ -600,7 +596,7 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
           <li>Keine Verallgemeinerung: «Ich bin müde» und «Ich fühle mich erschöpft» brauchen zwei getrennte Regeln, obwohl sie dasselbe meinen.</li>
           <li>Unbegrenzt viele Sätze, endlich viele Regeln: Jede neue Situation muss jemand von Hand vorhersehen.</li>
         </ul>
-        <p>Ein trainiertes Modell löst den zweiten Punkt, weil ähnliche Sätze ähnliche Vektoren bekommen (Kapitel 06). Den ersten Punkt löst es übrigens nicht — siehe Kapitel 10.</p>
+        <p>Ein trainiertes Modell löst den zweiten Punkt, weil ähnliche Sätze ähnliche Vektoren bekommen (Kapitel 06). Den ersten Punkt löst es übrigens nicht, siehe Kapitel 10.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap01">← 01 Shannons Spiel</a><a href="#kap03"><span class="pf">→</span> 03 Die Blackbox</a></div>
@@ -613,13 +609,13 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
 
     <div class="aus wide" id="box-diagramm" style="overflow-x:auto;white-space:pre;font-size:12px"></div>
 
-    <p>Das ist keine Vereinfachung für den Unterricht, sondern tatsächlich die Architektur. Ein Programm, das mit einem Sprachmodell arbeitet, schickt eine Zeichenkette los und bekommt eine Zeichenkette zurück. Was dazwischen liegt — ELIZAs Regeltabelle oder ein Modell mit über 100 Milliarden Gewichten — ist für den aufrufenden Code nicht zu unterscheiden.</p>
+    <p>Das ist keine Vereinfachung für den Unterricht, sondern tatsächlich die Architektur. Ein Programm, das mit einem Sprachmodell arbeitet, schickt eine Zeichenkette los und bekommt eine Zeichenkette zurück. Was dazwischen liegt (ELIZAs Regeltabelle oder ein Modell mit über 100 Milliarden Gewichten), ist für den aufrufenden Code nicht zu unterscheiden.</p>
 
     <p>Nützlich ist das aus zwei Gründen. Erstens erklärt es, warum man Modelle austauschen kann, ohne die Anwendung neu zu bauen. Zweitens zeigt es, wo in dieser Seite die eigentliche Arbeit steckt: Die Kapitel 04 bis 09 öffnen genau diesen Kasten, in der Reihenfolge, in der Text durch ihn hindurchläuft.</p>
 
     <div class="merk">
       <div class="lbl">Merksatz</div>
-      <p>Die Schnittstelle ist seit 1966 dieselbe. Nur die Maschinerie dahinter ist ausgetauscht worden — von handgeschriebenen Regeln zu trainierten Zahlen.</p>
+      <p>Die Schnittstelle ist seit 1966 dieselbe. Nur die Maschinerie dahinter ist ausgetauscht worden: von handgeschriebenen Regeln zu trainierten Zahlen.</p>
     </div>
 
 
@@ -631,10 +627,10 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
         <div class="formel">f : (x₁, x₂, …, xₙ)  ↦  ( p(v₁), p(v₂), …, p(v<sub>|V|</sub>) )<span class="wo">x₁ … xₙ sind die Token der Eingabe, v₁ … v|V| alle Token des Vokabulars V. Die Ausgabe ist eine Liste mit |V| Zahlen, die zusammen 1 ergeben.</span></div>
         <p>Diese Funktion hat zwei Eigenschaften, die viel erklären:</p>
         <ul class="liste">
-          <li><strong>Sie ist deterministisch.</strong> Gleiche Eingabe, gleiche Verteilung — jedes Mal. Der Zufall kommt erst danach, beim Ziehen (Kapitel 08).</li>
+          <li><strong>Sie ist deterministisch.</strong> Gleiche Eingabe, gleiche Verteilung, jedes Mal. Der Zufall kommt erst danach, beim Ziehen (Kapitel 08).</li>
           <li><strong>Sie hat keinen Zustand.</strong> Nach dem Aufruf bleibt nichts zurück. Es gibt keine Variable, in der sich das Modell etwas merkt.</li>
         </ul>
-        <p>Alles, was nach Gedächtnis oder Handeln aussieht — der Chatverlauf, Werkzeuge, Dateien — ist Code, der diese Funktion wiederholt aufruft und ihre Eingabe zusammenstellt. Die Kapitel 10 und 12 zeigen genau diesen Code.</p>
+        <p>Alles, was nach Gedächtnis oder Handeln aussieht (der Chatverlauf, Werkzeuge, Dateien), ist Code, der diese Funktion wiederholt aufruft und ihre Eingabe zusammenstellt. Die Kapitel 10 und 12 zeigen genau diesen Code.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap02">← 02 Vor den LLMs</a><a href="#kap04"><span class="pf">→</span> 04 Was ein Modell ist</a></div>
@@ -643,7 +639,7 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
   <section class="kap" id="kap04" hidden>
     <p class="eyebrow">Kapitel 04 · Das Modell</p>
     <h1>Was ein Modell wirklich ist</h1>
-    <p class="lead">Ein Modell ist eine Datei. Darin stehen Zahlen — sehr viele Zahlen, sonst nichts. Diese Zahlen heissen Gewichte. Training heisst: diese Zahlen so lange nachjustieren, bis das Netz die Vorhersage aus Kapitel 01 gut hinbekommt. Es gibt in einem Modell keine Regeln, keine Sätze und keine Wissensdatenbank, die man aufschlagen könnte.</p>
+    <p class="lead">Ein Modell ist eine Datei. Darin stehen Zahlen: sehr viele Zahlen, sonst nichts. Diese Zahlen heissen Gewichte. Training heisst: diese Zahlen so lange nachjustieren, bis das Netz die Vorhersage aus Kapitel 01 gut hinbekommt. Es gibt in einem Modell keine Regeln, keine Sätze und keine Wissensdatenbank, die man aufschlagen könnte.</p>
 
     <h2 class="sec">Vier Daten, die den Weg erklären</h2>
     <div class="tabwrap wide">
@@ -651,15 +647,15 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
         <thead><tr><th class="num">Jahr</th><th>Wer</th><th>Was</th></tr></thead>
         <tbody>
           <tr><td class="num">1943</td><td>Warren McCulloch, Walter Pitts</td><td>Erstes mathematisches Modell eines Neurons: Eingänge gewichten, summieren, ab einer Schwelle feuern.</td></tr>
-          <tr><td class="num">1958</td><td>Frank Rosenblatt</td><td>Das Perzeptron — ein Neuron, das aus Beispielen lernt, indem es seine Gewichte verändert.</td></tr>
+          <tr><td class="num">1958</td><td>Frank Rosenblatt</td><td>Das Perzeptron: ein Neuron, das aus Beispielen lernt, indem es seine Gewichte verändert.</td></tr>
           <tr><td class="num">1969</td><td>Marvin Minsky, Seymour Papert</td><td>Beweis: Ein einschichtiges Perzeptron kann XOR nicht lernen. Die Forschungsgelder brechen weg.</td></tr>
-          <tr><td class="num">1986</td><td>Rumelhart, Hinton, Williams</td><td>Backpropagation wird breit nutzbar: Der Fehler wird durch mehrere Schichten zurückgerechnet. Damit ist XOR lösbar — und alles Folgende auch.</td></tr>
+          <tr><td class="num">1986</td><td>Rumelhart, Hinton, Williams</td><td>Backpropagation wird breit nutzbar: Der Fehler wird durch mehrere Schichten zurückgerechnet. Damit ist XOR lösbar, und alles Folgende auch.</td></tr>
         </tbody>
       </table>
     </div>
 
     <h2 class="sec">Warum XOR der Prüfstein ist</h2>
-    <p>XOR («entweder oder, aber nicht beides») ist die einfachste Aufgabe, die sich nicht mit einer geraden Linie lösen lässt. Ein einschichtiges Netz kann nur eine Linie durch die Daten legen — und für XOR gibt es keine solche Linie. Zwei Schichten können die Ebene krümmen, und damit geht es.</p>
+    <p>XOR («entweder oder, aber nicht beides») ist die einfachste Aufgabe, die sich nicht mit einer geraden Linie lösen lässt. Ein einschichtiges Netz kann nur eine Linie durch die Daten legen, und für XOR gibt es keine solche Linie. Zwei Schichten können die Ebene krümmen, und damit geht es.</p>
     <p>Genau das steckt in jedem grossen Modell, nur viel öfter gestapelt. Mehr Schichten heissen: komplexere Grenzen zwischen «so geht es weiter» und «so nicht».</p>
 
     <div class="labor">
@@ -682,13 +678,13 @@ Ausgabe:  Seit wann bist du <b>müde von der Schule</b>?<span class="wo">Der Ste
             <div class="aus" id="xo-o2" style="min-height:5.2em"></div>
           </div>
         </div>
-        <p class="hinweis">Das einschichtige Netz landet bei allen vier Eingaben um 0.5 — es ist bestmöglich ratlos. Das zweischichtige trennt sauber. Die 17 Zahlen rechts sind das komplette «Modell»: Mehr steckt nicht drin.</p>
+        <p class="hinweis">Das einschichtige Netz landet bei allen vier Eingaben um 0.5: es ist bestmöglich ratlos. Das zweischichtige trennt sauber. Die 17 Zahlen rechts sind das komplette «Modell»: Mehr steckt nicht drin.</p>
       </div>
     </div>
 
     <div class="merk">
       <div class="lbl">Grössenordnung</div>
-      <p>Das Netz rechts hat 17 Gewichte. Das kleine Transformer-Beispiel aus Kapitel 07 hat allein in seinen Blöcken rund 74 000. GPT-OSS-120B hat rund 117 Milliarden — gerundet steht die Zahl im Namen. Es ist dieselbe Art von Datei, nur länger.</p>
+      <p>Das Netz rechts hat 17 Gewichte. Das kleine Transformer-Beispiel aus Kapitel 07 hat allein in seinen Blöcken rund 74 000. GPT-OSS-120B hat rund 117 Milliarden. Gerundet steht die Zahl im Namen. Es ist dieselbe Art von Datei, nur länger.</p>
     </div>
 
 
@@ -717,8 +713,8 @@ a = σ(z) = 1 / (1 + e<sup>−z</sup>)<span class="wo">x₁, x₂: Eingaben · w
 (0,1) → 1 :   w₂ + b &gt; 0     also  w₂ &gt; −b
 (1,0) → 1 :   w₁ + b &gt; 0     also  w₁ &gt; −b
 (1,1) → 0 :   w₁ + w₂ + b ≤ 0</div>
-        <p>Aus den mittleren zwei Zeilen folgt w₁ + w₂ + b &gt; −b − b + b = −b. Und weil b ≤ 0 ist, ist −b ≥ 0. Also ist w₁ + w₂ + b &gt; 0 — das widerspricht der letzten Zeile. Es gibt keine solchen Gewichte. ∎</p>
-        <p>Genau dieses Ergebnis veröffentlichten Minsky und Papert 1969. Mit einer verborgenen Schicht fällt der Beweis weg, weil das Netz dann nicht mehr eine Gerade, sondern mehrere kombinieren kann — im Bild rechts sieht man die beiden Grenzen des roten Bands.</p>
+        <p>Aus den mittleren zwei Zeilen folgt w₁ + w₂ + b &gt; −b − b + b = −b. Und weil b ≤ 0 ist, ist −b ≥ 0. Also ist w₁ + w₂ + b &gt; 0. Das widerspricht der letzten Zeile. Es gibt keine solchen Gewichte. ∎</p>
+        <p>Genau dieses Ergebnis veröffentlichten Minsky und Papert 1969. Mit einer verborgenen Schicht fällt der Beweis weg, weil das Netz dann nicht mehr eine Gerade, sondern mehrere kombinieren kann. Im Bild rechts sieht man die beiden Grenzen des roten Bands.</p>
         <h4>Gewichte zählen</h4>
         <div class="formel">Eine Schicht:   2 Gewichte + 1 Bias                        =  3
 Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
@@ -730,18 +726,18 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
   <section class="kap" id="kap05" hidden>
     <p class="eyebrow">Kapitel 05 · Schritt 1 der Verarbeitung</p>
     <h1>Tokenisierung</h1>
-    <p class="lead">Ein Netz rechnet mit Zahlen, nicht mit Buchstaben. Der erste Schritt ist deshalb immer: Text in Stücke zerlegen und jedem Stück eine Nummer geben. Diese Stücke heissen Token. Sie sind nicht Wörter und nicht Buchstaben, sondern etwas dazwischen — und zwar genau so, wie es die Statistik des Trainingstextes vorgibt.</p>
+    <p class="lead">Ein Netz rechnet mit Zahlen, nicht mit Buchstaben. Der erste Schritt ist deshalb immer: Text in Stücke zerlegen und jedem Stück eine Nummer geben. Diese Stücke heissen Token. Sie sind nicht Wörter und nicht Buchstaben, sondern etwas dazwischen, und zwar genau so, wie es die Statistik des Trainingstextes vorgibt.</p>
 
     <h2 class="sec">Byte Pair Encoding</h2>
-    <p>Das Verfahren heisst Byte Pair Encoding, kurz BPE. Philip Gage beschrieb es 1994 als Kompressionsalgorithmus — es hatte mit Sprache zunächst gar nichts zu tun. Sennrich, Haddow und Birch holten es 2015 in die maschinelle Übersetzung, und seither tokenisieren praktisch alle Sprachmodelle so.</p>
+    <p>Das Verfahren heisst Byte Pair Encoding, kurz BPE. Philip Gage beschrieb es 1994 als Kompressionsalgorithmus. Es hatte mit Sprache zunächst gar nichts zu tun. Sennrich, Haddow und Birch holten es 2015 in die maschinelle Übersetzung, und seither tokenisieren praktisch alle Sprachmodelle so.</p>
     <p>Der Algorithmus ist kurz:</p>
     <ul class="liste">
       <li>Text in Wörter zerlegen und zählen, wie oft jedes vorkommt.</li>
       <li>Jedes Wort als Folge einzelner Zeichen schreiben.</li>
-      <li>Das häufigste benachbarte Zeichenpaar im ganzen Text suchen — gewichtet mit der Worthäufigkeit — und zu einem neuen Token verschmelzen.</li>
+      <li>Das häufigste benachbarte Zeichenpaar im ganzen Text suchen (gewichtet mit der Worthäufigkeit) und zu einem neuen Token verschmelzen.</li>
       <li>Wiederholen, bis die vorher festgelegte Zahl von Verschmelzungen erreicht ist.</li>
     </ul>
-    <p>Diese Zahl bestimmt die Grösse des Vokabulars. Bei «the cat sat on the mat» und drei Verschmelzungen entsteht zuerst <span class="mono">at</span> — es kommt in <em>cat</em>, <em>sat</em> und <em>mat</em> vor —, dann <span class="mono">th</span> und daraus <span class="mono">the</span>, weil das Wort zweimal auftaucht. Alles andere bleibt in Einzelzeichen liegen. Wie viele Token am Ende im Vokabular stehen, hängt davon ab, wie die Umsetzung Wortgrenzen behandelt: Im Versuch unten sind es sieben, Umsetzungen mit anderen Regeln kommen auf andere Zahlen. Wer viele Verschmelzungen zulässt, bekommt ein Vokabular, in dem die häufigen Wörter ganz und die seltenen in Teilen gespeichert sind.</p>
+    <p>Diese Zahl bestimmt die Grösse des Vokabulars. Bei «the cat sat on the mat» und drei Verschmelzungen entsteht zuerst <span class="mono">at</span> (es kommt in <em>cat</em>, <em>sat</em> und <em>mat</em> vor), dann <span class="mono">th</span> und daraus <span class="mono">the</span>, weil das Wort zweimal auftaucht. Alles andere bleibt in Einzelzeichen liegen. Wie viele Token am Ende im Vokabular stehen, hängt davon ab, wie die Umsetzung Wortgrenzen behandelt: Im Versuch unten sind es sieben, Umsetzungen mit anderen Regeln kommen auf andere Zahlen. Wer viele Verschmelzungen zulässt, bekommt ein Vokabular, in dem die häufigen Wörter ganz und die seltenen in Teilen gespeichert sind.</p>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 05</span><span class="h">BPE auf eigenem Text</span></div>
@@ -755,8 +751,8 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         </div>
         <div class="daten" style="margin-top:4px">
           <dl>
-            <div><dt>Vokabular</dt><dd><b id="bp-vok">—</b> Token</dd></div>
-            <div><dt>Text ergibt</dt><dd><b id="bp-anz">—</b> Token</dd></div>
+            <div><dt>Vokabular</dt><dd><b id="bp-vok">–</b> Token</dd></div>
+            <div><dt>Text ergibt</dt><dd><b id="bp-anz">–</b> Token</dd></div>
           </dl>
         </div>
         <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Tokenisierter Text</p>
@@ -768,7 +764,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
 
     <div class="merk">
       <div class="lbl">Warum das praktisch wichtig ist</div>
-      <p>Token sind die Einheit, in der alles gemessen wird: Preis pro Anfrage, Länge des Kontextfensters, Geschwindigkeit. Deutsche Komposita und Fachbegriffe zerfallen in mehr Token als englische Alltagswörter — dieselbe Aussage kostet auf Deutsch oft mehr. Und weil das Modell Token sieht und keine Buchstaben, sind Aufgaben wie «zähle die R in Erdbeere» für es überraschend schwer.</p>
+      <p>Token sind die Einheit, in der alles gemessen wird: Preis pro Anfrage, Länge des Kontextfensters, Geschwindigkeit. Deutsche Komposita und Fachbegriffe zerfallen in mehr Token als englische Alltagswörter: dieselbe Aussage kostet auf Deutsch oft mehr. Und weil das Modell Token sieht und keine Buchstaben, sind Aufgaben wie «zähle die R in Erdbeere» für es überraschend schwer.</p>
     </div>
 
 
@@ -776,14 +772,14 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
     <details class="tief">
       <summary>BPE genau: Paare zählen und gierig verschmelzen</summary>
       <div class="tiefinhalt">
-        <p>In jedem Schritt wird für jedes benachbarte Paar (a, b) gezählt, wie oft es vorkommt — gewichtet mit der Häufigkeit des Wortes:</p>
+        <p>In jedem Schritt wird für jedes benachbarte Paar (a, b) gezählt, wie oft es vorkommt, gewichtet mit der Häufigkeit des Wortes:</p>
         <div class="formel">anzahl(a, b) = Σ<sub>w</sub> häufigkeit(w) · (Vorkommen von «ab» in w)<span class="wo">Summe über alle verschiedenen Wörter w des Trainingstextes. Bei «the cat sat on the mat» zählt das Paar (a, t) dreimal: je einmal in cat, sat und mat.</span></div>
         <p>Das Paar mit der grössten Anzahl wird zu einem neuen Token. Das Verfahren ist <strong>gierig</strong>: Es nimmt immer das gerade beste Paar und schaut nie voraus. Das ergibt nicht unbedingt das kleinstmögliche Vokabular, ist aber schnell und funktioniert gut genug.</p>
         <h4>Wie gross das Vokabular wird</h4>
         <div class="formel">|V|  ≤  Zahl der Startzeichen + Zahl der Verschmelzungen<span class="wo">Jede Verschmelzung fügt höchstens ein Token hinzu. Kleiner kann es werden, wenn ein Startzeichen nach dem Verschmelzen nirgends mehr allein vorkommt.</span></div>
         <p>Grosse Modelle haben ein Vokabular von etwa 50 000 bis 200 000 Token. Das ist ein Kompromiss: Ein grösseres Vokabular macht Texte kürzer (weniger Token), aber die Embedding-Tabelle und die Ausgabeschicht werden grösser, weil beide eine Zeile pro Token haben.</p>
         <h4>Byte-Level-BPE</h4>
-        <p>Heutige Tokenizer starten nicht mit Buchstaben, sondern mit den 256 möglichen Bytes. Dadurch gibt es kein Zeichen, das der Tokenizer nicht kennt — jedes Emoji und jede Schrift lässt sich darstellen. Der Preis: Seltene Zeichen wie Umlaute bestehen in UTF-8 aus zwei Bytes und kosten manchmal zwei Token.</p>
+        <p>Heutige Tokenizer starten nicht mit Buchstaben, sondern mit den 256 möglichen Bytes. Dadurch gibt es kein Zeichen, das der Tokenizer nicht kennt: jedes Emoji und jede Schrift lässt sich darstellen. Der Preis: Seltene Zeichen wie Umlaute bestehen in UTF-8 aus zwei Bytes und kosten manchmal zwei Token.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap04">← 04 Was ein Modell ist</a><a href="#kap06"><span class="pf">→</span> 06 Embeddings</a></div>
@@ -792,20 +788,20 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
   <section class="kap" id="kap06" hidden>
     <p class="eyebrow">Kapitel 06 · Schritt 2 der Verarbeitung</p>
     <h1>Embeddings</h1>
-    <p class="lead">Nach der Tokenisierung ist Text eine Liste von Nummern. Nummern allein tragen keine Bedeutung — Token 4711 ist nicht ähnlicher zu 4712 als zu 90 000. Deshalb wird jedes Token durch einen Vektor ersetzt: eine Liste von Zahlen, deren Lage im Raum die Bedeutung codiert. Wörter, die in ähnlichen Zusammenhängen vorkommen, landen nah beieinander.</p>
+    <p class="lead">Nach der Tokenisierung ist Text eine Liste von Nummern. Nummern allein tragen keine Bedeutung: Token 4711 ist nicht ähnlicher zu 4712 als zu 90 000. Deshalb wird jedes Token durch einen Vektor ersetzt: eine Liste von Zahlen, deren Lage im Raum die Bedeutung codiert. Wörter, die in ähnlichen Zusammenhängen vorkommen, landen nah beieinander.</p>
 
     <h2 class="sec">Die Idee ist älter als die Technik</h2>
     <p>Gottlob Frege formulierte 1884 den Gedanken, dass ein Ausdruck seine Bedeutung nicht isoliert hat, sondern im Satzzusammenhang. John Rupert Firth brachte es 1957 auf den Satz, der heute in jeder Einführung steht:</p>
     <blockquote class="quote">You shall know a word by the company it keeps.<cite>J. R. Firth, 1957</cite></blockquote>
-    <p>Das ist gleichzeitig eine Trainingsvorschrift. Wenn Bedeutung im Umfeld steckt, kann man sie aus dem Umfeld lernen — ohne Wörterbuch, nur aus Text. Genau das macht word2vec, 2013 bei Google entstanden: Das Verfahren schiebt die Vektoren von Wörtern, die zusammen in einem Fenster auftreten, aufeinander zu und die von Wörtern, die nicht zusammen auftreten, auseinander. Nach genügend Durchläufen ist Bedeutung Geometrie.</p>
+    <p>Das ist gleichzeitig eine Trainingsvorschrift. Wenn Bedeutung im Umfeld steckt, kann man sie aus dem Umfeld lernen, ohne Wörterbuch, nur aus Text. Genau das macht word2vec, 2013 bei Google entstanden: Das Verfahren schiebt die Vektoren von Wörtern, die zusammen in einem Fenster auftreten, aufeinander zu und die von Wörtern, die nicht zusammen auftreten, auseinander. Nach genügend Durchläufen ist Bedeutung Geometrie.</p>
 
     <h2 class="sec">Rechnen mit Bedeutung</h2>
-    <p>Das berühmte Ergebnis von word2vec ist eine Rechnung: <span class="mono">könig − mann + frau ≈ königin</span>. Man zieht die Richtung «männlich» ab, addiert «weiblich» und landet beim passenden Wort. Verglichen wird dabei nicht der Abstand, sondern der Winkel — die Kosinus-Ähnlichkeit. Zwei Vektoren, die in dieselbe Richtung zeigen, bedeuten Ähnliches, auch wenn einer länger ist.</p>
+    <p>Das berühmte Ergebnis von word2vec ist eine Rechnung: <span class="mono">könig − mann + frau ≈ königin</span>. Man zieht die Richtung «männlich» ab, addiert «weiblich» und landet beim passenden Wort. Verglichen wird dabei nicht der Abstand, sondern der Winkel: die Kosinus-Ähnlichkeit. Zwei Vektoren, die in dieselbe Richtung zeigen, bedeuten Ähnliches, auch wenn einer länger ist.</p>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 06</span><span class="h">Vektorrechnung und Kosinus</span></div>
       <div class="korpus">
-        <p class="hinweis" style="margin-top:0">Die Tabelle unten hat zehn Dimensionen, die hier von Hand mit Bedeutung belegt sind (königlich, Person, männlich, weiblich, Tier, Ort, Land, jung, CH, FR) — nur damit man sehen kann, was passiert. Gerechnet wird echt: Vektoren addieren, subtrahieren, Kosinus zu allen anderen Wörtern bilden, sortieren.</p>
+        <p class="hinweis" style="margin-top:0">Die Tabelle unten hat zehn Dimensionen, die hier von Hand mit Bedeutung belegt sind (königlich, Person, männlich, weiblich, Tier, Ort, Land, jung, CH, FR), nur damit man sehen kann, was passiert. Gerechnet wird echt: Vektoren addieren, subtrahieren, Kosinus zu allen anderen Wörtern bilden, sortieren.</p>
         <div class="steuer" style="margin-top:12px">
           <select id="em-a" aria-label="Wort A"></select>
           <span class="mono">−</span>
@@ -820,7 +816,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         </div>
         <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Nächste Wörter nach Kosinus-Ähnlichkeit</p>
         <div class="bars" id="em-bars"></div>
-        <p class="hinweis">Die drei Eingabewörter sind aus der Rangliste ausgeschlossen — sonst gewinnt immer das Wort, von dem man ausgegangen ist.</p>
+        <p class="hinweis">Die drei Eingabewörter sind aus der Rangliste ausgeschlossen, sonst gewinnt immer das Wort, von dem man ausgegangen ist.</p>
       </div>
     </div>
 
@@ -832,7 +828,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         <div><dt>Heute</dt><dd>GPT-3-Grössenordnung: <b>12 288</b> Dimensionen</dd></div>
       </dl>
     </div>
-    <p class="hinweis">In einem echten Modell sind diese Dimensionen nicht benannt und nicht einzeln deutbar. Sie sind das Ergebnis von Training, nicht von Entwurf. Dass hier «männlich» in Spalte 3 steht, ist eine Lernhilfe — im Original wüsste niemand, was Spalte 3 bedeutet.</p>
+    <p class="hinweis">In einem echten Modell sind diese Dimensionen nicht benannt und nicht einzeln deutbar. Sie sind das Ergebnis von Training, nicht von Entwurf. Dass hier «männlich» in Spalte 3 steht, ist eine Lernhilfe. Im Original wüsste niemand, was Spalte 3 bedeutet.</p>
 
 
     <h2 class="sec vert">Vertiefung</h2>
@@ -847,7 +843,7 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
         <h4>Das Trainingsziel von word2vec (Skip-Gram)</h4>
         <p>Für jedes Wort im Text sollen die Wörter in seinem Fenster möglichst wahrscheinlich werden:</p>
         <div class="formel">p(o | c) = exp(u<sub>o</sub> · v<sub>c</sub>) / Σ<sub>w</sub> exp(u<sub>w</sub> · v<sub>c</sub>)<span class="wo">c: das Wort in der Mitte · o: ein Wort im Fenster daneben · v und u: die beiden Vektoren, die jedes Wort bekommt. Die Summe unten läuft über das ganze Vokabular. Das ist dieselbe Softmax wie in Kapitel 08.</span></div>
-        <p>Das Training verschiebt die Vektoren so, dass diese Wahrscheinlichkeit für echte Nachbarn steigt. Weil die Summe über das ganze Vokabular sehr teuer ist, nimmt man in der Praxis nur ein paar zufällige «Nicht-Nachbarn» und schiebt deren Vektoren weg — das heisst <em>negative sampling</em>: echte Nachbarn ziehen, zufällige Nicht-Nachbarn stossen.</p>
+        <p>Das Training verschiebt die Vektoren so, dass diese Wahrscheinlichkeit für echte Nachbarn steigt. Weil die Summe über das ganze Vokabular sehr teuer ist, nimmt man in der Praxis nur ein paar zufällige «Nicht-Nachbarn» und schiebt deren Vektoren weg. Das heisst <em>negative sampling</em>: echte Nachbarn ziehen, zufällige Nicht-Nachbarn stossen.</p>
         <h4>Warum die Rechnung mit «könig» funktioniert</h4>
         <p>Wenn das Paar mann/frau im Text in denselben Mustern vorkommt wie könig/königin, dann zeigt der Unterschied der beiden Vektoren in dieselbe Richtung. Diese Richtung kann man abziehen und addieren. In echten Modellen gilt das nur ungefähr: «≈» ist ernst gemeint.</p>
       </div>
@@ -858,10 +854,10 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
   <section class="kap" id="kap07" hidden>
     <p class="eyebrow">Kapitel 07 · Schritt 3 der Verarbeitung</p>
     <h1>Der Transformer</h1>
-    <p class="lead">Embeddings geben jedem Token eine feste Bedeutung. Das reicht nicht: «Bank» am Fluss und «Bank» mit Geldautomat sind dasselbe Token mit demselben Startvektor. Erst der Zusammenhang entscheidet. Der Transformer ist der Mechanismus, der diesen Zusammenhang einrechnet — und 2017 alles Vorherige ersetzt hat.</p>
+    <p class="lead">Embeddings geben jedem Token eine feste Bedeutung. Das reicht nicht: «Bank» am Fluss und «Bank» mit Geldautomat sind dasselbe Token mit demselben Startvektor. Erst der Zusammenhang entscheidet. Der Transformer ist der Mechanismus, der diesen Zusammenhang einrechnet und 2017 alles Vorherige ersetzt hat.</p>
 
     <h2 class="sec">Das Problem davor</h2>
-    <p>Die Netze vor 2017 — RNNs und LSTMs — lasen Text Wort für Wort und trugen einen einzigen verborgenen Zustand mit sich. Dieser eine Zustand musste alles behalten, was vorher im Satz stand. Bei langen Sätzen war das der Flaschenhals: Was am Anfang stand, war am Ende verwaschen. 2014 schlugen Bahdanau, Cho und Bengio vor, das Netz statt auf einen Zustand direkt auf alle vorherigen Positionen schauen zu lassen — Attention. 2017 zog das Paper <em>Attention Is All You Need</em> den Rest weg und behielt nur noch diesen Mechanismus.</p>
+    <p>Die Netze vor 2017 (RNNs und LSTMs) lasen Text Wort für Wort und trugen einen einzigen verborgenen Zustand mit sich. Dieser eine Zustand musste alles behalten, was vorher im Satz stand. Bei langen Sätzen war das der Flaschenhals: Was am Anfang stand, war am Ende verwaschen. 2014 schlugen Bahdanau, Cho und Bengio vor, das Netz statt auf einen Zustand direkt auf alle vorherigen Positionen schauen zu lassen: Attention. 2017 zog das Paper <em>Attention Is All You Need</em> den Rest weg und behielt nur noch diesen Mechanismus.</p>
 
     <div class="daten">
       <dl>
@@ -875,16 +871,16 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
     <h2 class="sec">Query, Key, Value</h2>
     <p>Jedes Token bekommt drei Vektoren, jeder entsteht durch Multiplikation mit einer eigenen gelernten Gewichtsmatrix:</p>
     <ul class="liste">
-      <li><strong>Query</strong> — wonach dieses Token sucht.</li>
-      <li><strong>Key</strong> — was dieses Token anzubieten hat.</li>
-      <li><strong>Value</strong> — welche Information es weitergibt, wenn es ausgewählt wird.</li>
+      <li><strong>Query</strong>: wonach dieses Token sucht.</li>
+      <li><strong>Key</strong>: was dieses Token anzubieten hat.</li>
+      <li><strong>Value</strong>: welche Information es weitergibt, wenn es ausgewählt wird.</li>
     </ul>
-    <p>Jede Query wird mit allen Keys verrechnet. Hohe Übereinstimmung heisst hohe Aufmerksamkeit. Aus diesen Werten macht Softmax Gewichte, die zusammen 1 ergeben, und damit wird eine gewichtete Mischung der Values gebildet. Ergebnis: Der Vektor von «Bank» ist nach diesem Schritt nicht mehr derselbe wie am Anfang — er ist in Richtung «Fluss» oder in Richtung «Geld» gezogen worden, je nach Satz.</p>
+    <p>Jede Query wird mit allen Keys verrechnet. Hohe Übereinstimmung heisst hohe Aufmerksamkeit. Aus diesen Werten macht Softmax Gewichte, die zusammen 1 ergeben, und damit wird eine gewichtete Mischung der Values gebildet. Ergebnis: Der Vektor von «Bank» ist nach diesem Schritt nicht mehr derselbe wie am Anfang. Er ist in Richtung «Fluss» oder in Richtung «Geld» gezogen worden, je nach Satz.</p>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 07</span><span class="h">Attention entscheidet, welche «Bank»</span></div>
       <div class="korpus">
-        <p class="hinweis" style="margin-top:0">Vereinfachter Einzelkopf: Die Query von <span class="mono">bank</span> wird mit allen Keys des Satzes multipliziert, durch die Wurzel der Dimension geteilt und per Softmax zu Gewichten gemacht. Daraus entsteht der gemischte Vektor — und der wird mit drei möglichen Lesarten verglichen.</p>
+        <p class="hinweis" style="margin-top:0">Vereinfachter Einzelkopf: Die Query von <span class="mono">bank</span> wird mit allen Keys des Satzes multipliziert, durch die Wurzel der Dimension geteilt und per Softmax zu Gewichten gemacht. Daraus entsteht der gemischte Vektor, und der wird mit drei möglichen Lesarten verglichen.</p>
         <div class="steuer" style="margin-top:12px;margin-bottom:0">
           <button class="knopf" type="button" data-att="0">wir sassen an der bank am fluss</button>
           <button class="knopf sek" type="button" data-att="1">sie ging zur bank und holte geld</button>
@@ -898,12 +894,12 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
     </div>
 
     <h2 class="sec">Mehrere Köpfe, mehrere Schichten</h2>
-    <p>Dieser Vorgang läuft nicht einmal, sondern parallel in mehreren Köpfen — Multi-Head Attention. Jeder Kopf hat eigene Gewichtsmatrizen und achtet dadurch auf etwas anderes: einer auf grammatische Bezüge, einer auf Satzzeichen, einer auf weit entfernte Wiederaufnahmen. Diese Aufteilung schreibt niemand vor. Sie entsteht im Training von selbst.</p>
+    <p>Dieser Vorgang läuft nicht einmal, sondern parallel in mehreren Köpfen: Multi-Head Attention. Jeder Kopf hat eigene Gewichtsmatrizen und achtet dadurch auf etwas anderes: einer auf grammatische Bezüge, einer auf Satzzeichen, einer auf weit entfernte Wiederaufnahmen. Diese Aufteilung schreibt niemand vor. Sie entsteht im Training von selbst.</p>
     <p>Nach der Attention folgt in jedem Block ein kleines vorwärtsgerichtetes Netz, das das Ergebnis weiterverarbeitet. Dann beginnt der nächste Block von vorn, mit eigenen Gewichten. Gestapelt ergibt sich eine Arbeitsteilung: Die unteren Schichten behandeln eher Form und Grammatik, die mittleren Bedeutung, die oberen längere Zusammenhänge.</p>
 
     <div class="merk">
       <div class="lbl">Ein Mini-Transformer, in Zahlen</div>
-      <p>Ein Beispiel zum Nachrechnen: 6 Schichten, Embedding-Grösse 32, Kontextlänge 32 Token. Allein die sechs Blöcke haben dann rund <strong>74 000 Parameter</strong> — 74 000 Zahlen, die im Training verstellt werden (Rechnung in der Vertiefung unten). Zum Vergleich: GPT-OSS-120B hat rund 117 Milliarden, gerundet steht die Zahl im Namen.</p>
+      <p>Ein Beispiel zum Nachrechnen: 6 Schichten, Embedding-Grösse 32, Kontextlänge 32 Token. Allein die sechs Blöcke haben dann rund <strong>74 000 Parameter</strong>: 74 000 Zahlen, die im Training verstellt werden (Rechnung in der Vertiefung unten). Zum Vergleich: GPT-OSS-120B hat rund 117 Milliarden, gerundet steht die Zahl im Namen.</p>
     </div>
 
 
@@ -916,14 +912,14 @@ Zwei Schichten: 2·4 Gewichte + 4 Bias + 4·1 Gewichte + 1 Bias  = 17</div>
 
 Attention(Q, K, V) = softmax( Q·Kᵀ / √d<sub>k</sub> ) · V<span class="wo">Q·Kᵀ ergibt eine Tabelle: Zeile i, Spalte j = wie gut Query i zu Key j passt. Softmax macht jede Zeile zu Gewichten, die 1 ergeben. Die Multiplikation mit V mischt dann die Values mit diesen Gewichten. d_k ist die Länge eines Key-Vektors.</span></div>
         <h4>Warum teilt man durch die Wurzel?</h4>
-        <p>Ein Skalarprodukt aus d<sub>k</sub> Summanden wird im Mittel grösser, je länger die Vektoren sind — seine Streuung wächst proportional zu d<sub>k</sub>. Ohne Teilen würde die Softmax extrem spitz: ein Token bekäme fast alles, die anderen fast nichts, und das Training käme kaum voran. Die Division mit √d<sub>k</sub> hält die Werte in einem brauchbaren Bereich. Im Versuch ist d = 6.</p>
+        <p>Ein Skalarprodukt aus d<sub>k</sub> Summanden wird im Mittel grösser, je länger die Vektoren sind: seine Streuung wächst proportional zu d<sub>k</sub>. Ohne Teilen würde die Softmax extrem spitz: ein Token bekäme fast alles, die anderen fast nichts, und das Training käme kaum voran. Die Division mit √d<sub>k</sub> hält die Werte in einem brauchbaren Bereich. Im Versuch ist d = 6.</p>
         <h4>Nicht in die Zukunft schauen</h4>
         <p>Beim Training kennt das Modell den ganzen Satz. Damit es nicht schummelt, werden vor der Softmax alle Felder rechts der Diagonale auf −∞ gesetzt. Position i sieht dadurch nur die Positionen 1 bis i. Das heisst <em>kausale Maske</em>.</p>
         <h4>Was der Versuch vereinfacht</h4>
         <ul class="liste">
           <li>Er hat nur eine Query (die von «bank») statt einer pro Token.</li>
           <li>Die Vektoren sind von Hand gesetzt, nicht gelernt, und Keys und Values sind einfach die Embeddings.</li>
-          <li>Die Werte werden zusätzlich mit 6 multipliziert, damit der Unterschied sichtbar wird — wie eine kleinere Temperature.</li>
+          <li>Die Werte werden zusätzlich mit 6 multipliziert, damit der Unterschied sichtbar wird, wie eine kleinere Temperature.</li>
         </ul>
       </div>
     </details>
@@ -934,7 +930,7 @@ Attention(Q, K, V) = softmax( Q·Kᵀ / √d<sub>k</sub> ) · V<span class="wo">
         <div class="formel">h  =  x + MultiHead(LayerNorm(x))
 y  =  h + FFN(LayerNorm(h))<span class="wo">Das «x +» heisst Restverbindung: Das Ergebnis wird zum Eingang addiert statt ihn zu ersetzen. So können Informationen auch an Schichten vorbei fliessen, und tiefe Netze bleiben trainierbar. LayerNorm bringt die Zahlen auf eine einheitliche Grössenordnung.</span></div>
         <p><strong>Multi-Head:</strong> Statt einer Attention mit Vektoren der Länge d laufen h kleinere mit Länge d/h nebeneinander. Ihre Ergebnisse werden aneinandergehängt und mit einer weiteren Matrix W<sub>O</sub> verrechnet.</p>
-        <p><strong>Position:</strong> Attention selbst kennt keine Reihenfolge — «Hund beisst Mann» und «Mann beisst Hund» sähen gleich aus. Deshalb wird zu jedem Embedding ein Positionsvektor addiert.</p>
+        <p><strong>Position:</strong> Attention selbst kennt keine Reihenfolge: «Hund beisst Mann» und «Mann beisst Hund» sähen gleich aus. Deshalb wird zu jedem Embedding ein Positionsvektor addiert.</p>
         <h4>Warum lange Texte teuer sind</h4>
         <p>Die Tabelle Q·Kᵀ hat für n Token n × n Felder. Doppelt so viel Text heisst viermal so viel Rechenarbeit in diesem Schritt. Das ist der Grund, warum Kontextfenster begrenzt sind (Kapitel 10).</p>
         <h4>Parameter zählen</h4>
@@ -951,15 +947,15 @@ d = 32, d<sub>ff</sub> = 4·d = 128:   4096 + 8192 = 12 288 pro Block</div>
   <section class="kap" id="kap08" hidden>
     <p class="eyebrow">Kapitel 08 · Schritt 4 der Verarbeitung</p>
     <h1>Die Ausgabe ist kein Wort</h1>
-    <p class="lead">Am Ende aller Schichten gibt das Modell keinen Text aus, sondern für <em>jedes</em> Token des Vokabulars eine Zahl. Diese rohen Werte heissen Logits. Erst zwei weitere Rechenschritte machen daraus ein einzelnes Token — und erst dort entscheidet sich, ob die Antwort nüchtern oder ausgefallen klingt.</p>
+    <p class="lead">Am Ende aller Schichten gibt das Modell keinen Text aus, sondern für <em>jedes</em> Token des Vokabulars eine Zahl. Diese rohen Werte heissen Logits. Erst zwei weitere Rechenschritte machen daraus ein einzelnes Token, und erst dort entscheidet sich, ob die Antwort nüchtern oder ausgefallen klingt.</p>
 
     <h2 class="sec">Softmax</h2>
-    <p>Logits sind unskalierte Punktzahlen; sie können negativ sein und summieren sich zu nichts Bestimmtem. Softmax rechnet sie in Wahrscheinlichkeiten um: Jeder Wert wird exponenziert und durch die Summe aller exponenzierten Werte geteilt. Danach liegt jeder Wert zwischen 0 und 1 und alle zusammen ergeben genau 1. Die Reihenfolge bleibt dabei erhalten — der höchste Logit bleibt der wahrscheinlichste Kandidat.</p>
+    <p>Logits sind unskalierte Punktzahlen; sie können negativ sein und summieren sich zu nichts Bestimmtem. Softmax rechnet sie in Wahrscheinlichkeiten um: Jeder Wert wird exponenziert und durch die Summe aller exponenzierten Werte geteilt. Danach liegt jeder Wert zwischen 0 und 1 und alle zusammen ergeben genau 1. Die Reihenfolge bleibt dabei erhalten: der höchste Logit bleibt der wahrscheinlichste Kandidat.</p>
 
     <h2 class="sec">Temperature und Top-p</h2>
     <p>Das Modell nimmt nicht einfach den wahrscheinlichsten Kandidaten. Es zieht eine Stichprobe, und zwei Parameter steuern, wie.</p>
     <ul class="liste">
-      <li><strong>Temperature</strong> teilt die Logits vor dem Softmax. Ein kleiner Wert spreizt die Verteilung auseinander — die Ausgabe wird vorhersehbar, bei 0 immer dasselbe. Ein Wert um 1 lässt sie, wie sie ist. Ein hoher Wert wie 1.5 drückt sie flach, die Ausgabe wird kreativer und manchmal unzusammenhängend.</li>
+      <li><strong>Temperature</strong> teilt die Logits vor dem Softmax. Ein kleiner Wert spreizt die Verteilung auseinander: die Ausgabe wird vorhersehbar, bei 0 immer dasselbe. Ein Wert um 1 lässt sie, wie sie ist. Ein hoher Wert wie 1.5 drückt sie flach, die Ausgabe wird kreativer und manchmal unzusammenhängend.</li>
       <li><strong>Top-p</strong> ist eine Abschneidegrenze. Die Kandidaten werden nach Wahrscheinlichkeit sortiert und von oben aufsummiert, bis der eingestellte Anteil erreicht ist. Nur aus diesem Teil wird gezogen, der lange Schwanz unwahrscheinlicher Token fällt weg.</li>
     </ul>
 
@@ -979,7 +975,7 @@ d = 32, d<sub>ff</sub> = 4·d = 128:   4096 + 8192 = 12 288 pro Block</div>
           <button class="knopf" type="button" id="sm-zieh">10-mal ziehen</button>
           <span class="mono" id="sm-zug" style="font-size:12px"></span>
         </div>
-        <p class="hinweis">Bei Temperature 0.1 fällt die Ziehung praktisch immer gleich aus. Bei 2.0 kommen auch die hinteren Kandidaten durch — das ist kein Fehler, sondern genau der eingestellte Zufall.</p>
+        <p class="hinweis">Bei Temperature 0.1 fällt die Ziehung praktisch immer gleich aus. Bei 2.0 kommen auch die hinteren Kandidaten durch. Das ist kein Fehler, sondern genau der eingestellte Zufall.</p>
       </div>
     </div>
 
@@ -1016,7 +1012,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
   <section class="kap" id="kap09" hidden>
     <p class="eyebrow">Kapitel 09 · Der Durchlauf</p>
     <h1>Token für Token, ohne Plan</h1>
-    <p class="lead">Alles bisher — Tokenisierung, Embeddings, Transformer-Schichten, Softmax, Stichprobe — ergibt <strong>ein</strong> Token. Für das zweite wird dieses Token an die Eingabe angehängt und der komplette Vorgang läuft von vorn. Das ist die ganze Textgenerierung: eine Schleife.</p>
+    <p class="lead">Alles bisher (Tokenisierung, Embeddings, Transformer-Schichten, Softmax, Stichprobe) ergibt <strong>ein</strong> Token. Für das zweite wird dieses Token an die Eingabe angehängt und der komplette Vorgang läuft von vorn. Das ist die ganze Textgenerierung: eine Schleife.</p>
 
     <p>Daraus folgt etwas, das die meisten Fehlvorstellungen über Sprachmodelle aufräumt: Das Modell hat keinen Plan. Es entwirft nicht erst eine Antwort und schreibt sie dann aus. Bei jedem einzelnen Token sieht es nur den bisherigen Text und schätzt das nächste Stück. Dass am Ende ein zusammenhängender Absatz dasteht, ist nicht Absicht, sondern Folge davon, dass jeder Schritt gut genug geraten war.</p>
 
@@ -1025,7 +1021,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 09</span><span class="h">Die Schleife von Hand</span></div>
       <div class="korpus">
-        <p class="hinweis" style="margin-top:0">Hier läuft ein echtes, wenn auch winziges Sprachmodell: ein Trigramm-Modell, in deinem Browser auf 30 kurzen Kindergeschichten trainiert, mit Rückfall auf Bigramm und Einzelwortverteilung. Kein Transformer — aber dieselbe Schleife, dieselbe Softmax-Ziehung, dieselben Regler wie in Kapitel 08.</p>
+        <p class="hinweis" style="margin-top:0">Hier läuft ein echtes, wenn auch winziges Sprachmodell: ein Trigramm-Modell, in deinem Browser auf 30 kurzen Kindergeschichten trainiert, mit Rückfall auf Bigramm und Einzelwortverteilung. Kein Transformer, aber dieselbe Schleife, dieselbe Softmax-Ziehung, dieselben Regler wie in Kapitel 08.</p>
         <div class="steuer" style="margin-top:12px">
           <label for="ng-temp">Temperature <input type="range" id="ng-temp" min="0.1" max="2" step="0.05" value="0.9"></label>
           <span class="mono" id="ng-tval" style="min-width:3em">0.90</span>
@@ -1040,7 +1036,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
         <div class="aus" id="ng-text" style="min-height:4.6em;font-size:14px"></div>
         <p class="mono" style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--ink-3));margin-top:16px">Verteilung für das nächste Token</p>
         <div class="bars" id="ng-bars"></div>
-        <p class="hinweis">Beachte, wie sich die Verteilung nach jedem Token komplett ändert — und wie der Text bei hoher Temperature auseinanderfällt, obwohl das Modell dasselbe geblieben ist.</p>
+        <p class="hinweis">Beachte, wie sich die Verteilung nach jedem Token komplett ändert, und wie der Text bei hoher Temperature auseinanderfällt, obwohl das Modell dasselbe geblieben ist.</p>
       </div>
     </div>
 
@@ -1051,7 +1047,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
       <div class="tiefinhalt">
         <p>Die Wahrscheinlichkeit eines ganzen Textes lässt sich exakt in Einzelschritte zerlegen:</p>
         <div class="formel">p(x₁, x₂, …, xₙ) = p(x₁) · p(x₂ | x₁) · p(x₃ | x₁, x₂) · … · p(xₙ | x₁ … xₙ₋₁)
-                 = ∏ p(xₜ | x&lt;ₜ)<span class="wo">∏ ist das Produktzeichen (wie Σ, aber Malnehmen). x&lt;ₜ heisst «alle Token vor Position t». Das ist keine Näherung, sondern eine mathematische Identität — jedes Sprachmodell beruht darauf.</span></div>
+                 = ∏ p(xₜ | x&lt;ₜ)<span class="wo">∏ ist das Produktzeichen (wie Σ, aber Malnehmen). x&lt;ₜ heisst «alle Token vor Position t». Das ist keine Näherung, sondern eine mathematische Identität. Jedes Sprachmodell beruht darauf.</span></div>
         <p>Ein Sprachmodell lernt nur den einen Faktor p(xₜ | x&lt;ₜ) und wendet ihn immer wieder an. Das ist die Schleife aus diesem Kapitel.</p>
         <h4>Was der Versuch anders macht</h4>
         <div class="formel">Trigramm:  p(xₜ | x&lt;ₜ)  ≈  p(xₜ | xₜ₋₂, xₜ₋₁)  =  anzahl(xₜ₋₂, xₜ₋₁, xₜ) / anzahl(xₜ₋₂, xₜ₋₁)<span class="wo">Das Trigramm-Modell schaut nur auf die letzten zwei Wörter und zählt, was in den Geschichten danach kam. Ein Transformer schaut auf das ganze Kontextfenster und zählt nicht, sondern rechnet mit gelernten Gewichten.</span></div>
@@ -1095,12 +1091,12 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
     </div>
 
     <h2 class="sec">Das Kontextfenster</h2>
-    <p>Dieses ganze Paket muss in das Kontextfenster passen — die maximale Zahl von Token, die das Modell in einem Durchgang verarbeiten kann. Beim Mini-Beispiel aus Kapitel 07 wären es 32 Token, bei heutigen Modellen sind es Hunderttausende. Ist das Fenster voll, muss die Anwendung etwas wegwerfen oder zusammenfassen: Dann «vergisst» der Chat den Anfang — und zwar nicht, weil das Modell müde wird, sondern weil der Anfang nicht mehr mitgeschickt wird.</p>
+    <p>Dieses ganze Paket muss in das Kontextfenster passen. Das ist die maximale Zahl von Token, die das Modell in einem Durchgang verarbeiten kann. Beim Mini-Beispiel aus Kapitel 07 wären es 32 Token, bei heutigen Modellen sind es Hunderttausende. Ist das Fenster voll, muss die Anwendung etwas wegwerfen oder zusammenfassen: Dann «vergisst» der Chat den Anfang, und zwar nicht, weil das Modell müde wird, sondern weil der Anfang nicht mehr mitgeschickt wird.</p>
     <p>Und selbst innerhalb des Fensters wird es nicht beliebig besser. Je länger der mitgeschickte Text, desto eher verliert das Modell Angaben, die mittendrin stehen. Ein kurzer, präziser Kontext ist in der Praxis besser als ein langer vollständiger.</p>
 
     <div class="merk">
       <div class="lbl">Für den Schulalltag</div>
-      <p>Weil der Verlauf bei jeder Nachricht neu mitgeht, wächst der Preis einer Unterhaltung nicht linear, sondern wird pro Zug teurer. Und alles, was einmal im Verlauf steht, geht bei jeder weiteren Nachricht wieder mit — auch die Angaben, die man nachträglich lieber nicht geschickt hätte.</p>
+      <p>Weil der Verlauf bei jeder Nachricht neu mitgeht, wächst der Preis einer Unterhaltung nicht linear, sondern wird pro Zug teurer. Und alles, was einmal im Verlauf steht, geht bei jeder weiteren Nachricht wieder mit, auch die Angaben, die man nachträglich lieber nicht geschickt hätte.</p>
     </div>
 
 
@@ -1111,7 +1107,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
         <p>Angenommen, jeder Zug (eine Frage und eine Antwort) hat m Token. Beim k-ten Zug wird der ganze bisherige Verlauf mitgeschickt, also etwa k · m Token. Über ein Gespräch mit K Zügen summiert sich das:</p>
         <div class="formel">m + 2m + 3m + … + K·m  =  m · K·(K+1)/2  ≈  m · K² / 2<span class="wo">Die Summenformel von Gauss. Ein doppelt so langes Gespräch verarbeitet etwa viermal so viele Token.</span></div>
         <h4>Rechenbeispiel</h4>
-        <p>Mit m = 200 Token pro Zug: 10 Züge ergeben 200 · 55 = 11 000 verarbeitete Token. 20 Züge ergeben 200 · 210 = 42 000 — fast das Vierfache. Dazu kommt bei jedem Aufruf noch der System-Prompt.</p>
+        <p>Mit m = 200 Token pro Zug: 10 Züge ergeben 200 · 55 = 11 000 verarbeitete Token. 20 Züge ergeben 200 · 210 = 42 000, fast das Vierfache. Dazu kommt bei jedem Aufruf noch der System-Prompt.</p>
         <h4>Was Anwendungen dagegen tun</h4>
         <ul class="liste">
           <li><strong>Zusammenfassen:</strong> Ältere Züge werden durch eine kurze Zusammenfassung ersetzt. Dabei geht Detail verloren.</li>
@@ -1136,7 +1132,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
         <tbody>
           <tr>
             <td><strong>Pretraining</strong></td>
-            <td>Common Crawl, Wikipedia, Reddit, GitHub, Bücher — darunter urheberrechtlich geschütztes Material</td>
+            <td>Common Crawl, Wikipedia, Reddit, GitHub, Bücher, darunter urheberrechtlich geschütztes Material</td>
             <td>Das nächste Token vorhersagen. Nichts weiter. Hier entsteht die Sprachfähigkeit und der grösste Teil des Weltwissens.</td>
           </tr>
           <tr>
@@ -1154,14 +1150,14 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
     </div>
 
     <h2 class="sec">Was daran strittig ist</h2>
-    <p>Das Pretraining-Material ist der Punkt, an dem die laufenden Rechtsstreitigkeiten ansetzen: Ob das Trainieren auf urheberrechtlich geschützten Texten erlaubt ist, ist in mehreren Ländern noch nicht abschliessend geklärt. Für das Verständnis der Technik ist relevant: Das Modell speichert diese Texte nicht als Texte. Es speichert Gewichte, die aus ihnen entstanden sind — weshalb es Inhalte meistens paraphrasiert und manchmal, bei sehr häufig vorkommenden Passagen, fast wörtlich reproduziert.</p>
+    <p>Das Pretraining-Material ist der Punkt, an dem die laufenden Rechtsstreitigkeiten ansetzen: Ob das Trainieren auf urheberrechtlich geschützten Texten erlaubt ist, ist in mehreren Ländern noch nicht abschliessend geklärt. Für das Verständnis der Technik ist relevant: Das Modell speichert diese Texte nicht als Texte. Es speichert Gewichte, die aus ihnen entstanden sind, weshalb es Inhalte meistens paraphrasiert und manchmal, bei sehr häufig vorkommenden Passagen, fast wörtlich reproduziert.</p>
 
     <h2 class="sec">Warum Modelle sich sicher anhören, wenn sie falsch liegen</h2>
-    <p>Das Trainingsziel belohnt plausible Fortsetzungen, nicht wahre Aussagen. Eine erfundene Quellenangabe sieht statistisch genau so aus wie eine echte — gleiche Form, gleiche Satzstellung, gleicher Tonfall. Das Modell hat keinen Mechanismus, der zwischen beidem unterscheidet. RLHF verschiebt das etwas, hebt es aber nicht auf. Deshalb gilt die Regel, die auch in den NKSA-Richtlinien zum Umgang mit KI steht: Jede Faktenangabe und jede Quelle gegenprüfen, bevor sie in eine Arbeit kommt.</p>
+    <p>Das Trainingsziel belohnt plausible Fortsetzungen, nicht wahre Aussagen. Eine erfundene Quellenangabe sieht statistisch genau so aus wie eine echte: gleiche Form, gleiche Satzstellung, gleicher Tonfall. Das Modell hat keinen Mechanismus, der zwischen beidem unterscheidet. RLHF verschiebt das etwas, hebt es aber nicht auf. Deshalb gilt die Regel, die auch in den NKSA-Richtlinien zum Umgang mit KI steht: Jede Faktenangabe und jede Quelle gegenprüfen, bevor sie in eine Arbeit kommt.</p>
 
     <div class="merk">
       <div class="lbl">Drei Phasen, drei Verwechslungen</div>
-      <p>«Das Modell lügt» unterstellt Absicht — gemeint ist Phase 1. «Das Modell ist höflich» ist Phase 3, nicht Charakter. «Das Modell kennt meine Schule» ist meist Kapitel 10: Es stand im Verlauf.</p>
+      <p>«Das Modell lügt» unterstellt Absicht. Gemeint ist Phase 1. «Das Modell ist höflich» ist Phase 3, nicht Charakter. «Das Modell kennt meine Schule» ist meist Kapitel 10: Es stand im Verlauf.</p>
     </div>
 
 
@@ -1189,9 +1185,9 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
   <section class="kap" id="kap12" hidden>
     <p class="eyebrow">Kapitel 12 · Drumherum</p>
     <h1>Werkzeuge: Das Modell führt nichts aus</h1>
-    <p class="lead">Moderne Assistenten suchen im Netz, rechnen, lesen Dateien. Das klingt nach einer Fähigkeit des Modells. Es ist keine. Das Modell kann genau eine Sache, nämlich Token vorhersagen — und es nutzt sie, um einen Funktionsaufruf <em>hinzuschreiben</em>. Ausführen muss ihn das Programm darum herum.</p>
+    <p class="lead">Moderne Assistenten suchen im Netz, rechnen, lesen Dateien. Das klingt nach einer Fähigkeit des Modells. Es ist keine. Das Modell kann genau eine Sache, nämlich Token vorhersagen, und es nutzt sie, um einen Funktionsaufruf <em>hinzuschreiben</em>. Ausführen muss ihn das Programm darum herum.</p>
 
-    <p>Der Ablauf hat vier Schritte und ist immer derselbe. Entscheidend ist Schritt 3: Das Ergebnis des Werkzeugs wird als weiterer Eintrag an den Verlauf angehängt — genau den Verlauf aus Kapitel 10 — und das Modell wird erneut aufgerufen. Es «erfährt» das Ergebnis also auf demselben Weg wie jede andere Nachricht: als Text in seiner Eingabe.</p>
+    <p>Der Ablauf hat vier Schritte und ist immer derselbe. Entscheidend ist Schritt 3: Das Ergebnis des Werkzeugs wird als weiterer Eintrag an den Verlauf angehängt (genau den Verlauf aus Kapitel 10), und das Modell wird erneut aufgerufen. Es «erfährt» das Ergebnis also auf demselben Weg wie jede andere Nachricht: als Text in seiner Eingabe.</p>
 
     <div class="labor">
       <div class="kopf"><span class="t">Versuch 12</span><span class="h">Der Werkzeug-Umlauf</span></div>
@@ -1208,7 +1204,7 @@ T = 2.0  →  exp(0.3) ≈ 1.35</div>
 
     <div class="merk">
       <div class="lbl">Konsequenz</div>
-      <p>«Die KI hat im Internet gesucht» ist falsch formuliert. Dein Programm hat gesucht, weil das Modell einen Suchauftrag hingeschrieben hat. Und: Was ein Werkzeug zurückgibt, landet ungeprüft im Verlauf. Wer den Inhalt der abgerufenen Seite kontrolliert, schreibt damit in die Eingabe des Modells — das ist der Grund, warum Werkzeugergebnisse als Daten und nie als Anweisungen behandelt werden müssen.</p>
+      <p>«Die KI hat im Internet gesucht» ist falsch formuliert. Dein Programm hat gesucht, weil das Modell einen Suchauftrag hingeschrieben hat. Und: Was ein Werkzeug zurückgibt, landet ungeprüft im Verlauf. Wer den Inhalt der abgerufenen Seite kontrolliert, schreibt damit in die Eingabe des Modells. Das ist der Grund, warum Werkzeugergebnisse als Daten und nie als Anweisungen behandelt werden müssen.</p>
     </div>
 
 
@@ -1232,7 +1228,7 @@ wiederhole höchstens 10-mal:
           <li><strong>ergebnis landet im Verlauf:</strong> Was eine Webseite oder Datei zurückgibt, liest das Modell im nächsten Durchgang mit. Steht dort «Ignoriere alle bisherigen Anweisungen», ist das für das Modell zunächst einfach Text wie jeder andere. Diesen Angriff nennt man <em>Prompt Injection</em>.</li>
         </ul>
         <h4>Woher das Modell die Werkzeuge kennt</h4>
-        <p>Jedes Werkzeug wird mit einem JSON-Schema beschrieben — Name, Zweck, erlaubte Parameter mit Typ. Dieses Schema wird als Text in den Prompt geschrieben. Im Finetuning hat das Modell gelernt, bei passender Gelegenheit Token zu erzeugen, die genau diesem Schema entsprechen. Mehr steckt nicht dahinter.</p>
+        <p>Jedes Werkzeug wird mit einem JSON-Schema beschrieben: Name, Zweck, erlaubte Parameter mit Typ. Dieses Schema wird als Text in den Prompt geschrieben. Im Finetuning hat das Modell gelernt, bei passender Gelegenheit Token zu erzeugen, die genau diesem Schema entsprechen. Mehr steckt nicht dahinter.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap11">← 11 Wie trainiert wird</a><a href="#kap13"><span class="pf">→</span> 13 Alien Intelligence</a></div>
@@ -1241,7 +1237,7 @@ wiederhole höchstens 10-mal:
   <section class="kap" id="kap13" hidden>
     <p class="eyebrow">Kapitel 13 · Schluss</p>
     <h1>Dartmouth 1956 und ein falscher Name</h1>
-    <p class="lead">Im August 1955 beantragten vier Forscher — John McCarthy, Marvin Minsky, Nathaniel Rochester und Claude Shannon — ein Sommerprojekt am Dartmouth College in Hanover, New Hampshire: «a 2 month, 10 man study of artificial intelligence». Die Rockefeller Foundation gab 7 500 Dollar dazu, und im Sommer 1956 fand das Treffen statt.</p>
+    <p class="lead">Im August 1955 beantragten vier Forscher (John McCarthy, Marvin Minsky, Nathaniel Rochester und Claude Shannon) ein Sommerprojekt am Dartmouth College in Hanover, New Hampshire: «a 2 month, 10 man study of artificial intelligence». Die Rockefeller Foundation gab 7 500 Dollar dazu, und im Sommer 1956 fand das Treffen statt.</p>
 
     <div class="daten">
       <dl>
@@ -1255,9 +1251,9 @@ wiederhole höchstens 10-mal:
     <p>Derselbe Claude Shannon, der wenige Jahre vorher gemessen hatte, wie vorhersagbar geschriebenes Englisch ist, unterschrieb den Antrag, mit dem das Feld seinen Namen bekam. Die Linie von Kapitel 01 bis hierher ist also kürzer, als sie aussieht.</p>
 
     <h2 class="sec">Warum der Name vielleicht schlecht gewählt ist</h2>
-    <p>Diese Seite hat dreizehn Schritte beschrieben, in denen an keiner Stelle etwas vorkommt, das dem menschlichen Denken nachgebaut wäre. Token, Vektoren, Aufmerksamkeitsgewichte, eine Ziehung aus einer Verteilung — das ist kein vereinfachtes Gehirn, das ist etwas anderes. Ähnlich sieht es der Historiker Yuval Noah Harari. Er schlägt vor, die Abkürzung «AI» als <em>alien intelligence</em> zu lesen statt als <em>artificial intelligence</em>. «Fremd» meint dabei nicht ausserirdisch — die Systeme kommen aus unseren eigenen Labors —, sondern dass sie Entscheidungen treffen und Ideen hervorbringen, auf eine grundlegend andere Art als Menschen.</p>
+    <p>Diese Seite hat dreizehn Schritte beschrieben, in denen an keiner Stelle etwas vorkommt, das dem menschlichen Denken nachgebaut wäre. Token, Vektoren, Aufmerksamkeitsgewichte, eine Ziehung aus einer Verteilung: das ist kein vereinfachtes Gehirn, das ist etwas anderes. Ähnlich sieht es der Historiker Yuval Noah Harari. Er schlägt vor, die Abkürzung «AI» als <em>alien intelligence</em> zu lesen statt als <em>artificial intelligence</em>. «Fremd» meint dabei nicht ausserirdisch (die Systeme kommen aus unseren eigenen Labors), sondern dass sie Entscheidungen treffen und Ideen hervorbringen, auf eine grundlegend andere Art als Menschen.</p>
 
-    <p>Man muss dieser Einschätzung nicht folgen — das ist eine offene Frage, und andere halten den Vergleich mit dem Gehirn für fruchtbar. Für die Arbeit mit diesen Systemen ist der nützliche Teil ohnehin der kleinere: Wer weiss, dass vorne Token hineingehen, in der Mitte Zahlen multipliziert werden und hinten gezogen wird, stellt andere Fragen und glaubt andere Antworten.</p>
+    <p>Man muss dieser Einschätzung nicht folgen. Das ist eine offene Frage, und andere halten den Vergleich mit dem Gehirn für fruchtbar. Für die Arbeit mit diesen Systemen ist der nützliche Teil ohnehin der kleinere: Wer weiss, dass vorne Token hineingehen, in der Mitte Zahlen multipliziert werden und hinten gezogen wird, stellt andere Fragen und glaubt andere Antworten.</p>
 
     <h2 class="sec">Die dreizehn Schritte in einem Satz</h2>
     <p class="mono" style="font-size:13.5px;line-height:1.75;margin-top:12px">Sprache ist vorhersagbar <span style="color:hsl(var(--signal))">→</span> Chatbots taten das mit Regeln <span style="color:hsl(var(--signal))">→</span> die Form bleibt Eingabe/Ausgabe <span style="color:hsl(var(--signal))">→</span> im Kasten liegen Gewichte <span style="color:hsl(var(--signal))">→</span> Text wird zu Token <span style="color:hsl(var(--signal))">→</span> Token werden zu Vektoren <span style="color:hsl(var(--signal))">→</span> Attention mischt den Zusammenhang hinein <span style="color:hsl(var(--signal))">→</span> heraus kommt eine Verteilung <span style="color:hsl(var(--signal))">→</span> daraus wird gezogen und angehängt <span style="color:hsl(var(--signal))">→</span> der ganze Verlauf geht jedes Mal mit <span style="color:hsl(var(--signal))">→</span> die Gewichte kommen aus drei Trainingsphasen <span style="color:hsl(var(--signal))">→</span> Werkzeuge führt das Programm aus <span style="color:hsl(var(--signal))">→</span> und der Name stammt von 1955.</p>
@@ -1267,7 +1263,7 @@ wiederhole höchstens 10-mal:
     <ul class="liste quellen">
       <li><span class="mono">01</span> C. E. Shannon (1951): <em>Prediction and Entropy of Printed English.</em> Bell System Technical Journal 30 (1), 50–64. <a href="https://doi.org/10.1002/j.1538-7305.1951.tb01366.x" target="_blank" rel="noopener">doi.org/10.1002/j.1538-7305.1951.tb01366.x</a></li>
       <li><span class="mono">02</span> A. M. Turing (1950): <em>Computing Machinery and Intelligence.</em> Mind 59 (236), 433–460. <a href="https://doi.org/10.1093/mind/LIX.236.433" target="_blank" rel="noopener">doi.org/10.1093/mind/LIX.236.433</a></li>
-      <li><span class="mono">02</span> J. Weizenbaum (1966): <em>ELIZA — A Computer Program for the Study of Natural Language Communication between Man and Machine.</em> Communications of the ACM 9 (1), 36–45. <a href="https://doi.org/10.1145/365153.365168" target="_blank" rel="noopener">doi.org/10.1145/365153.365168</a></li>
+      <li><span class="mono">02</span> J. Weizenbaum (1966): <em>ELIZA: A Computer Program for the Study of Natural Language Communication between Man and Machine.</em> Communications of the ACM 9 (1), 36–45. <a href="https://doi.org/10.1145/365153.365168" target="_blank" rel="noopener">doi.org/10.1145/365153.365168</a></li>
       <li><span class="mono">02</span> J. Weizenbaum (1976): <em>Computer Power and Human Reason.</em> W. H. Freeman. (Die Episode mit der Sekretärin.)</li>
       <li><span class="mono">02</span> K. M. Colby, S. Weber, F. D. Hilf (1971): <em>Artificial Paranoia.</em> Artificial Intelligence 2 (1), 1–25. <a href="https://doi.org/10.1016/0004-3702(71)90002-6" target="_blank" rel="noopener">doi.org/10.1016/0004-3702(71)90002-6</a></li>
       <li><span class="mono">02</span> R. S. Wallace (2009): <em>The Anatomy of A.L.I.C.E.</em> In: Parsing the Turing Test, Springer, 181–210. <a href="https://doi.org/10.1007/978-1-4020-6710-5_13" target="_blank" rel="noopener">doi.org/10.1007/978-1-4020-6710-5_13</a></li>
@@ -1313,7 +1309,7 @@ wiederhole höchstens 10-mal:
           <li><strong>Nein, es rechnet nur Statistik.</strong> John Searle beschrieb 1980 das Gedankenexperiment des «chinesischen Zimmers»: Jemand ohne Chinesischkenntnisse beantwortet chinesische Fragen, indem er Regeln aus einem Buch befolgt. Von aussen sieht das wie Verstehen aus, innen gibt es keines. Kritikerinnen von Sprachmodellen nennen sie in diesem Sinn «stochastische Papageien».</li>
           <li><strong>Vielleicht doch, auf eine andere Art.</strong> Um Text über Physik, Recht und Programmierung gut vorherzusagen, muss ein Modell intern Strukturen aufbauen, die diese Gebiete abbilden. Forschende haben in Modellen messbare innere Darstellungen gefunden, etwa für Positionen auf einem Spielbrett, das nie direkt beschrieben wurde. Ob man das «Verstehen» nennt, ist dann eine Frage der Definition.</li>
         </ul>
-        <p>Hararis Vorschlag «alien intelligence» umgeht diese Frage: Er misst das Modell nicht am Menschen. Eine Konsequenz davon ist praktisch. Wer ein Modell für ein verkleinertes Gehirn hält, erwartet menschliche Fehler. Es macht aber andere — es verrechnet sich bei einfachen Zahlen und löst zugleich schwierige Aufgaben, es erfindet Quellen mit derselben Sicherheit, mit der es echte nennt.</p>
+        <p>Hararis Vorschlag «alien intelligence» umgeht diese Frage: Er misst das Modell nicht am Menschen. Eine Konsequenz davon ist praktisch. Wer ein Modell für ein verkleinertes Gehirn hält, erwartet menschliche Fehler. Es macht aber andere: es verrechnet sich bei einfachen Zahlen und löst zugleich schwierige Aufgaben, es erfindet Quellen mit derselben Sicherheit, mit der es echte nennt.</p>
       </div>
     </details>
     <div class="fussnav"><a href="#kap12">← 12 Werkzeuge</a><a href="#start"><span class="pf">→</span> 00 Überblick</a></div>
@@ -1524,7 +1520,7 @@ var AKTIV = "start";
     cur.style.color = hsl("--signal", null, W("kap01"));
     txt.appendChild(cur);
     nE.textContent = n; tE.textContent = treffer;
-    qE.textContent = n ? ((treffer/n*100).toFixed(1)+" %") : "—";
+    qE.textContent = n ? ((treffer/n*100).toFixed(1)+" %") : "–";
   }
   function raten(c){
     if(pos >= satz.length) return;
@@ -1581,14 +1577,14 @@ var AKTIV = "start";
         return { t: v.replace("$", function(){ return rest; }), n: r.n };
       }
     }
-    return { t: FALLBACK[(zaehler++) % FALLBACK.length], n: "keine Regel passt — Standardantwort" };
+    return { t: FALLBACK[(zaehler++) % FALLBACK.length], n: "keine Regel passt, Standardantwort" };
   }
   function sag(wer, was){
     log.textContent += (log.textContent ? "\n" : "") + wer + ": " + was;
     log.scrollTop = log.scrollHeight;
   }
   function reset(){
-    log.textContent = ""; rg.textContent = "Angewandte Regel: —";
+    log.textContent = ""; rg.textContent = "Angewandte Regel: keine";
     sag("ELIZA", "Guten Tag. Erzähl mir, was dich beschäftigt.");
   }
   form.addEventListener("submit", function(e){
@@ -1761,7 +1757,7 @@ var AKTIV = "start";
       s.textContent = (t === " " ? "␣" : t);
       chips.appendChild(s);
     });
-    if(!r.merges.length){ mlist.textContent = "Noch keine Verschmelzung — jedes Zeichen ist ein eigenes Token."; return; }
+    if(!r.merges.length){ mlist.textContent = "Noch keine Verschmelzung. Jedes Zeichen ist ein eigenes Token."; return; }
     mlist.textContent = r.merges.map(function(x,i){
       return String(i+1).padStart(2," ") + ".  \"" + x.a + "\" + \"" + x.b + "\"  →  \"" + x.a + x.b + "\"   (" + x.n + "×)";
     }).join("\n");
@@ -2056,7 +2052,7 @@ var AKTIV = "start";
     { n:"Schritt 1 · Dein Programm ruft das Modell auf",
       t:'[system]  Du hast Werkzeuge. Nutze sie, wenn du Daten brauchst.\n[tools]   [ { "name": "wetter", "parameter": { "ort": "string" } } ]\n[user]    Wie ist das Wetter in Aarau?',
       k:"Die Werkzeugliste ist einfach Text in der Eingabe. Das Modell liest sie wie jeden anderen Teil des Prompts." },
-    { n:"Schritt 2 · Das Modell antwortet — mit Text",
+    { n:"Schritt 2 · Das Modell antwortet mit Text",
       t:'[assistant]\n{ "werkzeug": "wetter", "argumente": { "ort": "Aarau" } }',
       k:"Das ist keine Ausführung. Das Modell hat Token vorhergesagt, die zufällig gültiges JSON bilden. Mehr kann es nicht." },
     { n:"Schritt 3 · Dein Programm führt aus",
@@ -2064,7 +2060,7 @@ var AKTIV = "start";
       k:"Hier arbeitet ausschliesslich dein Code. Das Modell läuft in diesem Schritt überhaupt nicht." },
     { n:"Schritt 4 · Zweiter Aufruf, jetzt mit dem Ergebnis",
       t:'[system]  …\n[user]    Wie ist das Wetter in Aarau?\n[assistant] { "werkzeug": "wetter", … }\n[tool]    { "temperatur": 11, "zustand": "bedeckt" }\n\n[assistant]\nIn Aarau ist es bedeckt bei 11 Grad.',
-      k:"Das Modell sieht das Ergebnis als Text in seiner Eingabe — genau wie den Verlauf aus Kapitel 10. Zweimal Modell, einmal echte Arbeit durch dein Programm." }
+      k:"Das Modell sieht das Ergebnis als Text in seiner Eingabe, genau wie den Verlauf aus Kapitel 10. Zweimal Modell, einmal echte Arbeit durch dein Programm." }
   ];
   var i = 0;
   function mal(){
@@ -2285,12 +2281,11 @@ var BEGRIFFE = [
   /* ---- 15b · Popup ---- */
   var pop = W("fb-pop"), kopf = W("fb-kopf"), txt = W("fb-text"), link = W("fb-link");
   var aktiv = null, fest = false, timer = null;
-  /* Modellkarte: das Kapitel des Begriffs in der Karte hervorheben (Block 16 zeigt dazu die Statuszeile) */
+  /* Modellkarte: das Kapitel des Begriffs in der Karte hervorheben */
   function karte(b){
     Array.prototype.forEach.call(document.querySelectorAll("#tocliste a"), function(a){
       a.classList.toggle("verbunden", !!b && a.getAttribute("href") === "#" + b.kap);
     });
-    window.dispatchEvent(new CustomEvent("karte-begriff", { detail: b ? { kap:b.kap, wort:b.wort } : null }));
   }
   function zeige(sp, festhalten){
     clearTimeout(timer);
@@ -2455,47 +2450,11 @@ var BEGRIFFE = [
   zeichne();
 })();
 
-/* ============================ 16 · Modellkarte: «Du bist hier» ============================ */
+/* ============================ 16 · Höhe der Kopfzeile ============================ */
+/* Damit die Karte ab 980 px direkt unter der Kopfzeile kleben kann */
 (function(){
-  var st = W("karte-status"); if(!st) return;
-  /* Gruppen wie im Kasten «Worum es geht» auf der Startseite */
-  var GRUPPE = { kap01:"Die Frage", kap02:"Die Frage", kap03:"Die Frage", kap10:"Drumherum", kap11:"Drumherum", kap12:"Drumherum", kap13:"Schluss" };
-  ["kap04","kap05","kap06","kap07","kap08","kap09"].forEach(function(k){ GRUPPE[k] = "Die Maschine"; });
-  function titel(id){
-    var a = document.querySelector('#tocliste a[href="#' + id + '"]'); if(!a) return id;
-    var s = a.querySelectorAll("span"); return s[s.length-1].textContent;
-  }
-  /* Die Sätze stammen aus der Kette auf der Startseite (.pipe .d) */
-  function satz(id){
-    if(id === "start") return "Alle Kapitel auf einen Blick.";
-    if(id === "glossar") return "Alle Fachbegriffe von A bis Z.";
-    var d = document.querySelector('.pipe a[href="#' + id + '"] .d');
-    return d ? d.textContent : "";
-  }
-  function setz(fett, rest){
-    st.textContent = "";
-    var b = document.createElement("b"); b.textContent = fett; st.appendChild(b);
-    if(rest) st.appendChild(document.createTextNode(" · " + rest));
-  }
-  var aktiv = AKTIV;
-  function zeigKapitel(id){
-    if(id === "start"){ setz("Du bist hier: Überblick", satz(id)); return; }
-    if(id === "glossar"){ setz("Du bist hier: Glossar", satz(id)); return; }
-    setz("Du bist hier: " + GRUPPE[id] + " · " + id.replace("kap","") + " " + titel(id), satz(id));
-  }
-  window.addEventListener("kapitel", function(e){ aktiv = e.detail; zeigKapitel(aktiv); });
-  /* Nur wo die Karte klebt (ab 980 px). Auf schmalen Bildschirmen würde der neue Text anders umbrechen,
-     die Seite verschieben und damit das Popup gleich wieder schliessen. */
-  var breit = window.matchMedia ? window.matchMedia("(min-width:980px)") : { matches:true };
-  window.addEventListener("karte-begriff", function(e){
-    if(!breit.matches) return;
-    if(!e.detail){ zeigKapitel(aktiv); return; }
-    setz(e.detail.wort, "erklärt in Kapitel " + e.detail.kap.replace("kap","") + " · " + titel(e.detail.kap));
-  });
-  zeigKapitel(aktiv);
-  /* Höhe der Kopfzeile, damit die Karte darunter kleben kann */
-  var kopf = document.querySelector(".topbar");
-  function hoehe(){ if(kopf) document.documentElement.style.setProperty("--kopf-h", kopf.offsetHeight + "px"); }
+  var kopf = document.querySelector(".topbar"); if(!kopf) return;
+  function hoehe(){ document.documentElement.style.setProperty("--kopf-h", kopf.offsetHeight + "px"); }
   hoehe();
   window.addEventListener("resize", hoehe);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(hoehe);

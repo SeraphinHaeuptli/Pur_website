@@ -25,6 +25,9 @@ Bewertet wird vor allem, wie verständlich erklärt wird — nicht, wie viel Tec
   2. Vertiefung: ausklappbare `<details class="tief">`-Kästen am Kapitelende, mit Mathematik
      und genauen Verfahren. Vorausgesetzt wird höchstens Gymnasialmathematik.
 - Sprache Deutsch, **Schweizer Rechtschreibung**: `ss` statt `ß`, Anführungszeichen «so».
+- **Keine Gedankenstriche (—)** in Texten (Wunsch von Sera, 25.11.2026). Stattdessen Komma,
+  Doppelpunkt, Punkt oder Klammern. Der kurze Strich für Bereiche (04–09, A–Z) und als leerer
+  Wert in Versuchen («–») ist erlaubt.
 - Wo eine Quelle und unsere Rechnung nicht übereinstimmen, wird das offen hingeschrieben,
   nicht passend gemacht.
 
@@ -73,10 +76,9 @@ darum. **Nicht hinzufügen.** Lokal lässt sich die Datei trotzdem direkt im Bro
    wie im Kasten «Worum es geht» (00 · Die Frage 01–03 · Die Maschine 04–09 ·
    Drumherum 10–12 · Schluss 13 · Glossar), neue Gruppe mit `li.neu-gruppe`. Kein eigener Zähler:
    Die Kapitel nummerieren ihre Schritte selbst («Schritt 3 der Verarbeitung»).
-   Ab 980 px klebt sie unter der Kopfzeile (`--kopf-h` misst Block 16). Darunter `#karte-status`
-   («Du bist hier»), Sätze aus der Kette auf der Startseite (`.pipe .d`). Öffnet ein Glossar-Popup,
-   leuchtet das Kapitel des Begriffs in der Karte auf (`a.verbunden`); die Statuszeile wechselt dabei
-   nur ab 980 px (sonst verschiebt der Umbruch die Seite und schliesst das Popup).
+   Ab 980 px klebt sie unter der Kopfzeile (`--kopf-h` misst Block 16). Keine Statuszeile darunter
+   («Du bist hier» am 25.11.2026 entfernt, nicht nötig). Öffnet ein Glossar-Popup, leuchtet das Kapitel
+   des Begriffs in der Karte auf (`a.verbunden`).
    **Autohide (Block 17, ab 980 px):** Nach 4 px Runterscrollen (ab 40 px Tiefe) bekommt `:root` die Klasse `kompakt`:
    Kopfzeile fährt per `transform` weg, die Karte wird per `clip-path` zum Streifen (Farbbalken und
    Nummern, `--mini-h`/`--mini-oben` misst Block 17). Nach 60 px Hochscrollen oder in den obersten 40 px wieder voll.
