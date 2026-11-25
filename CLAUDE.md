@@ -1,6 +1,6 @@
-# PU-Website «Eine Einführung in die Welt des maschinellen Lernens»
+# PU-Website «Eine Einführung in die Welt des maschinellen Denkens»
 
-(Titel bis 18.11.2026: «Wie ein LLM funktioniert»; Repo-Ordner heisst weiter `pu-llm-website`.)
+(Titel wie in der Projektvereinbarung, seit 25.11.2026. Davor kurz «… des maschinellen Lernens», bis 18.11.2026 «Wie ein LLM funktioniert». Repo-Ordner heisst weiter `pu-llm-website`.)
 
 Interaktive Lernseite für das PU-Projekt (Projektunterricht) an der Neuen Kantonsschule Aarau (NKSA).
 Das Produkt ist diese Webseite. Zielpublikum: Mitschülerinnen und Mitschüler **ohne Vorwissen**.
