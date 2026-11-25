@@ -319,7 +319,10 @@ canvas{max-width:100%;height:auto;display:block;border:1px solid hsl(var(--rule)
 .fussnav a .pf{color:hsl(var(--signal))}
 footer.seite{position:relative;z-index:1;border-top:1px solid hsl(var(--rule-strong));margin-top:0;background:hsl(var(--paper-2))}
 footer.seite .in{padding-left:var(--gut);padding-right:var(--gutr);padding-block:22px;max-width:1280px;margin:0 auto;
-  font-size:12.5px;color:hsl(var(--ink-3));display:flex;flex-wrap:wrap;gap:6px 22px}
+  font-size:12.5px;color:hsl(var(--ink-3));display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+footer.seite a{color:inherit;border-bottom:1px solid hsl(var(--ink-3)/.35)}
+footer.seite a:hover{color:hsl(var(--ink));border-bottom-color:currentColor}
+footer.seite .autor{font-size:11.5px;margin-left:auto}
 /* ---- Zweite Ebene: Vertiefungen ---- */
 .schalter{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 @media (max-width:600px){.topbar{position:relative;top:auto}}
@@ -1332,9 +1335,8 @@ wiederhole höchstens 10-mal:
 
 <footer class="seite">
   <div class="in">
-    <span>PU-Projekt «Wie KI funktioniert» · Neue Kantonsschule Aarau</span>
-    <span>14 Kapitel, 9 Versuche</span>
-    <span>Alle Versuche rechnen im Browser, ohne Server</span>
+    <span><a href="https://github.com/SeraphinHaeuptli/Pur_website" target="_blank" rel="noopener" title="Quellcode auf GitHub">PU-Projekt «Eine Einführung in die Welt des maschinellen Denkens»</a> · Neue Kantonsschule Aarau</span>
+    <span class="autor">© 2026 Seraphin Häuptli · <a href="https://www.instagram.com/de_seraa" target="_blank" rel="noopener">@de_seraa</a> · <a href="mailto:seraphin@setsail.ch">seraphin@setsail.ch</a></span>
   </div>
 </footer>
 
